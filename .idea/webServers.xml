@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="3655d5d0-e045-433d-a3f0-e3e8eac9aab6" name="Reg.ru Sandbox" url="http://psycho.bulash.ru">
+        <fileTransfer rootFolder="/sandbox/psycho.bulash.ru" host="31.31.198.216" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" showHiddenFiles="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

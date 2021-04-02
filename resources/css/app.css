@@ -1,0 +1,54 @@
+/* Main */
+.user-name {
+    color: var(--white);
+}
+.role-name {
+    color: var(--gray);
+    white-space: normal;
+}
+
+/* DataTables */
+.dataTables_length {
+    float: left;
+}
+
+.dataTables_filter {
+    float: right;
+}
+
+.dataTables_info {
+    float: left;
+}
+
+.dataTables_paginate {
+    float: right;
+    padding-top: 0.85em;
+}
+
+.paginate_button {
+    margin-right: 0.85em;
+}
+
+.paginate_button.next {
+    margin-right: 0;
+}
+
+.licenses_statistics tr {
+    padding-bottom: 10px;
+}
+
+td {
+    word-break: break-all;
+}
+
+td.key {
+    padding-right: 10px;
+}
+
+td.value {
+    font-weight: bold;
+}
+
+tr.locked {
+    background-color: lightgray;
+}
