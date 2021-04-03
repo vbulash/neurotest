@@ -112,22 +112,6 @@
                                         @endforeach
                                     </select>
                                 </div>
-
-                                <div class="form-group">
-                                    <div class="checkbox">
-                                        <label>
-                                            @php
-                                                if(isset($test)){
-                                                    $totals = App\Models\Test::SHOW_RESULTS & $test->options;
-                                                }
-                                            @endphp
-                                            <input type="checkbox" name="result"
-                                                   id="result" @if($totals) checked @endif disabled>
-                                            <label for="result">Показывать результат тестирования после прохождения
-                                                теста</label>
-                                        </label>
-                                    </div>
-                                </div>
                             </div>
                             <!-- /.card-body -->
 

@@ -18,7 +18,7 @@ class CreateBlocksTable extends Migration
             $table->integer('sort_no')->default(0);
             $table->string('name')->nullable();
             $table->integer('timeout')->default(0);
-            $table->longText('content');
+            $table->longText('content')->nullable();
             $table->unsignedInteger('test_id');
             $table->timestamps();
         });

@@ -164,7 +164,9 @@
             session()->put('block_id', $block->id);
             session()->put('block_show', $show);
 
-            return view($handler::getEditView(), compact('block', 'show'));
+            $content = ($block->content == null ? json_encode($handler::$content) : $block->content);
+
+            return view($handler::getEditView(), compact('block', 'show', 'content'));
         }
 
         /**
@@ -182,8 +184,16 @@
 
             $block = Block::findOrFail($id);
             $title = $block->name;
+
+            $handler = config('blocks.' . $block->type);
+            $content = $handler::$content;
+
+            foreach ($content as &$control)
+                $control['actual'] = $request->has($control['name']);
+            //Log::debug($content);
             $block->update([
-                'name' => $request->title
+                'name' => $request->title,
+                'content' => json_encode($content)
             ]);
 
             $test_id = session('test_id');

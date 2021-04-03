@@ -33,6 +33,8 @@
         public static int $sortNo = -1;            // Не заблокировано
         // Видимость блока
         public static bool $display = true; // Блок видимый
+        // Конфигурация дополнительных полей
+        public static array $content = [];
 
         protected $fillable = [
             'sort_no', 'name', 'type', 'timeout', 'content', 'test_id'];
@@ -66,9 +68,9 @@
          */
         public static function locked(?string $type = null): bool
         {
-            if($type == null) return static::$locked;
+            if ($type == null) return static::$locked;
             foreach (config('blocks') as $handler) {
-                if($handler::$type == $type) {
+                if ($handler::$type == $type) {
                     if ($handler::$locked) return true;
                     return false;
                 }
@@ -83,9 +85,9 @@
          */
         public static function creatable(?string $type = null): bool
         {
-            if($type == null) return (static::$createView != null);
+            if ($type == null) return (static::$createView != null);
             foreach (config('blocks') as $handler) {
-                if($handler::$type == $type) {
+                if ($handler::$type == $type) {
                     if ($handler::$createView != null) return true;
                     return false;
                 }
@@ -100,9 +102,9 @@
          */
         public static function editable(?string $type = null): bool
         {
-            if($type == null) return (static::$editView != null);
+            if ($type == null) return (static::$editView != null);
             foreach (config('blocks') as $handler) {
-                if($handler::$type == $type) {
+                if ($handler::$type == $type) {
                     if ($handler::$editView != null) return true;
                     return false;
                 }
@@ -118,7 +120,7 @@
         public static function getSortNo(): int
         {
             $test_id = session('test_id');
-            if($test_id == 0) {
+            if ($test_id == 0) {
                 $count = Block::all()->count();
             } else {
                 $count = Block::all()->where('test_id', $test_id)->count();
@@ -131,7 +133,8 @@
          *
          * @return int ID сохраненного блока в БД
          */
-        public static function add(): int {
+        public static function add(): int
+        {
             $test_id = session('test_id');
 
             $block = self::create([
@@ -139,7 +142,7 @@
                 'name' => static::$title,
                 'type' => static::$type,
                 'timeout' => 0,
-                'content' => ' ',
+                'content' => null,
                 'test_id' => ($test_id == 0 ? null : $test_id)
             ]);
             $block->save();
@@ -153,7 +156,18 @@
             return true;
         }
 
-        public static function getCreateView(): ?string { return static::$createView; }
-        public static function getEditView(): ?string { return static::$editView; }
-        public static function getPlayView(): ?string { return static::$playView; }
+        public static function getCreateView(): ?string
+        {
+            return static::$createView;
+        }
+
+        public static function getEditView(): ?string
+        {
+            return static::$editView;
+        }
+
+        public static function getPlayView(): ?string
+        {
+            return static::$playView;
+        }
     }
