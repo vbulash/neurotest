@@ -33,8 +33,8 @@
         Route::resource('/blocks', 'BlockController');
         Route::get('/blocks.create.embedded/{type}', 'BlockController@create')->name('blocks.create.embedded');
         Route::get('/blocks.data', 'BlockController@getData')->name('blocks.index.data');
-        Route::get('/blocks.up/{block}', 'BlockController@up')->name('blocks.up');
-        Route::get('/blocks.down/{block}', 'BlockController@down')->name('blocks.down');
+        Route::get('/blocks.back/{block}', 'BlockController@back')->name('blocks.back');
+        Route::get('/blocks.forward/{block}', 'BlockController@forward')->name('blocks.forward');
     });
 
     // Безопасность

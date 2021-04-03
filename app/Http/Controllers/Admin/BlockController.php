@@ -13,6 +13,7 @@
     use Illuminate\Http\RedirectResponse;
     use Illuminate\Http\Request;
     use Illuminate\Http\Response;
+    use Illuminate\Support\Facades\Log;
     use Yajra\DataTables\DataTables;
     use Exception;
 
@@ -26,14 +27,17 @@
          */
         public function getData(): JsonResponse
         {
-            $blocks = Block::all();
+            $test_id = session('test_id');
+            $blocks = Block::all()->where('test_id', $test_id);
 
             return Datatables::of($blocks)
-                ->addColumn('order', fn($block) => $block->sort_no)
+                //->addColumn('order', fn($block) => $block->sort_no)
                 ->addColumn('locked', fn($block) => Block::locked($block->type))
-                ->addColumn('action', function ($block) {
+                ->addColumn('action', function ($block) use ($blocks) {
                     $editRoute = route('blocks.edit', ['block' => $block->id]);
                     $showRoute = route('blocks.show', ['block' => $block->id]);
+                    $backRoute = route('blocks.back', ['block' => $block->id]);
+                    $forwardRoute = route('blocks.forward', ['block' => $block->id]);
 
                     $handler = config('blocks.' . $block->type);
                     $actions = '';
@@ -55,6 +59,25 @@
                             "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Удаление\" onclick=\"clickDelete({$block->id});\">\n" .
                             "<i class=\"fas fa-trash-alt\"></i>\n" .
                             "</a>\n";
+                    }
+                    if (!in_array($block->sort_no, [Block::MIN, Block::MAX])) {
+                        // https://laravel-tricks.com/tricks/get-previousnext-record-ids
+                        $previous = Block::all()->where('sort_no', '<', $block->sort_no)->max('sort_no');
+                        if ($previous > Block::MIN)
+                            $actions .=
+                                "<a href=\"{$backRoute}\" class=\"btn btn-info btn-sm float-left mr-1\" " .
+                                "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Переместить назад\">\n" .
+                                "<i class=\"fas fa-arrow-up\"></i>\n" .
+                                "</a>\n";
+                        //Log::debug('previous = ' . $previous);
+                        $next = Block::all()->where('sort_no', '>', $block->sort_no)->min('sort_no');
+                        if ($next < Block::MAX)
+                            $actions .=
+                                "<a href=\"{$forwardRoute}\" class=\"btn btn-info btn-sm float-left mr-1\" " .
+                                "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Переместить вперед\">\n" .
+                                "<i class=\"fas fa-arrow-down\"></i>\n" .
+                                "</a>\n";
+                        //Log::debug('next = ' . $next);
                     }
                     return $actions;
                 })
@@ -91,6 +114,8 @@
                     $block = $handler::add();
                     if (!$block) return false;
                     $message = [$handler::$title . ' добавлен'];
+
+                    session()->put('block_id', $block->id); // Для автоперемотки
 
                     $test_show = session('test_show');
                     $route = 'tests.' . ($test_show ? 'show' : 'edit');
@@ -177,6 +202,8 @@
          */
         public function destroy(Request $request, int $id)
         {
+            session()->put('block_id', $id);
+
             if ($id == 0)
                 $id = $request->delete_id;
             $block = Block::findOrFail($id);
@@ -206,4 +233,48 @@
 //            if (!key_exists($type, Block::types)) return null;
 //            return Block::types[$type];
 //        }
+
+        /**
+         * @param int $id
+         * @return RedirectResponse|bool
+         */
+        public function back(int $id): RedirectResponse
+        {
+            session()->put('block_id', $id);
+
+            $block = Block::findOrFail($id);
+            $previous = Block::all()->where('sort_no', '<', $block->sort_no)->max('sort_no');
+            if($previous) {
+                $order = intval($previous);
+                $order--;
+                $block->update(['sort_no' => $order]);
+
+                $test_id = session('test_id');
+                $test_show = session('test_show');
+                $route = 'tests.' . ($test_show ? 'show' : 'edit');
+                return redirect()->route($route, ['test' => $test_id]);
+            } else return false;
+        }
+
+        /**
+         * @param int $id
+         * @return RedirectResponse|bool
+         */
+        public function forward(int $id): RedirectResponse
+        {
+            session()->put('block_id', $id);
+
+            $block = Block::findOrFail($id);
+            $next = Block::all()->where('sort_no', '>', $block->sort_no)->min('sort_no');
+            if($next) {
+                $order = intval($next);
+                $order++;
+                $block->update(['sort_no' => $order]);
+
+                $test_id = session('test_id');
+                $test_show = session('test_show');
+                $route = 'tests.' . ($test_show ? 'show' : 'edit');
+                return redirect()->route($route, ['test' => $test_id]);
+            } else return false;
+        }
     }

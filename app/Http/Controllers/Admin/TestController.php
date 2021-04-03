@@ -83,6 +83,9 @@
          */
         public function index()
         {
+            if(session()->exists('block_id'))
+                session()->forget('block_id');
+
             $count = Test::all()->count();
             return view('admin.tests.index', compact('count'));
         }

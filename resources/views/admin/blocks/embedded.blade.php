@@ -18,7 +18,8 @@
             @method('DELETE')
             <input type="hidden" name="delete_id" id="delete_id">
             <button type="submit" id="delete_btn" name="delete_btn"
-                    onclick="return confirm('Подтвердите удаление');">&nbsp;</button>
+                    onclick="return confirm('Подтвердите удаление');">&nbsp;
+            </button>
         </form>
         <div class="dropdown">
             <button class="btn btn-primary mb-3 dropdown-toggle" type="button" id="addBlock"
@@ -41,7 +42,6 @@
                     <tr>
                         <th>Номер по порядку</th>
                         <th>Наименование</th>
-                        <th>Тип</th>
                         <th>Locked</th>
                         <th>Действия</th>
                     </tr>
@@ -51,6 +51,7 @@
         @else
             <p>Модулей пока нет...</p>
         @endif
+        <span id="after_table">&nbsp;</span>
     </div>
 </div>
 <!-- /.card -->
@@ -70,6 +71,12 @@
 @if (count($blocks) > 0)
     @push('scripts.injection')
         <script>
+            {{-- Перемотка до таблицы модулей --}}
+            @if(session()->exists('block_id'))
+                let footer = document.getElementById('after_table');
+                footer.scrollIntoView();
+            @endif
+
             function clickDelete(id) {
                 document.getElementById('delete_id').value = id;
                 document.getElementById('delete_btn').click();
@@ -84,14 +91,9 @@
                     serverSide: true,
                     ajax: '{!! route('blocks.index.data') !!}',
                     columns: [
-                        //{data: 'sort_no', name: 'sort_no'},
-                        {data: 'order', name: 'order'},
+                        {data: 'sort_no', name: 'sort_no'},
+                        //{data: 'order', name: 'order'},
                         {data: 'name', name: 'name'},
-                        {
-                            data: 'type', name: 'type', render: (data) => {
-                                return '';
-                            }
-                        },
                         {data: 'locked', name: 'locked', visible: false},
                         {data: 'action', name: 'action', sortable: false}
                     ],
@@ -105,7 +107,7 @@
                     // }
                 });
 
-                dt.on( 'row-reorder', (event, details, edit)=> {
+                dt.on('row-reorder', (event, details, edit) => {
                     //debugger;
                 });
             });

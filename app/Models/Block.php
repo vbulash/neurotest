@@ -37,8 +37,8 @@
         protected $fillable = [
             'sort_no', 'name', 'type', 'timeout', 'content', 'test_id'];
 
-        protected const MIN = 0;
-        protected const MAX = 1000;
+        public const MIN = 0;
+        public const MAX = 10000;
 
         /**
          * Тест для блока
