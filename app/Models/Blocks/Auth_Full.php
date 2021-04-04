@@ -24,6 +24,27 @@
         public static array $content = [
             [
                 "actual" => true,
+                "name" => "fio",
+                "label" => "Фамилия, имя и отчество",
+                "type" => "text",
+                "value" => ""
+            ],
+            [
+                "actual" => true,
+                "name" => "email",
+                "label" => "Электронная почта",
+                "type" => "email",
+                "value" => ""
+            ],
+            [
+                "actual" => true,
+                "name" => "phone",
+                "label" => "Телефон",
+                "type" => "phone",
+                "value" => ""
+            ],
+            [
+                "actual" => true,
                 "name" => "birth",
                 "label" => "Дата рождения",
                 "type" => "date",
