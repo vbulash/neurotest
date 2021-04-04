@@ -4,6 +4,7 @@
 
     use App\Http\Controllers\Controller;
     use App\Models\Block;
+    use App\Models\Blocks\Image;
     use App\Models\Test;
     use Illuminate\Contracts\Foundation\Application;
     use Illuminate\Contracts\View\Factory;
@@ -14,6 +15,7 @@
     use Illuminate\Http\Request;
     use Illuminate\Http\Response;
     use Illuminate\Support\Facades\Log;
+    use Illuminate\Support\Facades\Storage;
     use Yajra\DataTables\DataTables;
     use Exception;
 
@@ -188,11 +190,16 @@
             $handler = config('blocks.' . $block->type);
             $content = $handler::$content;
 
-            foreach ($content as &$control)
+            foreach ($content as &$control) {
                 $control['actual'] = $request->has($control['name']);
-            //Log::debug($content);
+                if($control['type'] == 'image') {
+                    $control['value'] = Image::uploadImage($request, $control['name'], $request->get($control['name']));
+                }
+            }
+
             $block->update([
                 'name' => $request->title,
+                'timeout' => $request->timeout,
                 'content' => json_encode($content)
             ]);
 

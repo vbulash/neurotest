@@ -19,6 +19,8 @@
         protected static ?string $playView = null;
         // Блокировка перемещения блока
         public static bool $locked = true;
+        // Видимость блока
+        public static bool $display = false;
         // Положение по умолчанию
         public static int $sortNo = Block::MAX;
     }

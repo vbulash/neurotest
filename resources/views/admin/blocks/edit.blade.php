@@ -53,6 +53,12 @@
                                            class="form-control @error('title') is-invalid @enderror"
                                            value="{{ $block->name }}" @if($show) disabled @endif>
                                 </div>
+                                <div class="form-group">
+                                    <label for="title">Таймаут, секунд (0 - нет таймаута)</label>
+                                    <input type="number" name="timeout" id="timeout"
+                                           class="form-control @error('timeout') is-invalid @enderror"
+                                           value="{{ $block->timeout }}" @if($show) disabled @endif>
+                                </div>
 
                                 @yield('fieldset')
                             </div>

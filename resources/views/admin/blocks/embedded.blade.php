@@ -42,6 +42,7 @@
                     <tr>
                         <th>Номер по порядку</th>
                         <th>Наименование</th>
+                        <th>Таймаут, секунд</th>
                         <th>Locked</th>
                         <th>Действия</th>
                     </tr>
@@ -73,8 +74,8 @@
         <script>
             {{-- Перемотка до таблицы модулей --}}
             @if(session()->exists('block_id'))
-                let footer = document.getElementById('after_table');
-                footer.scrollIntoView();
+            let footer = document.getElementById('after_table');
+            footer.scrollIntoView();
             @endif
 
             function clickDelete(id) {
@@ -84,28 +85,34 @@
 
             $(function () {
                 let dt = $('#blocks_table').DataTable({
-                    language: {
-                        "url": "{{ asset('assets/admin/plugins/datatables/lang/ru/Russian.json') }}"
-                    },
-                    processing: true,
-                    serverSide: true,
-                    ajax: '{!! route('blocks.index.data') !!}',
-                    columns: [
-                        {data: 'sort_no', name: 'sort_no'},
-                        //{data: 'order', name: 'order'},
-                        {data: 'name', name: 'name'},
-                        {data: 'locked', name: 'locked', visible: false},
-                        {data: 'action', name: 'action', sortable: false}
-                    ],
-                    createdRow: (row, data, dataIndex) => {
-                        if (data.locked)
-                            $(row).addClass('locked');
-                    },
-                    // rowReorder: {
-                    //      dataSrc: 'order',
-                    //      selector: 'tr'
-                    // }
-                });
+                        language: {
+                            "url": "{{ asset('assets/admin/plugins/datatables/lang/ru/Russian.json') }}"
+                        },
+                        processing: true,
+                        serverSide: true,
+                        ajax: '{!! route('blocks.index.data') !!}',
+                        columns: [
+                            {data: 'sort_no', name: 'sort_no'},
+                            //{data: 'order', name: 'order'},
+                            {data: 'name', name: 'name'},
+                            {
+                                data: 'timeout', name: 'timeout', render: (data, type, row, meta) => {
+                                    return row.locked ? '' : data;
+                                }
+                            },
+                            {data: 'locked', name: 'locked', visible: false},
+                            {data: 'action', name: 'action', sortable: false}
+                        ],
+                        createdRow: (row, data, dataIndex) => {
+                            if (data.locked)
+                                $(row).addClass('locked');
+                        },
+                        // rowReorder: {
+                        //      dataSrc: 'order',
+                        //      selector: 'tr'
+                        // }
+                    })
+                ;
 
                 dt.on('row-reorder', (event, details, edit) => {
                     //debugger;
