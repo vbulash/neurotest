@@ -37,7 +37,7 @@
         public static array $content = [];
 
         protected $fillable = [
-            'sort_no', 'name', 'type', 'timeout', 'content', 'test_id'];
+            'sort_no', 'name', 'type', 'timeout', 'content', 'test_id', 'draft'];
 
         public const MIN = 0;
         public const MAX = 10000;

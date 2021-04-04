@@ -36,6 +36,7 @@
             </div>
         </div>
         @if (count($blocks) > 0)
+            <label class="mt-2 mb-4" for="blocks_table">Красным цветом выделены модули-черновики, которые нужно дополнительно настроить (изменить и сохранить)</label>
             <div class="table-responsive">
                 <table class="table table-bordered table-hover text-nowrap" id="blocks_table">
                     <thead>
@@ -43,6 +44,7 @@
                         <th>Номер по порядку</th>
                         <th>Наименование</th>
                         <th>Таймаут, секунд</th>
+                        <th>Черновик</th>
                         <th>Locked</th>
                         <th>Действия</th>
                     </tr>
@@ -72,12 +74,6 @@
 @if (count($blocks) > 0)
     @push('scripts.injection')
         <script>
-            {{-- Перемотка до таблицы модулей --}}
-            @if(session()->exists('block_id'))
-            let footer = document.getElementById('after_table');
-            footer.scrollIntoView();
-            @endif
-
             function clickDelete(id) {
                 document.getElementById('delete_id').value = id;
                 document.getElementById('delete_btn').click();
@@ -100,12 +96,15 @@
                                     return row.locked ? '' : data;
                                 }
                             },
+                            {data: 'draft', name: 'draft', visible: false},
                             {data: 'locked', name: 'locked', visible: false},
                             {data: 'action', name: 'action', sortable: false}
                         ],
                         createdRow: (row, data, dataIndex) => {
                             if (data.locked)
                                 $(row).addClass('locked');
+                            if(data.draft)
+                                $(row).addClass('draft');
                         },
                         // rowReorder: {
                         //      dataSrc: 'order',

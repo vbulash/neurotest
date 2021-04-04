@@ -113,11 +113,10 @@
             } else {
                 $test_id = session('test_id');
                 if ($test_id != 0) {
-                    $block = $handler::add();
-                    if (!$block) return false;
+                    $block_id = $handler::add();
                     $message = [$handler::$title . ' добавлен'];
 
-                    session()->put('block_id', $block->id); // Для автоперемотки
+                    session()->put('block_id', $block_id); // Для автоперемотки
 
                     $test_show = session('test_show');
                     $route = 'tests.' . ($test_show ? 'show' : 'edit');
@@ -200,7 +199,8 @@
             $block->update([
                 'name' => $request->title,
                 'timeout' => $request->timeout,
-                'content' => json_encode($content)
+                'content' => json_encode($content),
+                'draft' => false
             ]);
 
             $test_id = session('test_id');

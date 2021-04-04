@@ -20,6 +20,7 @@ class CreateBlocksTable extends Migration
             $table->integer('timeout')->default(0);
             $table->longText('content')->nullable();
             $table->unsignedInteger('test_id');
+            $table->boolean('draft')->default(true);
             $table->timestamps();
         });
     }

@@ -1197,3 +1197,7 @@ td.value {
 tr.locked {
     background-color: lightgray;
 }
+
+tr.draft {
+    color: var(--red);
+}
