@@ -24,6 +24,7 @@
         public static array $content = [
             [
                 "actual" => true,
+                "required" => false,
                 "name" => "fio",
                 "label" => "Фамилия, имя и отчество",
                 "type" => "text",
@@ -31,6 +32,7 @@
             ],
             [
                 "actual" => true,
+                "required" => false,
                 "name" => "email",
                 "label" => "Электронная почта",
                 "type" => "email",
@@ -38,6 +40,7 @@
             ],
             [
                 "actual" => true,
+                "required" => false,
                 "name" => "phone",
                 "label" => "Телефон",
                 "type" => "phone",
@@ -45,6 +48,7 @@
             ],
             [
                 "actual" => true,
+                "required" => false,
                 "name" => "birth",
                 "label" => "Дата рождения",
                 "type" => "date",
@@ -52,6 +56,7 @@
             ],
             [
                 "actual" => true,
+                "required" => false,
                 "name" => "sex",
                 "label" => "Пол",
                 "type" => "select",
@@ -63,6 +68,7 @@
             ],
             [
                 "actual" => true,
+                "required" => false,
                 "name" => "education",
                 "label" => "Образование",
                 "type" => "text",
@@ -70,6 +76,7 @@
             ],
             [
                 "actual" => true,
+                "required" => false,
                 "name" => "work",
                 "label" => "Место работы",
                 "type" => "text",
@@ -77,6 +84,7 @@
             ],
             [
                 "actual" => true,
+                "required" => false,
                 "name" => "position",
                 "label" => "Должность",
                 "type" => "text",

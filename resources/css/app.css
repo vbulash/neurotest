@@ -56,3 +56,7 @@ tr.locked {
 tr.draft {
     color: var(--red);
 }
+
+sup.required-mark {
+    color: var(--red);
+}

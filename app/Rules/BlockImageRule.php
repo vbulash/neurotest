@@ -2,12 +2,11 @@
 
 namespace App\Rules;
 
-use App\Models\Role;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\UploadedFile;
 
-class RoleNameRule implements Rule
+class BlockImageRule implements Rule
 {
     private Request $request;
 
@@ -30,8 +29,7 @@ class RoleNameRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        if(in_array($attribute, [Role::ADMIN, Role::MANAGER, Role::MANAGER, Role::CLIENT])) return true;
-        if($value) return true;
+        if($value instanceof UploadedFile) return true;
         return false;
     }
 
@@ -42,6 +40,6 @@ class RoleNameRule implements Rule
      */
     public function message()
     {
-        return 'The validation error message.';
+        return 'Изображение &laquo;:attribute&raquo; должно быть обязательно выбрано';
     }
 }

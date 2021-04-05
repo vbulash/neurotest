@@ -41,7 +41,7 @@
                             @csrf
                             @method('PUT')
                             <div class="card-body">
-{{--                                <input type="hidden" name="draft" id="draft" value="0">--}}
+                                <input type="hidden" name="block_id" id="block_id" value="{{ $block->id }}">
                                 <div class="form-group col-lg-3 col-xs-6">
                                     <label for="sort_no">Номер по порядку</label>
                                     <input type="text" name="sort_no" id="sort_no"

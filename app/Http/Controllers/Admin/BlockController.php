@@ -3,6 +3,7 @@
     namespace App\Http\Controllers\Admin;
 
     use App\Http\Controllers\Controller;
+    use App\Http\Requests\UpdateBlockRequest;
     use App\Models\Block;
     use App\Models\Blocks\Image;
     use App\Models\Test;
@@ -173,19 +174,13 @@
         /**
          * Update the specified resource in storage.
          *
-         * @param Request $request
+         * @param UpdateBlockRequest $request
          * @param int $id
          * @return RedirectResponse|Response
          */
-        public function update(Request $request, int $id)
+        public function update(UpdateBlockRequest $request, int $id)
         {
-            $request->validate([
-                'title' => 'required',
-            ]);
-
             $block = Block::findOrFail($id);
-            $title = $block->name;
-
             $handler = config('blocks.' . $block->type);
             $content = $handler::$content;
 
@@ -193,9 +188,10 @@
                 $control['actual'] = $request->has($control['name']);
                 if($control['type'] == 'image') {
                     $control['value'] = Image::uploadImage($request, $control['name'], $request->get($control['name']));
-                }
+                } else $control['value'] = $request->get($control['name']);
             }
 
+            $title = $block->name;
             $block->update([
                 'name' => $request->title,
                 'timeout' => $request->timeout,
