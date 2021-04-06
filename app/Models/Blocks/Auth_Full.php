@@ -15,7 +15,7 @@
         // Views
         protected static ?string $createView = null;
         protected static ?string $editView = "blocks.auth_full.edit";
-        protected static ?string $playView = null;
+        protected static ?string $playView = 'blocks.auth_full.play';
         // Блокировка перемещения блока
         public static bool $locked = true;
         // Положение по умолчанию

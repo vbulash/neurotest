@@ -4,12 +4,15 @@
 	namespace App\Models\Blocks;
 
 
-	use App\Models\Block;
+	use App\Http\Controllers\HasWeights;
+    use App\Models\Block;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Storage;
 
     class Image extends Block
 	{
+	    use HasWeights;
+
         protected $table = 'blocks';
 
         public static ?string $type = 'image';

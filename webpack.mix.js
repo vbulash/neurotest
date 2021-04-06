@@ -11,6 +11,7 @@ const mix = require('laravel-mix');
  |
  */
 
+// Admin
 mix.styles([
     'resources/assets/admin/plugins/fontawesome-free/css/all.min.css',
     'resources/assets/admin/plugins/select2/css/select2.css',
@@ -39,3 +40,17 @@ mix.copy('resources/assets/admin/plugins/bootstrap-datepicker/css/bootstrap-date
 
 // DataTables
 mix.copyDirectory('resources/assets/admin/plugins/datatables', 'public/assets/admin/plugins/datatables');
+
+// Front
+mix.styles([
+    'resources/assets/front/plugins/fontawesome-free/css/all.min.css',
+    'resources/assets/front/plugins/bootstrap/bootstrap.css',
+    'resources/assets/front/css/main.css',
+], 'public/assets/front/css/front.css');
+
+mix.scripts([
+    'resources/assets/admin/plugins/bootstrap/bootstrap.bundle.min.js',
+], 'public/assets/front/js/front.js');
+
+mix.copyDirectory('resources/assets/front/img', 'public/assets/front/img');
+mix.copyDirectory('resources/assets/front/plugins/fontawesome-free/webfonts', 'public/assets/front/webfonts');

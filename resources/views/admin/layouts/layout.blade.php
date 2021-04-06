@@ -232,7 +232,7 @@
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
                                 {{-- TODO: сделать нормальный вызов после отладки --}}
-                                <a href="{{ route('player', ['mkey' => 'mkey_604882d5136cb9.66558601']) }}"
+                                <a href="{{ route('player.play', ['mkey' => 'mkey_60501e2ae282a2.08095650']) }}"
                                    class="nav-link">
                                     <i class="nav-icon fas fa-play-circle"></i>
                                     <p>Плеер</p>
@@ -319,7 +319,7 @@
     $('.nav-sidebar a').each(function () {
         let location = window.location.protocol + '//' + window.location.host + window.location.pathname;
         let link = this.href;
-        if (link == location) {
+        if (link === location) {
             $(this).addClass('active');
             $(this).closest('.has-treeview').addClass('menu-open');
         }

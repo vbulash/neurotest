@@ -1,0 +1,16 @@
+.main-header {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.main-header > navbar {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+.module-wrapper {
+    min-height: 70vh;
+    display: flex;
+    align-content: center;
+    text-align: center;
+}

@@ -58,5 +58,22 @@
     "/assets/admin/plugins/datatables/datatables.js": "/assets/admin/plugins/datatables/datatables.js",
     "/assets/admin/plugins/datatables/datatables.min.css": "/assets/admin/plugins/datatables/datatables.min.css",
     "/assets/admin/plugins/datatables/datatables.min.js": "/assets/admin/plugins/datatables/datatables.min.js",
-    "/assets/admin/plugins/datatables/pdfmake-0.1.36": "/assets/admin/plugins/datatables/pdfmake-0.1.36"
+    "/assets/admin/plugins/datatables/pdfmake-0.1.36": "/assets/admin/plugins/datatables/pdfmake-0.1.36",
+    "/assets/front/css/front.css": "/assets/front/css/front.css",
+    "/assets/front/js/front.js": "/assets/front/js/front.js",
+    "/assets/front/webfonts/fa-brands-400.eot": "/assets/front/webfonts/fa-brands-400.eot",
+    "/assets/front/webfonts/fa-brands-400.svg": "/assets/front/webfonts/fa-brands-400.svg",
+    "/assets/front/webfonts/fa-brands-400.ttf": "/assets/front/webfonts/fa-brands-400.ttf",
+    "/assets/front/webfonts/fa-brands-400.woff": "/assets/front/webfonts/fa-brands-400.woff",
+    "/assets/front/webfonts/fa-brands-400.woff2": "/assets/front/webfonts/fa-brands-400.woff2",
+    "/assets/front/webfonts/fa-regular-400.eot": "/assets/front/webfonts/fa-regular-400.eot",
+    "/assets/front/webfonts/fa-regular-400.svg": "/assets/front/webfonts/fa-regular-400.svg",
+    "/assets/front/webfonts/fa-regular-400.ttf": "/assets/front/webfonts/fa-regular-400.ttf",
+    "/assets/front/webfonts/fa-regular-400.woff": "/assets/front/webfonts/fa-regular-400.woff",
+    "/assets/front/webfonts/fa-regular-400.woff2": "/assets/front/webfonts/fa-regular-400.woff2",
+    "/assets/front/webfonts/fa-solid-900.eot": "/assets/front/webfonts/fa-solid-900.eot",
+    "/assets/front/webfonts/fa-solid-900.svg": "/assets/front/webfonts/fa-solid-900.svg",
+    "/assets/front/webfonts/fa-solid-900.ttf": "/assets/front/webfonts/fa-solid-900.ttf",
+    "/assets/front/webfonts/fa-solid-900.woff": "/assets/front/webfonts/fa-solid-900.woff",
+    "/assets/front/webfonts/fa-solid-900.woff2": "/assets/front/webfonts/fa-solid-900.woff2"
 }

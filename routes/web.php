@@ -59,5 +59,6 @@
 
     // Плеер
     Route::group(['namespace' => 'App\Http\Controllers'], function () {
-        Route::get('/player/{mkey}', 'PlayerController@play')->name('player');
+        Route::get('/player.play/{mkey}/{block?}', 'PlayerController@play')->name('player.play');
+        Route::post('/player.step/{block?}', 'PlayerController@step')->name('player.step');
     });
