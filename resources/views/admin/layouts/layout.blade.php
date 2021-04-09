@@ -211,14 +211,30 @@
                     <!-- .Клиенты -->
 
                     <!-- Конструктор тестов -->
-                    @can('tests.index')
-                        <li class="nav-item">
-                            <a href="{{ route('tests.index') }}" class="nav-link">
-                                <i class="nav-icon fas fa-drafting-compass"></i>
-                                <p>Тесты</p>
-                            </a>
-                        </li>
-                    @endcan
+                    <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-drafting-compass"></i>
+                            <p>Конструктор тестов
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('sets.index') }}" class="nav-link">
+                                    <i class="nav-icon fas fa-question-circle"></i>
+                                    <p>Наборы вопросов</p>
+                                </a>
+                            </li>
+                            @can('tests.index')
+                                <li class="nav-item">
+                                    <a href="{{ route('tests.index') }}" class="nav-link">
+                                        <i class="nav-icon fas fa-drafting-compass"></i>
+                                        <p>Тесты</p>
+                                    </a>
+                                </li>
+                            @endcan
+                        </ul>
+                    </li>
                     <!-- .Конструктор тестов -->
 
                     <!-- Прохождение тестов -->
@@ -301,6 +317,7 @@
         </div>
 
         @yield('content')
+        @yield('modals')
     </div>
     <!-- /.content-wrapper -->
 

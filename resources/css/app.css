@@ -60,3 +60,19 @@ tr.draft {
 sup.required-mark {
     color: var(--red);
 }
+
+.image-clear {
+    display: none;
+}
+
+.image-preview {
+    max-width: 100%;
+}
+
+.tab-content {
+    min-height: 60vh;
+}
+
+.nav-link {
+    text-align: left;
+ }

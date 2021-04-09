@@ -20,7 +20,8 @@
         "spatie/laravel-sluggable": "^2.6",
         "yajra/laravel-datatables": "^1.5",
       "ext-json": "*",
-        "doctrine/dbal": "*"
+        "doctrine/dbal": "*",
+        "barryvdh/laravel-debugbar": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

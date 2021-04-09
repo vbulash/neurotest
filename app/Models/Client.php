@@ -32,4 +32,9 @@
         {
             return $this->belongsToMany(User::class, 'user_client');
         }
+
+        public function sets()
+        {
+            return $this->hasMany(QuestionSet::class);
+        }
     }

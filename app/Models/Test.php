@@ -34,12 +34,18 @@
         public const AUTH_GUEST = 1;
         public const AUTH_FULL = 2;
         public const AUTH_PKEY = 4;
+        // Опции механики
+        public const IMAGES2 = 16;
+        public const IMAGES4 = 32;
+        // Дополнительные опции механики
+        public const EYE_TRACKING = 64;
+        public const MOUSE_TRACKING = 128;
         // Опции показа результата тестирования
-        public const SHOW_RESULTS = 64; // Показать результат на экране респондента
-        public const MAIL_RESULTS = 128;    // Отправить результат на почту респонеденту
+        public const SHOW_RESULTS = 1024;   // Показать результат на экране респондента
+        public const MAIL_RESULTS = 2048;   // Отправить результат на почту респонеденту
         // Опции рассылки результата тестирования
 
-        protected $fillable = ['name', 'timeout', 'type', 'options', 'contract_id', 'test_id'];
+        protected $fillable = ['name', 'timeout', 'type', 'options', 'contract_id', 'test_id', 'questionset_id'];
 
         public static function all($columns = ['*'])
         {
@@ -90,6 +96,11 @@
         public function histories()
         {
             return $this->hasMany(History_test::class);
+        }
+
+        public function sets()
+        {
+            return $this->belongsToMany(QuestionSet::class, 'test_questionset');
         }
     }
 

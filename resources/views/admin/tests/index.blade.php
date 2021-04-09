@@ -39,10 +39,15 @@
                                 @method('DELETE')
                                 <input type="hidden" name="delete_id" id="delete_id" value="">
                                 <button type="submit" id="delete_btn" name="delete_btn"
-                                        onclick="return confirm('Подтвердите удаление');">&nbsp;</button>
+                                        onclick="return confirm('Подтвердите удаление');">&nbsp;
+                                </button>
                             </form>
 
-                            <a href="{{ route('tests.create') }}" class="btn btn-primary mb-3">Добавить тест</a>
+                            <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
+                                    data-bs-target="#tests-create">
+                                Добавить тест
+                            </button>
+                            {{--                            <a href="{{ route('tests.create') }}" class="btn btn-primary mb-3">Добавить тест</a>--}}
                             @if ($count)
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-hover text-nowrap" id="tests_table">
@@ -73,14 +78,22 @@
     <!-- /.content -->
 @endsection
 
+@section('modals')
+    @include('admin.tests.create-modal')
+@endsection
+
 @once
     @if ($count)
         @push('styles')
-            <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables/datatables.css') }}">
+            {{--            <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables/datatables.css') }}">--}}
+            <link rel="stylesheet" type="text/css"
+                  href="https://cdn.datatables.net/v/bs4/dt-1.10.24/datatables.min.css"/>
         @endpush
 
         @push('scripts')
-            <script src="{{ asset('assets/admin/plugins/datatables/datatables.js') }}"></script>
+            {{--            <script src="{{ asset('assets/admin/plugins/datatables/datatables.js') }}"></script>--}}
+            <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+            <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
         @endpush
     @endif
 @endonce

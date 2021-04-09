@@ -35,6 +35,12 @@
         Route::get('/blocks.data', 'BlockController@getData')->name('blocks.index.data');
         Route::get('/blocks.back/{block}', 'BlockController@back')->name('blocks.back');
         Route::get('/blocks.forward/{block}', 'BlockController@forward')->name('blocks.forward');
+        // Наборы вопросов
+        Route::resource('/sets', 'QuestionSetController');
+        Route::get('/sets.data', 'QuestionSetController@getData')->name('sets.index.data');
+        //  Вопросы
+        Route::resource('/questions', 'QuestionsController');
+        Route::get('/questions.data', 'QuestionsController@getData')->name('questions.index.data');
     });
 
     // Безопасность

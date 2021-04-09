@@ -83,11 +83,12 @@
          */
         public function index()
         {
-            if(session()->exists('block_id'))
+            if (session()->exists('block_id'))
                 session()->forget('block_id');
 
             $count = Test::all()->count();
-            return view('admin.tests.index', compact('count'));
+            $contracts = Contract::all();
+            return view('admin.tests.index', compact('count', 'contracts'));
         }
 
         /**
@@ -110,44 +111,29 @@
         public function store(StoreTestRequest $request)
         {
             $data = $request->all();
+            $options = intval($data['auth']);
+            if ($request->has('result'))
+                foreach ($data['result'] as $result) {
+                    $options |= intval($result);
+                }
+            $options |= intval($data['mechanics']);
+            if ($request->has('aux_mechanics'))
+                foreach ($data['aux_mechanics'] as $result) {
+                    $options |= intval($result);
+                }
+            dd($options);
+
             $test = Test::create([
                 'name' => $data['title'],
                 'type' => $data['kind'],
                 'timeout' => $data['timeout'],
-                'options' => intval($data['auth']) | intval($data['result']),
+                'options' => $options,
                 'contract_id' => $data['contract'],
+                'questionset_id' => 5,  // TODO Только для отладки
             ]);
             $test->save();
             $message = [];
             $message[] = "Тест &laquo;{$test->name}&raquo; создан";
-
-            // Предопределенные модули нового теста
-            // Анкетный блок
-            if (in_array($data['auth'], [Test::AUTH_GUEST, Test::AUTH_FULL, Test::AUTH_PKEY])) {
-                if (intval($data['auth']) & Test::AUTH_GUEST) {
-                    $handler = config('blocks.auth_guest');
-                } elseif (intval($data['auth']) & Test::AUTH_PKEY) {
-                    $handler = config('blocks.auth_pkey');
-                } elseif (intval($data['auth']) & Test::AUTH_FULL) {
-                    $handler = config('blocks.auth_full');
-                } else $handler = null;
-
-                $id = $handler::add($test->id);
-                $block = Block::findOrFail($id);
-                $message[] = $block->name . " создан";
-            }
-            // Блок результата теста
-            if (in_array($data['result'], [Test::MAIL_RESULTS, Test::SHOW_RESULTS])) {
-                if (intval($data['result']) & Test::MAIL_RESULTS) {
-                    $handler = config('blocks.results_mail');
-                } elseif (intval($data['result']) & Test::SHOW_RESULTS) {
-                    $handler = config('blocks.results_show');
-                } else $handler = null;
-
-                $id = $handler::add($test->id);
-                $block = Block::findOrFail($id);
-                $message[] = $block->name . " создан";
-            }
 
             return redirect()->route('tests.index')->with('success', implode("<br/>", $message));
         }
@@ -172,6 +158,7 @@
          */
         public function edit($id, bool $show = false)
         {
+            dd($id);
             $test = Test::findOrFail($id);
             $contracts = Contract::all();
             $blocks = $test->blocks->all();
@@ -213,7 +200,7 @@
          */
         public function destroy(Request $request, int $id)
         {
-            if($id == 0)
+            if ($id == 0)
                 $id = $request->delete_id;
             $test = Test::findOrFail($id);
             $title = $test->name;
