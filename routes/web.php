@@ -29,12 +29,6 @@
         Route::resource('/tests', 'TestController');
         Route::get('/tests.data', 'TestController@getData')->name('tests.index.data');
         Route::get('/tests.status.change/{test}/{newType}', 'TestController@changeStatus')->name('tests.status.change');
-        // Модули тестов
-        Route::resource('/blocks', 'BlockController');
-        Route::get('/blocks.create.embedded/{type}', 'BlockController@create')->name('blocks.create.embedded');
-        Route::get('/blocks.data', 'BlockController@getData')->name('blocks.index.data');
-        Route::get('/blocks.back/{block}', 'BlockController@back')->name('blocks.back');
-        Route::get('/blocks.forward/{block}', 'BlockController@forward')->name('blocks.forward');
         // Наборы вопросов
         Route::resource('/sets', 'QuestionSetController');
         Route::get('/sets.data', 'QuestionSetController@getData')->name('sets.index.data');
@@ -65,6 +59,5 @@
 
     // Плеер
     Route::group(['namespace' => 'App\Http\Controllers'], function () {
-        Route::get('/player.play/{mkey}/{block?}', 'PlayerController@play')->name('player.play');
-        Route::post('/player.step/{block?}', 'PlayerController@step')->name('player.step');
+        Route::get('/player.play/{mkey}', 'PlayerController@play')->name('player.play');
     });

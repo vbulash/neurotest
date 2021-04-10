@@ -76,3 +76,13 @@ sup.required-mark {
 .nav-link {
     text-align: left;
  }
+
+#ident-area {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.ident-group {
+    width: 400px;
+}

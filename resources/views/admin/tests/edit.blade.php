@@ -125,8 +125,6 @@
                     </div>
                     <!-- /.card -->
 
-                    @include('admin.blocks.embedded')
-
                 </div>
                 <!-- /.col -->
             </div>

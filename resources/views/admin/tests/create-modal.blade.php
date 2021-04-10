@@ -14,7 +14,7 @@
                 @php
                     $steps = [
                         ['name' => 'Основная информация', 'tab' => 'vp-essentials', 'view' => 'admin.tests.wizard.step1', 'role' => 'start'],
-                        ['name' => 'Конструктор анкеты', 'tab' => 'vp-respondent', 'view' => ''],
+                        ['name' => 'Конструктор анкеты', 'tab' => 'vp-respondent', 'view' => 'admin.tests.wizard.step2'],
                         ['name' => 'Описание ФМП', 'tab' => 'vp-fmp-description', 'view' => ''],
                         ['name' => 'Механика нейротеста', 'tab' => 'vp-mechanics', 'view' => 'admin.tests.wizard.step4'],
                         ['name' => 'Набор вопросов', 'tab' => 'vp-set', 'view' => ''],
@@ -22,7 +22,6 @@
                     ];
                 @endphp
                 <div class="modal-body">
-
                     <div class="d-flex align-items-start">
                         <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist"
                              aria-orientation="vertical">
@@ -34,7 +33,7 @@
                                         id="{{ $step['tab'] }}-tab" data-bs-toggle="pill"
                                         data-bs-target="#{{ $step['tab'] }}" type="button" role="tab"
                                         @if(!$loop->first)
-                                            disabled
+                                        disabled
                                         @endif
                                         @if(key_exists('role', $step))
                                         data-role="{{ $step['role'] }}"
@@ -44,7 +43,7 @@
                                         data-id="{{ $stepNo }}"
                                         aria-controls="{{ $step['tab'] }}"
                                         aria-selected="true">
-                                    {{ $step['name'] }}
+                                    {{ $stepNo + 1 }}. {{ $step['name'] }}
                                 </button>
                                 @php($stepNo++)
                             @endforeach
@@ -100,28 +99,28 @@
                 .forEach((form) => {
                     form.addEventListener('submit', (event) => {
                         let valid = true;
-                        if((submitButton.id === 'forward_btn') || (submitButton.id === 'submit_btn')) {
+                        if ((submitButton.id === 'forward_btn') || (submitButton.id === 'submit_btn')) {
                             valid = form.checkValidity();
                             if (!valid) {
                                 event.preventDefault();
                                 event.stopPropagation();
                             }
-                            //form.classList.add('was-validated')
+                            form.classList.add('was-validated')
                         }
 
-                        if((submitButton.id === 'back_btn') || (submitButton.id === 'forward_btn')) {
+                        if ((submitButton.id === 'back_btn') || (submitButton.id === 'forward_btn')) {
                             event.preventDefault();
                             event.stopPropagation();
-                            if(!valid) return;
+                            if (!valid) return;
 
-                            if(submitButton.id === 'forward_btn') {
+                            if (submitButton.id === 'forward_btn') {
                                 let stepId = activeTab.dataset.id;
                                 let nextTab = allTabs[parseInt(stepId) + 1];
                                 nextTab.disabled = false;
                                 let tab = new bootstrap.Tab(nextTab);
                                 tab.show();
                             }
-                            if(submitButton.id === 'back_btn') {
+                            if (submitButton.id === 'back_btn') {
                                 let stepId = activeTab.dataset.id;
                                 let nextTab = allTabs[parseInt(stepId) - 1];
                                 nextTab.disabled = false;
@@ -170,6 +169,14 @@
                                 $('#submit_btn').show();
                                 break;
                         }
+                        switch (activeTab.id) {
+                            case 'vp-respondent-tab':
+                                let identArea = document.getElementById('ident-area');
+                                identArea.setAttribute("style", "height: " + wizardContentHeight + "px;");
+                                break;
+                            default:
+                                break;
+                        }
                     }, false);
                 });
 
@@ -178,13 +185,23 @@
             tab.show()
 
             $("#kind").on("change", (event) => {
-                if($('#kind').val() !== "{{ \App\Models\Test::TYPE_EXACT }}") {
+                if ($('#kind').val() !== "{{ \App\Models\Test::TYPE_EXACT }}") {
                     $('#contract-div').hide();
                 } else {
                     $('#contract-div').show();
                 }
             });
             $('#kind').change();
+
+            let wizardContentHeight = 0;
+            let testsWizard = document.getElementById('tests-create')
+            testsWizard.addEventListener('shown.bs.modal', (event) => {
+                let body = testsWizard.querySelectorAll(".modal-body");
+                Array.prototype.slice.call(body)
+                    .forEach((element) => {
+                        wizardContentHeight = element.clientHeight - 100;
+                    });
+            })
         })();
     </script>
 @endpush

@@ -7,9 +7,7 @@
     use App\Models\Contract;
     use Exception;
     use App\Models\Test;
-    use App\Models\Block;
     use App\Http\Controllers\Controller;
-
     //use App\Http\Requests\StoreCategory;
     use Illuminate\Contracts\View\Factory;
     use Illuminate\Http\JsonResponse;
@@ -83,9 +81,6 @@
          */
         public function index()
         {
-            if (session()->exists('block_id'))
-                session()->forget('block_id');
-
             $count = Test::all()->count();
             $contracts = Contract::all();
             return view('admin.tests.index', compact('count', 'contracts'));
@@ -116,6 +111,8 @@
                 foreach ($data['result'] as $result) {
                     $options |= intval($result);
                 }
+            $options |= intval($data['show_options']);
+            $options |= intval($data['mail_options']);
             $options |= intval($data['mechanics']);
             if ($request->has('aux_mechanics'))
                 foreach ($data['aux_mechanics'] as $result) {
@@ -161,11 +158,10 @@
             dd($id);
             $test = Test::findOrFail($id);
             $contracts = Contract::all();
-            $blocks = $test->blocks->all();
 
             session()->put('test_id', $id);
             session()->put('test_show', $show);
-            return view('admin.tests.edit', compact('test', 'contracts', 'blocks', 'show'));
+            return view('admin.tests.edit', compact('test', 'contracts', 'show'));
         }
 
         /**

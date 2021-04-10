@@ -4,7 +4,8 @@
 
     use Illuminate\Database\Eloquent\Factories\HasFactory;
     use Illuminate\Database\Eloquent\Model;
-    use Illuminate\Support\Facades\Auth;
+    use Illuminate\Database\Eloquent\Relations\BelongsTo;
+    use Illuminate\Database\Eloquent\Relations\HasMany;
 
     /**
      * Тест
@@ -42,10 +43,132 @@
         public const MOUSE_TRACKING = 128;
         // Опции показа результата тестирования
         public const SHOW_RESULTS = 1024;   // Показать результат на экране респондента
-        public const MAIL_RESULTS = 2048;   // Отправить результат на почту респонеденту
-        // Опции рассылки результата тестирования
+        public const SHOW_SHORT = 2048;
+        public const SHOW_MIDDLE = 4096;
+        public const SHOW_FULL = 8192;
+        public const MAIL_RESULTS = 16384;   // Отправить результат на почту респонеденту
+        public const MAIL_SHORT = 32768;
+        public const MAIL_MIDDLE = 65536;
+        public const MAIL_FULL = 131072;
 
         protected $fillable = ['name', 'timeout', 'type', 'options', 'contract_id', 'test_id', 'questionset_id'];
+
+        public static array $ident = [
+            [
+                [
+                    "actual" => true,
+                    "required" => false,
+                    "name" => "first_name",
+                    "label" => "Имя",
+                    "type" => "text",
+                    "value" => ""
+                ],
+                [
+                    "actual" => true,
+                    "required" => false,
+                    "name" => "surname",
+                    "label" => "Отчество",
+                    "type" => "text",
+                    "value" => ""
+                ],
+                [
+                    "actual" => true,
+                    "required" => false,
+                    "name" => "last_name",
+                    "label" => "Фамилия",
+                    "type" => "text",
+                    "value" => ""
+                ],
+                [
+                    "actual" => true,
+                    "required" => false,
+                    "name" => "email",
+                    "label" => "Электронная почта",
+                    "type" => "email",
+                    "value" => ""
+                ],
+                [
+                    "actual" => true,
+                    "required" => false,
+                    "name" => "phone",
+                    "label" => "Телефон",
+                    "type" => "phone",
+                    "value" => ""
+                ],
+                [
+                    "actual" => true,
+                    "required" => false,
+                    "name" => "birth",
+                    "label" => "Дата рождения",
+                    "type" => "date",
+                    "value" => ""
+                ],
+                [
+                    "actual" => true,
+                    "required" => false,
+                    "name" => "age",
+                    "label" => "Возраст",
+                    "type" => "number",
+                    "value" => ""
+                ],
+                [
+                    "actual" => true,
+                    "required" => false,
+                    "name" => "sex",
+                    "label" => "Пол",
+                    "type" => "select",
+                    "value" => "Ж",
+                    "cases" => [
+                        ["value" => "М", "label" => "Мужской"],
+                        ["value" => "Ж", "label" => "Женский"]
+                    ]
+                ]
+            ],
+            [
+                [
+                    "actual" => true,
+                    "required" => false,
+                    "name" => "education_school",
+                    "label" => "Образование (среднее)",
+                    "type" => "text",
+                    "value" => ""
+                ],
+                [
+                    "actual" => true,
+                    "required" => false,
+                    "name" => "education_middle",
+                    "label" => "Образование (среднее профессиональное)",
+                    "type" => "text",
+                    "value" => ""
+                ],
+                [
+                    "actual" => true,
+                    "required" => false,
+                    "name" => "education_high",
+                    "label" => "Образование (высшее)",
+                    "type" => "text",
+                    "value" => ""
+                ],
+            ],
+            [
+                [
+                    "actual" => true,
+                    "required" => false,
+                    "name" => "work",
+                    "label" => "Место работы",
+                    "type" => "text",
+                    "value" => ""
+                ],
+                [
+                    "actual" => true,
+                    "required" => false,
+                    "name" => "position",
+                    "label" => "Должность",
+                    "type" => "text",
+                    "value" => ""
+                ]
+            ]
+        ];
 
         public static function all($columns = ['*'])
         {
@@ -55,7 +178,7 @@
 
         /**
          * Шаблон текущего теста (если есть)
-         * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+         * @return BelongsTo
          */
         public function template()
         {
@@ -64,7 +187,7 @@
 
         /**
          * Тесты-потомки текущего шаблона
-         * @return \Illuminate\Database\Eloquent\Relations\HasMany
+         * @return HasMany
          */
         public function children()
         {
@@ -73,7 +196,7 @@
 
         /**
          * Контракт теста
-         * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+         * @return BelongsTo
          */
         public function contract()
         {
@@ -81,17 +204,8 @@
         }
 
         /**
-         * Блоки теста
-         * @return \Illuminate\Database\Eloquent\Relations\HasMany
-         */
-        public function blocks()
-        {
-            return $this->hasMany(Block::class);
-        }
-
-        /**
          * Записи журнала (истории) прохождения теста
-         * @return \Illuminate\Database\Eloquent\Relations\HasMany
+         * @return HasMany
          */
         public function histories()
         {
