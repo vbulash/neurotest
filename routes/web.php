@@ -35,6 +35,9 @@
         //  Вопросы
         Route::resource('/questions', 'QuestionsController');
         Route::get('/questions.data', 'QuestionsController@getData')->name('questions.index.data');
+        // Блоки описания ФМП
+        Route::resource('/blocks', 'BlocksController');
+        Route::get('/blocks.data', 'BlocksController@getData')->name('blocks.index.data');
     });
 
     // Безопасность

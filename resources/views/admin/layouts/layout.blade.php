@@ -11,7 +11,7 @@
     <!-- Page styles -->
     @stack('styles')
 </head>
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini" @yield('body-params')>
 <!-- Site wrapper -->
 <div class="wrapper">
     <!-- Navbar -->
@@ -223,6 +223,12 @@
                                 <a href="{{ route('sets.index') }}" class="nav-link">
                                     <i class="nav-icon fas fa-question-circle"></i>
                                     <p>Наборы вопросов</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('blocks.index') }}" class="nav-link">
+                                    <i class="nav-icon fas fa-file-alt"></i>
+                                    <p>Блоки описания ФМП</p>
                                 </a>
                             </li>
                             @can('tests.index')
