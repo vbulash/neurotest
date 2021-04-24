@@ -65,9 +65,4 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Client::class, 'user_client');
     }
-
-    public function routes()
-    {
-        return $this->hasMany(CallRoute::class);
-    }
 }

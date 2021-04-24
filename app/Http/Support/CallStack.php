@@ -3,26 +3,23 @@
 
 	namespace App\Http\Support;
 
-    use App\Models\CallRoute;
-    use Illuminate\Support\Facades\Auth;
-    use Illuminate\Support\Facades\Log;
-    use Illuminate\Support\Facades\Route;
-
     class CallStack
 	{
         public static function back(?string $key = null, ?string $message = null)
         {
-            $last = CallRoute::all()->where('user_id', Auth::id())->last();
-            $last->delete();
+            $stack = session('stack');
+            if(!$stack) return null;
 
-            $context = CallRoute::all()->where('user_id', Auth::id())->last();
-            if(!$context) return null;
+            array_pop($stack);
+            $context = end($stack);
 
             if($key) session()->flash($key, $message);
 
-            $route = $context->route;
-            $params = unserialize($context->params);
+            $route = $context['route'];
+            $params = $context['params'];
             $params['back'] = true;
+
+            session()->put('stack', $stack);
 
             return redirect()->route($route, $params);
         }

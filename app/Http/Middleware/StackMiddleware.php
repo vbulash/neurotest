@@ -31,15 +31,26 @@ class StackMiddleware
     {
         $route = Route::currentRouteName();
         if ($this->allowed(['.index', '.create', '.edit', '.destroy']) &&
-            !$this->allowed(['.index.data', '.store', '.update', '.show', '.back'])) if (!$request->has('back')) {
-            $context = CallRoute::create([
-                'route' => $route,
-                'params' => serialize(Route::current()->parameters()),
-                //'breadcrumb' => $breadcrumb ?: null,
-                'user_id' => Auth::id()
-            ]);
-            $context->save();
-        }
+            !$this->allowed(['.index.data', '.store', '.update', '.show', '.back']))
+            if (!$request->has('back')) {
+                $context = [
+                    'route' => $route,
+                    'params' => Route::current()->parameters()
+                ];
+                $stack = session('stack');
+                if($stack) {
+                    $last = end($stack);
+
+                    if (($last['route'] != $context['route']) ||
+                        ($last['params'] != $context['params'])) {
+                        array_push($stack, $context);
+                    }
+                } else {
+                    $stack = [];
+                    array_push($stack, $context);
+                }
+                session()->put('stack', $stack);
+            }
         return $next($request);
     }
 }
