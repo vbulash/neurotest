@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ env('APP_NAME') }}@stack('title')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
@@ -21,12 +22,13 @@
             <li class="nav-item">
                 <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
             </li>
-            <li class="nav-item d-none d-sm-inline-block">
-                <a href="../../index3.html" class="nav-link">Home</a>
-            </li>
-            <li class="nav-item d-none d-sm-inline-block">
-                <a href="#" class="nav-link">Contact</a>
-            </li>
+            {{--            <li class="nav-item d-none d-sm-inline-block">--}}
+            {{--                <a href="../../index3.html" class="nav-link">Home</a>--}}
+            {{--            </li>--}}
+            {{--            <li class="nav-item d-none d-sm-inline-block">--}}
+            {{--                <a href="#" class="nav-link">Contact</a>--}}
+            {{--            </li>--}}
+            @yield('back')
         </ul>
 
         <!-- SEARCH FORM -->
@@ -161,6 +163,26 @@
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu"
                     data-accordion="false">
+                    <!-- Spatie menu -->
+                @php
+                    use Spatie\Menu\Laravel\Menu;
+                    Menu::macro('main', function() {
+                        return Menu::new()
+                            ->route('admin.index', 'Главная')
+                            ->route('users.index', 'Пользователи')
+                            ->route('clients.index', 'Клиенты')
+                            ->setActiveFromRequest()
+                            ->submenu('Конструктор тестов', function (Menu $menu) {
+                            	$menu
+                                    ->link('/your-first-menu', 'Your First Menu')
+                                    ->link('/working-with-items', 'Working With Items')
+                                    ->link('/adding-sub-menus', 'Adding Sub Menus');
+                            });
+                    });
+                @endphp
+{{--                {!! \Spatie\Menu\Laravel\Menu::main() !!}--}}
+                <!-- .Spatie menu -->
+
                     <li class="nav-item">
                         <a href="{{ route('admin.index') }}" class="nav-link">
                             <i class="nav-icon fas fa-home"></i>
@@ -169,14 +191,12 @@
                     </li>
 
                     <!-- Сотрудники -->
-                    @can('users.index')
-                        <li class="nav-item">
-                            <a href="{{ route('users.index') }}" class="nav-link">
-                                <i class="nav-icon fas fa-id-card"></i>
-                                <p>Пользователи</p>
-                            </a>
-                        </li>
-                    @endcan
+                    <li class="nav-item">
+                        <a href="{{ route('users.index') }}" class="nav-link">
+                            <i class="nav-icon fas fa-id-card"></i>
+                            <p>Пользователи</p>
+                        </a>
+                    </li>
                     <!-- .Сотрудники -->
 
                     <!-- Клиенты -->
@@ -200,19 +220,13 @@
                                     <p>Контракты</p>
                                 </a>
                             </li>
-                            {{--                            <li class="nav-item">--}}
-                            {{--                                <a href="#" class="nav-link"> --}}{{-- route('licenses.index') --}}
-                            {{--                                    <i class="nav-icon fas fa-key"></i>--}}
-                            {{--                                    <p>Лицензии</p>--}}
-                            {{--                                </a>--}}
-                            {{--                            </li>--}}
                         </ul>
                     </li>
                     <!-- .Клиенты -->
 
                     <!-- Конструктор тестов -->
                     <li class="nav-item has-treeview">
-                        <a href="#" class="nav-link">
+                        <a href="javascript:void(0)" class="nav-link">
                             <i class="nav-icon fas fa-drafting-compass"></i>
                             <p>Конструктор тестов
                                 <i class="right fas fa-angle-left"></i>
@@ -225,20 +239,42 @@
                                     <p>Наборы вопросов</p>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a href="{{ route('blocks.index') }}" class="nav-link">
-                                    <i class="nav-icon fas fa-file-alt"></i>
-                                    <p>Блоки описания ФМП</p>
-                                </a>
-                            </li>
-                            @can('tests.index')
+
+                            <!-- Описания ФМП -->
+                            <a href="javascript:void(0)" class="nav-link">
+                                <i class="nav-icon fas fa-drafting-compass"></i>
+                                <p>Описания ФМП
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav-item has-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('tests.index') }}" class="nav-link">
-                                        <i class="nav-icon fas fa-drafting-compass"></i>
-                                        <p>Тесты</p>
+                                    <a href="{{ route('fmptypes.index') }}" class="nav-link">
+                                        <i class="nav-icon fas fa-file-alt"></i>
+                                        <p>Типы описаний</p>
                                     </a>
                                 </li>
-                            @endcan
+                                <li class="nav-item">
+                                    <a href="{{ route('neuroprofiles.index') }}" class="nav-link">
+                                        <i class="nav-icon fas fa-file-alt"></i>
+                                        <p>Нейропрофили</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('blocks.index') }}" class="nav-link">
+                                        <i class="nav-icon fas fa-file-alt"></i>
+                                        <p>Блоки описаний</p>
+                                    </a>
+                                </li>
+                            </ul>
+                            <!-- .Описания ФМП -->
+
+                            <li class="nav-item">
+                                <a href="{{ route('tests.index') }}" class="nav-link">
+                                    <i class="nav-icon fas fa-drafting-compass"></i>
+                                    <p>Тесты</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     <!-- .Конструктор тестов -->
@@ -327,9 +363,9 @@
     </div>
     <!-- /.content-wrapper -->
 
-    @include('admin.partials.footer')
+@include('admin.partials.footer')
 
-    <!-- Control Sidebar -->
+<!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">
         <!-- Control sidebar content goes here -->
     </aside>
@@ -339,12 +375,19 @@
 
 <script src="{{ asset('assets/admin/js/admin.js') }}"></script>
 <script>
-    $('.nav-sidebar a').each(function () {
+    String.prototype.trimRight = function (charlist) {
+        if (charlist === undefined)
+            charlist = "\s";
+        return this.replace(new RegExp("[" + charlist + "]+$"), "");
+    };
+
+    $(`.nav-sidebar a`).each(function () {
         let location = window.location.protocol + '//' + window.location.host + window.location.pathname;
         let link = this.href;
+        //let cleared = link.trimRight("#");
         if (link === location) {
             $(this).addClass('active');
-            $(this).closest('.has-treeview').addClass('menu-open');
+            $(this).parents('.has-treeview').addClass('menu-open');
         }
     });
 </script>

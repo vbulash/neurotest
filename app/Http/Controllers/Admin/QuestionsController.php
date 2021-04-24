@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreQuestionRequest;
+use App\Models\FileLink;
 use App\Models\Question;
 use App\Models\QuestionSet;
 use Illuminate\Contracts\Foundation\Application;
@@ -14,6 +15,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
 use Exception;
 
@@ -95,8 +97,13 @@ class QuestionsController extends Controller
         $letters = ['A', 'B', 'C', 'D'];
         for($imageNo = 0; $imageNo < $set->quantity; $imageNo++) {
             $field = 'image' . $letters[$imageNo];
-            $data[$field] = Question::uploadImage($request, $field);
+            $mediaPath = Question::uploadImage($request, $field);
+            FileLink::link($mediaPath);
+            $data[$field] = $mediaPath;
         }
+
+        $data['learning'] = $request->has('learning');
+
         $question = Question::create($data);
         $question->save();
 
@@ -152,9 +159,15 @@ class QuestionsController extends Controller
         $letters = ['A', 'B', 'C', 'D'];
         for($imageNo = 0; $imageNo < $set->quantity; $imageNo++) {
             $field = 'image' . $letters[$imageNo];
-            if($request->has($field))
-                $data[$field] = Question::uploadImage($request, $field, $qa[$field]);
+            if($request->has($field)) {
+                $mediaPath = Question::uploadImage($request, $field, $qa[$field]);
+                FileLink::link($mediaPath);
+                $data[$field] = $mediaPath;
+            }
         }
+
+        $data['learning'] = $request->has('learning');
+
         $question->update($data);
 
         $set_show = session('set_show');
@@ -175,11 +188,27 @@ class QuestionsController extends Controller
             $id = $request->delete_id;
         $question = Question::findOrFail($id);
         $sort_no = $question->sort_no;
+
+        foreach (['imageA', 'imageB', 'imageC', 'imageD'] as $imageField) {
+            if(!$imageField) continue;
+
+            $mediaPath = $question->getAttributeValue($imageField);
+            if(FileLink::unlink($mediaPath))
+                Storage::delete($mediaPath);
+        }
         $question->delete();
 
         $set_id = session('set_id');
         $set_show = session('set_show');
         $route = 'sets.' . ($set_show ? 'show' : 'edit');
-        return redirect()->route($route, ['set' => $set_id])->with('success', "Вопрос № {$data['sort_no']} удалён");
+        return redirect()->route($route, ['set' => $set_id])->with('success', "Вопрос № {$sort_no} удалён");
     }
+
+//    public function copy(int $qid, int $setId, bool $massCopy = true)
+//    {
+//        $source = Question::findOrFail($qid);
+//        $target = $source->copyToSet($setId);
+//        // TODO отработать индивидуальное копирование вопросов (из GUI)
+//        if($massCopy) return $target->id;
+//    }
 }

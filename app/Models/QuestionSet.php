@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\RedirectResponse;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class QuestionSet extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $table = 'questionsets';
     protected $fillable = ['name', 'quantity', 'type', 'client_id', 'options'];
@@ -20,16 +22,18 @@ class QuestionSet extends Model
     public const TYPE_DRAFT = 1;    // Черновик
     public const TYPE_ACTIVE = 4;   // Активный
     public const TYPE_TEST = 8;     // Только для владельцев платформы, остальным невидим и недоступен
-    public const TYPE_EXACT = 16;   // Тест только для определенного клиента
     public const types = [
         self::TYPE_DRAFT => 'Черновик',
         self::TYPE_ACTIVE => 'Активный',
         self::TYPE_TEST => 'Тестовый, используется только для владельцев платформы',
-        self::TYPE_EXACT => 'Исключительный, для тестов определенного клиента'
     ];
-    // Дополнительные настройки
-    public const OPTIONS_EYE_TRACKING = 1;
-    public const OPTIONS_MOUSE_TRACKING = 2;
+
+    protected static $logAttributes = ['*'];
+
+    public function getDescriptionForEvent(string $eventName): string
+    {
+        return "Событие изменения набора вопросов теста: {$eventName}";
+    }
 
     public function tests()
     {

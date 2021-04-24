@@ -79,27 +79,6 @@
                                         @endforeach
                                     </select>
                                 </div>
-
-                                <div class="form-group mt-4"><h5>Настройки дополнительных методов тестирования</h5>
-                                </div>
-                                <div class="checkbox col-4 mb-2">
-                                    <label>
-                                        <input type="checkbox" id="eye-tracking" name="eye-tracking"
-                                               @if($set->options & \App\Models\QuestionSet::OPTIONS_EYE_TRACKING) checked
-                                               @endif
-                                               @if($show) disabled @endif
-                                        > Eye-tracking
-                                    </label>
-                                </div>
-                                <div class="checkbox col-4">
-                                    <label>
-                                        <input type="checkbox" id="mouse-tracking" name="mouse-tracking"
-                                               @if($set->options & \App\Models\QuestionSet::OPTIONS_MOUSE_TRACKING) checked
-                                               @endif
-                                               @if($show) disabled @endif
-                                        > Mouse-tracking
-                                    </label>
-                                </div>
                             </div>
                             <!-- /.card-body -->
 
@@ -127,19 +106,7 @@
 @push('scripts.injection')
     <script>
         $(function () {
-            if ($('#type').val() === "{{ \App\Models\QuestionSet::TYPE_EXACT }}") {
-                $('#contract-div').show();
-            } else {
-                $('#contract-div').hide();
-            }
-
-            $("#type").on("change", (event) => {
-                if ($('#type').val() === "{{ \App\Models\QuestionSet::TYPE_EXACT }}") {
-                    $('#contract-div').show();
-                } else {
-                    $('#contract-div').hide();
-                }
-            });
+            $('#contract-div').hide();
         });
     </script>
 @endpush

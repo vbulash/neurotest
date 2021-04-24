@@ -167,6 +167,7 @@
              */
             Yajra\Datatables\DatatablesServiceProvider::class,
             Spatie\Permission\PermissionServiceProvider::class,
+            Spatie\Menu\Laravel\MenuServiceProvider::class,
 
             /*
              * Application Service Providers...
@@ -229,6 +230,7 @@
             'Validator' => Illuminate\Support\Facades\Validator::class,
             'View' => Illuminate\Support\Facades\View::class,
             'Datatables' => Yajra\Datatables\Facades\Datatables::class,
+            'Menu' => Spatie\Menu\Laravel\Facades\Menu::class,
         ],
 
     ];

@@ -18,6 +18,7 @@ mix.styles([
     'resources/assets/admin/plugins/select2/css/select2.css',
     'resources/assets/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.css',
     'resources/assets/admin/plugins/bootstrap-datepicker/css/bootstrap-datepicker.css',
+    'resources/assets/admin/plugins/lightbox/css/ekko-lightbox.css',
     'resources/assets/admin/css/adminlte.min.css',
     'resources/assets/admin/css/main.css',
     'resources/css/app.css'
@@ -28,6 +29,7 @@ mix.scripts([
     'resources/assets/admin/plugins/bootstrap/js/bootstrap.bundle.min.js',
     'resources/assets/admin/plugins/select2/js/select2.full.js',
     'resources/assets/admin/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
+    'resources/assets/admin/plugins/lightbox/js/ekko-lightbox.min.js',
     'resources/assets/admin/js/adminlte.min.js',
     'resources/assets/admin/js/demo.js'
 ], 'public/assets/admin/js/admin.js');
@@ -43,6 +45,13 @@ mix.copy('resources/assets/admin/plugins/bootstrap-datepicker/css/bootstrap-date
 // DataTables
 mix.copy('resources/assets/admin/plugins/datatables/datatables.css', 'public/assets/admin/plugins/datatables/datatables.css');
 mix.copy('resources/assets/admin/plugins/datatables/datatables.js', 'public/assets/admin/plugins/datatables/datatables.js');
+
+// CKEditor5
+mix.copy('resources/assets/admin/plugins/ckeditor5/build/ckeditor.js', 'public/assets/admin/plugins/ckeditor5/ckeditor.js')
+mix.copy('resources/assets/admin/plugins/ckeditor5/sample/styles.css', 'public/assets/admin/plugins/ckeditor5/ckeditor.css')
+
+// Ekko Lightbox
+mix.copy('resources/assets/admin/plugins/lightbox/js/ekko-lightbox.min.js.map', 'public/assets/admin/plugins/lightbox/js/ekko-lightbox.min.js.map');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Front

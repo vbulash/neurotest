@@ -16,7 +16,7 @@
     Route::redirect('/', '/admin')->name('home');
 
     // Маршруты объектов платформы
-    Route::group(['prefix' => 'admin', 'namespace' => 'App\Http\Controllers\Admin', 'middleware' => 'admin'], function () {
+    Route::group(['prefix' => 'admin', 'namespace' => 'App\Http\Controllers\Admin', 'middleware' => ['admin', 'stack']], function () {
         Route::get('/', 'MainController@index')->name('admin.index');
         // Клиенты
         Route::resource('/clients', 'ClientController');
@@ -32,12 +32,24 @@
         // Наборы вопросов
         Route::resource('/sets', 'QuestionSetController');
         Route::get('/sets.data', 'QuestionSetController@getData')->name('sets.index.data');
+        Route::get('/sets.copy/{set}', 'QuestionSetController@copy')->name('sets.copy');
+        Route::post('/sets.filterbytest', 'QuestionSetController@filterByTest')->name('sets.filterbytest');
         //  Вопросы
         Route::resource('/questions', 'QuestionsController');
         Route::get('/questions.data', 'QuestionsController@getData')->name('questions.index.data');
         // Блоки описания ФМП
-        Route::resource('/blocks', 'BlocksController');
-        Route::get('/blocks.data', 'BlocksController@getData')->name('blocks.index.data');
+        Route::resource('/blocks', 'BlockController');
+        Route::get('/blocks.create/{type?}', 'BlockController@create')->name('blocks.create.type');
+        Route::get('/blocks.data/{profile_id?}', 'BlockController@getData')->name('blocks.index.data');
+        Route::post('/blocks.back/{key?}/{message?}', 'BlockController@back')->name('blocks.back');
+        // Типы описаний ФМП
+        Route::resource('/fmptypes', "FMPTypeController");
+        Route::get('/fmptypes.data', 'FMPTypeController@getData')->name('fmptypes.index.data');
+        Route::post('/fmptypes.back/{key?}/{message?}', 'FMPTypeController@back')->name('fmptypes.back');
+        // Нейропрофили
+        Route::resource('/neuroprofiles', "NeuroprofileController");
+        Route::get('/neuroprofiles.data/{fmptype_id}', 'NeuroprofileController@getData')->name('neuroprofiles.index.data');
+        Route::post('/neuroprofiles.back/{key?}/{message?}', 'NeuroprofileController@back')->name('neuroprofiles.back');
     });
 
     // Безопасность

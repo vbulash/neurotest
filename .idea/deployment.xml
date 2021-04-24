@@ -2,6 +2,13 @@
 <project version="4">
   <component name="PublishConfigData" autoUpload="Always" serverName="Reg.ru Sandbox" overwriteAll="false" preserveTimestamps="false" autoUploadExternalChanges="true">
     <serverData>
+      <paths name="Local Neurotest">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="Reg.ru Sandbox">
         <serverdata>
           <mappings>

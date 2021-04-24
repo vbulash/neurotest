@@ -7,6 +7,7 @@ use App\Http\Requests\StoreSetRequest;
 use App\Models\Client;
 use App\Models\Question;
 use App\Models\QuestionSet;
+use App\Models\Test;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -40,6 +41,7 @@ class QuestionSetController extends Controller
             ->addColumn('action', function ($set) {
                 $editRoute = route('sets.edit', ['set' => $set->id]);
                 $showRoute = route('sets.show', ['set' => $set->id]);
+                $copyRoute = route('sets.copy', ['set' => $set->id]);
                 $actions =
                     "<a href=\"{$editRoute}\" class=\"btn btn-info btn-sm float-left mr-1\" " .
                     "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Редактирование\">\n" .
@@ -54,6 +56,11 @@ class QuestionSetController extends Controller
                     "<a href=\"javascript:void(0)\" class=\"btn btn-info btn-sm float-left mr-1\" " .
                     "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Удаление\" onclick=\"clickDelete({$set->id})\">\n" .
                     "<i class=\"fas fa-trash-alt\"></i>\n" .
+                    "</a>\n";
+                $actions .=
+                    "<a href=\"{$copyRoute}\" class=\"btn btn-info btn-sm float-left ml-3\" " .
+                    "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Дублирование\">\n" .
+                    "<i class=\"fas fa-copy\"></i>\n" .
                     "</a>\n";
 
                 return $actions;
@@ -92,10 +99,6 @@ class QuestionSetController extends Controller
     public function store(StoreSetRequest $request)
     {
         $data = $request->all();
-        $data['client_id'] = ($data['type'] == QuestionSet::TYPE_EXACT ? $data['client_id'] : null);
-        $data['options'] =
-            ($request->has('eye-tracking') ? QuestionSet::OPTIONS_EYE_TRACKING : 0) |
-            ($request->has('mouse-tracking') ? QuestionSet::OPTIONS_MOUSE_TRACKING : 0);
         $set = QuestionSet::create($data);
         $set->save();
 
@@ -143,11 +146,6 @@ class QuestionSetController extends Controller
         $question = QuestionSet::findOrFail($id);
 
         $data = $request->all();
-        $data['client_id'] = ($data['type'] == QuestionSet::TYPE_EXACT ? $data['client_id'] : null);
-        $data['options'] =
-            ($request->has('eye-tracking') ? QuestionSet::OPTIONS_EYE_TRACKING : 0) |
-            ($request->has('mouse-tracking') ? QuestionSet::OPTIONS_MOUSE_TRACKING : 0);
-
         $set = QuestionSet::findOrFail($id);
         $set->update($data);
 
@@ -168,8 +166,54 @@ class QuestionSetController extends Controller
             $id = $request->delete_id;
         $set = QuestionSet::findOrFail($id);
         $name = $set->name;
+
+        $controller = new QuestionsController();
+        foreach ($set->questions as $question)
+            $controller->destroy($request, $question->id);
         $set->delete();
 
         return redirect()->route('sets.index')->with('success', "Набор вопросов &laquo;{$name}&raquo; удалён");
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function filterByTest(Request $request)
+    {
+        $options = $request->options;
+        $quantity = ($options & Test::IMAGES2) ? QuestionSet::IMAGES2 : 0;
+        $quantity = ($options & Test::IMAGES4) ? QuestionSet::IMAGES4 : $quantity;
+
+//        $aux = (($options & Test::EYE_TRACKING) ? QuestionSet::OPTIONS_EYE_TRACKING : 0);
+//        $aux |= (($options & Test::MOUSE_TRACKING) ? QuestionSet::OPTIONS_MOUSE_TRACKING : 0);
+
+        $sets = QuestionSet::all()
+            ->where('quantity', $quantity)
+            //->where('options', '&', $aux)
+            ->pluck('name', 'id')
+            ->toArray();
+        return json_encode($sets);
+    }
+
+    /**
+     * Копирование набора вопросов
+     * @param int $id ID набора-источника
+     * @return RedirectResponse
+     */
+    public function copy(int $id)
+    {
+        $source = QuestionSet::findOrFail($id);
+
+        $target = $source->replicate();
+        $target->name = $source->name . ' (Копия)';
+        $target->save();
+
+        // Копирование вопросов набора
+        foreach ($source->questions as $question) {
+            $question->copyToSet($target->id);
+        }
+
+        return redirect()->route('sets.edit', ['set' => $target->id])
+            ->with('success', "Набор вопросов &laquo;{$source->name}&raquo; скопирован");
     }
 }

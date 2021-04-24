@@ -6,13 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Question extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $table = 'questions';
-    protected $fillable = ['sort_no', 'imageA', 'imageB', 'imageC', 'imageD', 'questionset_id'];
+    protected $fillable = ['sort_no', 'imageA', 'imageB', 'imageC', 'imageD', 'questionset_id', 'learning', 'timeout'];
+    protected static $logAttributes = ['*'];
+
+    public function getDescriptionForEvent(string $eventName): string
+    {
+        return "Событие изменения вопроса теста: {$eventName}";
+    }
 
     public function set()
     {
@@ -22,10 +29,31 @@ class Question extends Model
     public static function uploadImage(Request $request, string $imageField, string $image = null)
     {
         if($request->hasFile($imageField)) {
-            if($image) Storage::delete($image);
+            if($image)
+                if(FileLink::unlink($image))
+                    Storage::delete($image);
             $folder = date('Y-m-d');
             return $request->file($imageField)->store("images/{$folder}");
         }
         return null;
+    }
+
+    /**
+     * @param int $setId
+     * @return Question
+     */
+    public function copyToSet(int $setId): Question
+    {
+        $target = $this->replicate();
+        $target->questionset_id = $setId;
+        foreach (['imageA', 'imageB', 'imageC', 'imageD'] as $imageField) {
+            if(!$imageField) continue;
+
+            $mediaPath = $target->getAttributeValue($imageField);
+            FileLink::link($mediaPath);
+        }
+        $target->save();
+
+        return $target;
     }
 }

@@ -124,8 +124,6 @@
                                         return 'Черновик';
                                     case {{ \App\Models\Test::TYPE_ACTIVE }}:
                                         return 'Активный';
-                                    case {{ \App\Models\Test::TYPE_EXACT }}:
-                                        return 'Исключительный';
                                     case {{ \App\Models\Test::TYPE_TEMPLATE }}:
                                         return 'Шаблон';
                                     case {{ \App\Models\Test::TYPE_TEST }}:

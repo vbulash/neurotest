@@ -5,12 +5,19 @@
     use Illuminate\Database\Eloquent\Factories\HasFactory;
     use Illuminate\Database\Eloquent\Model;
     use Illuminate\Support\Facades\Auth;
+    use Spatie\Activitylog\Traits\LogsActivity;
 
     class Client extends Model
     {
-        use HasFactory;
+        use HasFactory, LogsActivity;
 
         protected $fillable = ['name', 'inn', 'ogrn', 'address'];
+        protected static $logAttributes = ['*'];
+
+        public function getDescriptionForEvent(string $eventName): string
+        {
+            return "Событие изменения клиента: {$eventName}";
+        }
 
         public static function all($columns = ['*'])
         {

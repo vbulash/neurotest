@@ -67,18 +67,6 @@
                                         @endforeach
                                     </select>
                                 </div>
-
-                                <div class="form-group mt-4"><h5>Настройки дополнительных методов тестирования</h5></div>
-                                <div class="checkbox col-4 mb-2">
-                                    <label>
-                                        <input type="checkbox" id="eye-tracking" name="eye-tracking"> Eye-tracking
-                                    </label>
-                                </div>
-                                <div class="checkbox col-4">
-                                    <label>
-                                        <input type="checkbox" id="mouse-tracking" name="mouse-tracking"> Mouse-tracking
-                                    </label>
-                                </div>
                             </div>
                             <!-- /.card-body -->
 
@@ -103,14 +91,6 @@
     <script>
         $(function () {
             $('#contract-div').hide();
-
-            $("#type").on("change", (event) => {
-                if ($('#type').val() == "{{ \App\Models\QuestionSet::TYPE_EXACT }}") {
-                    $('#contract-div').show();
-                } else {
-                    $('#contract-div').hide();
-                }
-            });
         });
     </script>
 @endpush

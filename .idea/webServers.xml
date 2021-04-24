@@ -9,6 +9,9 @@
           </advancedOptions>
         </fileTransfer>
       </webServer>
+      <webServer id="26e3ee4a-a837-4816-9caa-b9b7721f0098" name="Local Neurotest" url="http://localhost/Neurotest">
+        <fileTransfer mountedRoot="/Applications/mampstack-7.4.8-0/apache2/htdocs/Neurotest" accessType="MOUNT" port="0" />
+      </webServer>
     </option>
   </component>
 </project>

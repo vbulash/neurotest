@@ -24,6 +24,8 @@
                 <table class="table table-bordered table-hover text-nowrap" id="questions_table">
                     <thead>
                     <th>Номер по порядку</th>
+                    <th>Режим прохождения</th>
+                    <th>Таймаут, секунд</th>
                     <th>Действия</th>
                     </tr>
                     </thead>
@@ -66,6 +68,15 @@
                     ajax: '{!! route('questions.index.data') !!}',
                     columns: [
                         {data: 'sort_no', name: 'sort_no'},
+                        {data: 'learning', name: 'learning', render: (data) => {
+                            switch(data) {
+                                case 0:
+                                    return 'Реальный';
+                                case 1:
+                                    return 'Учебный';
+                            }
+                            }},
+                        {data: 'timeout', name: 'timeout'},
                         {data: 'action', name: 'action', sortable: false}
                     ]
                 });

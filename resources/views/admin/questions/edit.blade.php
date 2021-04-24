@@ -43,6 +43,23 @@
                                            value="{{ $question->sort_no }}" disabled>
                                 </div>
                                 <div class="form-group">
+                                    <div class="checkbox col-4 mb-2">
+                                        <label>
+                                            <input type="checkbox" id="learning" name="learning"
+                                                   @if($question->learning) checked @endif
+                                            > Учебный режим прохождения вопроса
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="timeout">Таймаут вопроса в секундах (0 - вопрос не ограничен по
+                                        времени)</label>
+                                    <input type="number" name="timeout" id="timeout" min="0"
+                                           class="form-control col-lg-6 col-xs-12"
+                                           value="{{ $question->timeout }}"
+                                    >
+                                </div>
+                                <div class="form-group">
                                     <div class="container-fluid">
                                         <label class="mb-4">Изображения вопроса</label>
                                         @php
@@ -57,7 +74,7 @@
                                                 $rows = 2;
                                                 $columns = 2;
                                             }
-                                            $grid = 12 / $columns;
+                                            $grid = 3;
                                             $imageNo = 0;
 
                                             $letters = ['A', 'B', 'C', 'D'];
@@ -71,11 +88,13 @@
                                                         <div class="form-group">
                                                             <label
                                                                 for="image{{ $letters[$imageNo] }}">Изображение {{ $labels[$imageNo] }}</label>
+                                                            @if(!$show)
                                                             <input type="file" id="image{{ $letters[$imageNo] }}"
                                                                    name="image{{ $letters[$imageNo] }}"
                                                                    class="image-file mb-4 form-control"
                                                                    @if($show) disabled @endif
                                                                    onchange="readImage(this)">
+                                                            @endif
                                                             <div>
                                                                 <img id="preview_image{{ $letters[$imageNo] }}"
                                                                      src="/uploads/{{ $qa['image' . $letters[$imageNo]] }}"

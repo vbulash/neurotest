@@ -6,10 +6,11 @@
     use Illuminate\Database\Eloquent\Model;
     use Illuminate\Support\Facades\Auth;
     use phpDocumentor\Reflection\Types\Parent_;
+    use Spatie\Activitylog\Traits\LogsActivity;
 
     class Contract extends Model
     {
-        use HasFactory;
+        use HasFactory, LogsActivity;
 
         // Константы статуса контракта
         public const INACTIVE = 0b00000001;             // Контракт неактивен (до даты начала)
@@ -20,6 +21,12 @@
         protected $fillable = [
             'number', 'start', 'end', 'invoice', 'mkey', 'license_count', 'url', 'status', 'client_id'
         ];
+        protected static $logAttributes = ['*'];
+
+        public function getDescriptionForEvent(string $eventName): string
+        {
+            return "Событие изменения контракта: {$eventName}";
+        }
 
         public static function all($columns = ['*'])
         {

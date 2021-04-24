@@ -6,7 +6,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Блоки описания ФМП</h1>
+                    <h1>Блоки описаний</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -29,23 +29,52 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            @can('users.create')
-                                <a href="{{ route('blocks.create') }}" class="btn btn-primary mb-3">Добавить блок</a>
-                            @endcan
-                            @if (count($blocks))
+                            <form
+                                style="display:none"
+                                action="{{ route('blocks.destroy', ['block' => 0]) }}"
+                                method="post" class="float-left">
+                                @csrf
+                                @method('DELETE')
+                                <input type="hidden" name="delete_id" id="delete_id" value="">
+                                <button type="submit" id="delete_btn" name="delete_btn"
+                                        onclick="return confirm('Подтвердите удаление');">&nbsp;
+                                </button>
+                            </form>
+
+                            <div class="dropdown">
+                                <button class="btn btn-primary dropdown-toggle mb-3" type="button" id="blocks-create"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    Добавить блок
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="blocks-create">
+                                    <li><a class="dropdown-item"
+                                           href="{{ route('blocks.create.type', ['type' => \App\Models\Block::TYPE_TEXT]) }}">Текстовый
+                                            блок</a></li>
+                                    <li><a class="dropdown-item"
+                                           href="{{ route('blocks.create.type', ['type' => \App\Models\Block::TYPE_IMAGE]) }}">Блок
+                                            с изображением</a></li>
+                                    <li><a class="dropdown-item"
+                                           href="{{ route('blocks.create.type', ['type' => \App\Models\Block::TYPE_VIDEO]) }}">Блок
+                                            с видео</a></li>
+                                </ul>
+                            </div>
+                            @if ($blocks)
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-hover text-nowrap" id="blocks_table">
                                         <thead>
                                         <tr>
                                             <th style="width: 30px">#</th>
                                             <th>Краткое описание</th>
+                                            <th>Тип блока</th>
+                                            <th>Код нейропрофиля</th>
+                                            <th>Наименование нейропрофиля</th>
                                             <th>Действия</th>
                                         </tr>
                                         </thead>
                                     </table>
                                 </div>
                             @else
-                                <p>Блоков пока нет...</p>
+                                <p>Блоков описаний пока нет...</p>
                             @endif
                         </div>
                     </div>
@@ -75,8 +104,13 @@
 @if(count($blocks))
     @push('scripts.injection')
         <script>
+            function clickDelete(id) {
+                document.getElementById('delete_id').value = id;
+                document.getElementById('delete_btn').click();
+            }
+
             $(function () {
-                window.table = $('#roles_table').DataTable({
+                window.table = $('#blocks_table').DataTable({
                     language: {
                         "url": "{{ asset('assets/admin/plugins/datatables/lang/ru/Russian.json') }}"
                     },
@@ -86,6 +120,20 @@
                     columns: [
                         {data: 'id', name: 'id'},
                         {data: 'description', name: 'description'},
+                        {
+                            data: 'type', name: 'type', render: (data) => {
+                                switch (data) {
+                                    case {{ \App\Models\Block::TYPE_TEXT }}:
+                                        return 'Текстовый блок';
+                                    case {{ \App\Models\Block::TYPE_IMAGE }}:
+                                        return 'Блок с изображением';
+                                    case {{ \App\Models\Block::TYPE_VIDEO }}:
+                                        return 'Блок с видео';
+                                }
+                            }
+                        },
+                        {data: 'profile_code', name: 'profile_code'},
+                        {data: 'profile_name', name: 'profile_name'},
                         {data: 'action', name: 'action', sortable: false}
                     ]
                 });

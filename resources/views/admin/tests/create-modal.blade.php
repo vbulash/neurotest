@@ -1,7 +1,7 @@
 <!-- Modal -->
 <div class="modal fade" id="tests-create" tabindex="-1" aria-labelledby="tests-create-label" aria-hidden="true"
      data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <form role="form" method="post" action="{{ route('tests.store') }}"
                   enctype="multipart/form-data"
@@ -16,9 +16,8 @@
                         ['name' => 'Основная информация', 'tab' => 'vp-essentials', 'view' => 'admin.tests.wizard.step1', 'role' => 'start'],
                         ['name' => 'Конструктор анкеты', 'tab' => 'vp-respondent', 'view' => 'admin.tests.wizard.step2'],
                         ['name' => 'Описание ФМП', 'tab' => 'vp-fmp-description', 'view' => ''],
-                        ['name' => 'Механика нейротеста', 'tab' => 'vp-mechanics', 'view' => 'admin.tests.wizard.step4'],
-                        ['name' => 'Набор вопросов', 'tab' => 'vp-set', 'view' => ''],
-                        ['name' => 'Финал теста', 'tab' => 'vp-final', 'view' => 'admin.tests.wizard.step6', 'role' => 'finish']
+                        ['name' => 'Механика и набор вопросов', 'tab' => 'vp-mechanics', 'view' => 'admin.tests.wizard.step4'],
+                        ['name' => 'Финал теста', 'tab' => 'vp-final', 'view' => 'admin.tests.wizard.step5', 'role' => 'finish']
                     ];
                 @endphp
                 <div class="modal-body">
@@ -48,7 +47,7 @@
                                 @php($stepNo++)
                             @endforeach
                         </div>
-                        <div class="tab-content" id="v-pills-tabContent">
+                        <div class="tab-content container-lg" id="v-pills-tabContent">
                             @foreach($steps as $step)
                                 <div class="tab-pane fade @if($loop->first) show active @endif" id="{{ $step['tab'] }}"
                                      role="tabpanel"
@@ -73,7 +72,8 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
                     <div>
                         <button type="submit" id="back_btn" class="btn btn-primary" data-role="back"><i
-                                class="fas fa-chevron-left"> Назад</i></button>
+                                class="fas fa-chevron-left"></i> Назад
+                        </button>
                         <button type="submit" id="forward_btn" class="btn btn-primary" data-role="forward">Далее <i
                                 class="fas fa-chevron-right"></i></button>
                         <button type="submit" id="submit_btn" class="btn btn-primary" data-role="submit">Сохранить
@@ -173,6 +173,29 @@
                             case 'vp-respondent-tab':
                                 let identArea = document.getElementById('ident-area');
                                 identArea.setAttribute("style", "height: " + wizardContentHeight + "px;");
+
+                                let auth_mode = document.getElementById('auth').value;
+                                switch (parseInt(auth_mode)) {
+                                    case {{ \App\Models\Test::AUTH_FULL }}:
+                                        $('#auth-guest').hide();
+                                        $('#auth-pkey').hide();
+                                        $('#auth-full').show();
+                                        break;
+                                    case {{ \App\Models\Test::AUTH_PKEY }}:
+                                        $('#auth-guest').hide();
+                                        $('#auth-pkey').show();
+                                        $('#auth-full').hide();
+                                        break;
+                                    case {{ \App\Models\Test::AUTH_GUEST }}:
+                                        $('#auth-guest').show();
+                                        $('#auth-pkey').hide();
+                                        $('#auth-full').hide();
+                                        break;
+                                }
+                                //case($('auth'))
+                                break;
+                            case 'vp-mechanics-tab':
+                                $('#mechanics1').change();
                                 break;
                             default:
                                 break;
@@ -184,14 +207,7 @@
             let tab = new bootstrap.Tab(firstTab)
             tab.show()
 
-            $("#kind").on("change", (event) => {
-                if ($('#kind').val() !== "{{ \App\Models\Test::TYPE_EXACT }}") {
-                    $('#contract-div').hide();
-                } else {
-                    $('#contract-div').show();
-                }
-            });
-            $('#kind').change();
+            $('#contract-div').hide();
 
             let wizardContentHeight = 0;
             let testsWizard = document.getElementById('tests-create')
@@ -202,6 +218,44 @@
                         wizardContentHeight = element.clientHeight - 100;
                     });
             })
+
+            $("input[name='mechanics']").on("change", () => {
+                let options =
+                    (document.getElementById('mechanics1').checked ? {{ \App\Models\Test::IMAGES2 }} : 0) |
+                    (document.getElementById('mechanics2').checked ? {{ \App\Models\Test::IMAGES4 }} : 0);// |
+                {{--(document.getElementById('aux_mechanics1').checked ? {{ \App\Models\Test::EYE_TRACKING }} : 0) |--}}
+                {{--(document.getElementById('aux_mechanics2').checked ? {{ \App\Models\Test::MOUSE_TRACKING }} : 0) |--}}
+                {{--(document.getElementById('aux_mechanics3').checked ? {{ \App\Models\Test::EQUIPMENT_MONITOR }} : 0);--}}
+                $.post({
+                    url: "{{ route('sets.filterbytest') }}",
+                    data: {
+                        options: options.toString(),
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    success: (data) => {
+                        let sets = JSON.parse(data);
+                        if (sets.length === 0) {
+                            $('#no-sets').show();
+                            $('#sets').hide();
+                        } else {
+                            $('#no-sets').hide();
+                            let first = true;
+                            let html = '';
+                            $.each(sets, function (key, value) {
+                                html = html + "<option " + (first ? "selected " : "") + "value=\"" + key + "\">" + value + "</option>";
+                                if (first) first = false;
+                            });
+                            $('#sets').html(html);
+                            $('#sets').show();
+                        }
+                    }
+                });
+            });
+
+            // document.querySelectorAll("input[name='mechanics']").forEach((input) => {
+            //     input.addEventListener('change', () => {
+            //     });
+            // });
         })();
     </script>
 @endpush

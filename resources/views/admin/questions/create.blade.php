@@ -24,9 +24,9 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">&nbsp;</h3>
-                        </div>
+{{--                        <div class="card-header">--}}
+{{--                            <h3 class="card-title">&nbsp;</h3>--}}
+{{--                        </div>--}}
                         <!-- /.card-header -->
 
                         <form role="form" method="post" action="{{ route('questions.store') }}"
@@ -35,6 +35,21 @@
                             <input type="hidden" id="questionset_id" name="questionset_id" value="{{ $set->id }}">
                             <input type="hidden" id="sort_no" name="sort_no" value="0">
                             <div class="card-body">
+                                <div class="form-group">
+                                    <div class="checkbox col-4 mb-2">
+                                        <label>
+                                            <input type="checkbox" id="learning" name="learning"> Учебный режим прохождения вопроса
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="timeout">Таймаут вопроса в секундах (0 - вопрос не ограничен по
+                                        времени)</label>
+                                    <input type="number" name="timeout" id="timeout" min="0"
+                                           class="form-control col-lg-6 col-xs-12"
+                                           value="0"
+                                    >
+                                </div>
                                 <div class="form-group">
                                     <div class="container-fluid">
                                         <label class="mb-4">Изображения вопроса</label>
@@ -50,7 +65,7 @@
                                                 $rows = 2;
                                                 $columns = 2;
                                             }
-                                            $grid = 12 / $columns;
+                                            $grid = 3;
                                             $imageNo = 0;
 
                                             $letters = ['A', 'B', 'C', 'D'];
@@ -69,9 +84,11 @@
                                                                    class="image-file mb-4 form-control"
                                                                    onchange="readImage(this)">
                                                             <div>
+                                                                <a href="javascript:void(0)" class="preview_anchor" data-toggle="lightbox" data-title="Изображение { $labels[$imageNo] }}">
                                                                 <img id="preview_image{{ $letters[$imageNo] }}"
                                                                      src="{{ $placeholder }}" alt=""
                                                                      class="image-preview">
+                                                                </a>
                                                                 <a href="javascript:void(0)"
                                                                    id="clear_image{{ $letters[$imageNo] }}"
                                                                    data-preview="preview_image{{ $letters[$imageNo] }}"

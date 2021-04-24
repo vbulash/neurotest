@@ -51,13 +51,6 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group">
-                                    <label for="timeout">Таймаут теста в минутах (0 - тест не ограничен по
-                                        времени)</label>
-                                    <input type="number" name="timeout" id="timeout" min="0"
-                                           class="form-control @error('timout') is-invalid @enderror col-lg-6 col-xs-12"
-                                           value="0">
-                                </div>
                                 <div class="form-group" id="contract-div">
                                     <label>Выберите контракт для теста</label>
                                     <select name="contract" id="contract" class="select2 col-lg-6 col-xs-12"

@@ -118,12 +118,10 @@
                 foreach ($data['aux_mechanics'] as $result) {
                     $options |= intval($result);
                 }
-            dd($options);
 
             $test = Test::create([
                 'name' => $data['title'],
                 'type' => $data['kind'],
-                'timeout' => $data['timeout'],
                 'options' => $options,
                 'contract_id' => $data['contract'],
                 'questionset_id' => 5,  // TODO Только для отладки
@@ -155,7 +153,6 @@
          */
         public function edit($id, bool $show = false)
         {
-            dd($id);
             $test = Test::findOrFail($id);
             $contracts = Contract::all();
 
@@ -178,7 +175,6 @@
             $test->update([
                 'name' => $data['title'],
                 'type' => $data['kind'],
-                'timeout' => $data['timeout'],
                 'options' => $data['auth'] | $data['result'],
             ]);
             $message[] = "Изменения теста &laquo;{$data['title']}&raquo; сохранены";

@@ -2,6 +2,7 @@
 .user-name {
     color: var(--white);
 }
+
 .role-name {
     color: var(--gray);
     white-space: normal;
@@ -66,7 +67,8 @@ sup.required-mark {
 }
 
 .image-preview {
-    max-width: 100%;
+    width: 200px;
+    height: 200px;
 }
 
 .tab-content {
@@ -75,7 +77,7 @@ sup.required-mark {
 
 .nav-link {
     text-align: left;
- }
+}
 
 #ident-area {
     display: flex;
@@ -85,4 +87,18 @@ sup.required-mark {
 
 .ident-group {
     width: 400px;
+}
+
+.no-sets {
+    width: 75%;
+}
+
+@media (min-width: 768px) {
+    .main-sidebar, .main-sidebar::before {
+        width: 300px;
+    }
+
+    body:not(.sidebar-mini-md) .content-wrapper, body:not(.sidebar-mini-md) .main-footer, body:not(.sidebar-mini-md) .main-header {
+        margin-left: 300px;
+    }
 }
