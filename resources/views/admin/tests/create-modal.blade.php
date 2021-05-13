@@ -15,9 +15,9 @@
                     $steps = [
                         ['name' => 'Основная информация', 'tab' => 'vp-essentials', 'view' => 'admin.tests.wizard.step1', 'role' => 'start'],
                         ['name' => 'Конструктор анкеты', 'tab' => 'vp-respondent', 'view' => 'admin.tests.wizard.step2'],
-                        ['name' => 'Описание ФМП', 'tab' => 'vp-fmp-description', 'view' => ''],
-                        ['name' => 'Механика и набор вопросов', 'tab' => 'vp-mechanics', 'view' => 'admin.tests.wizard.step4'],
-                        ['name' => 'Финал теста', 'tab' => 'vp-final', 'view' => 'admin.tests.wizard.step5', 'role' => 'finish']
+                        ['name' => 'Механика и набор вопросов', 'tab' => 'vp-mechanics', 'view' => 'admin.tests.wizard.step3'],
+                        ['name' => 'Финал теста для респондента', 'tab' => 'vp-final-respondent', 'view' => 'admin.tests.wizard.step4'],
+                        ['name' => 'Финал теста для клиента', 'tab' => 'vp-final-client', 'view' => 'admin.tests.wizard.step5', 'role' => 'finish'],
                     ];
                 @endphp
                 <div class="modal-body">
@@ -203,11 +203,9 @@
                     }, false);
                 });
 
-            let firstTab = document.querySelector('#{{ $steps[0]['tab'] }}-tab')
-            let tab = new bootstrap.Tab(firstTab)
-            tab.show()
-
-            $('#contract-div').hide();
+            let firstTab = document.querySelector('#{{ $steps[0]['tab'] }}-tab');
+            let tab = new bootstrap.Tab(firstTab);
+            tab.show();
 
             let wizardContentHeight = 0;
             let testsWizard = document.getElementById('tests-create')

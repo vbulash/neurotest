@@ -25,7 +25,6 @@ class UpdateTestRequest extends FormRequest
     {
         return [
             'title' => 'required',
-            'timeout' => 'required',
         ];
     }
 
@@ -33,7 +32,6 @@ class UpdateTestRequest extends FormRequest
     {
         return [
             'title' => 'Наименование',
-            'timeout' => 'Таймаут теста',
         ];
     }
 }

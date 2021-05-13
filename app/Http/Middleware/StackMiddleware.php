@@ -31,7 +31,7 @@ class StackMiddleware
     {
         $route = Route::currentRouteName();
         if ($this->allowed(['.index', '.create', '.edit', '.destroy']) &&
-            !$this->allowed(['.index.data', '.store', '.update', '.show', '.back']))
+            !$this->allowed(['.index.data', '.store', '.update', '.show', '.back', '.copy']))
             if (!$request->has('back')) {
                 $context = [
                     'route' => $route,

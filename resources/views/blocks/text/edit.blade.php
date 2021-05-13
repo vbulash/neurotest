@@ -1,6 +1,6 @@
 @extends('admin.layouts.layout')
 
-@push('title') - @if($show) Карточка @else Редактирование @endif блока описания ФМП № {{ $block->id }}@endpush
+@push('title') - @if($show) Карточка @else Редактирование @endif блока описания № {{ $block->id }}@endpush
 
 @section('body-params')
     data-editor="DecoupledDocumentEditor" data-collaboration="false"
@@ -21,7 +21,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>@if($show) Карточка @else Редактирование @endif блока описания ФМП № {{ $block->id }}</h1>
+                    <h1>@if($show) Карточка @else Редактирование @endif блока описания № {{ $block->id }}</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -39,10 +39,10 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-{{--                        <div class="card-header">--}}
-{{--                            <h3 class="card-title">&nbsp;</h3>--}}
-{{--                        </div>--}}
-                        <!-- /.card-header -->
+                    {{--                        <div class="card-header">--}}
+                    {{--                            <h3 class="card-title">&nbsp;</h3>--}}
+                    {{--                        </div>--}}
+                    <!-- /.card-header -->
 
                         <form role="form" method="post" name="blocks-create" id="blocks-create"
                               action="{{ route('blocks.update', ['block' => $block->id]) }}"
@@ -52,30 +52,16 @@
                             <input type="hidden" id="kind" name="kind" value="{{ \App\Models\Block::TYPE_TEXT }}">
                             <input type="hidden" id="content" name="content">
                             <div class="card-body">
-                                <div class="form-group col-lg-3 col-xs-6">
-                                    <label for="code">Код нейропрофиля</label>
-                                    <input type="text" name="code" id="code"
-                                           class="form-control @error('code') is-invalid @enderror"
-                                           value="{{ $block->code }}"
-                                           @if($show) disabled @endif>
-                                </div>
+                                @include('blocks.partials.edit')
+
                                 <div class="form-group">
-                                    <label for="description">Краткое наименование</label>
-                                    <input type="text" name="description" id="description"
-                                           class="form-control @error('description') is-invalid @enderror"
-                                           value="{{ $block->description }}"
-                                           @if($show) disabled @endif >
-                                </div>
-                                <div class="">
-                                    <div class="form-group">
-                                        <label for="editor" class="mb-2">Полный текст блока</label>
-                                        <div class="centered">
-                                            <div class="row">
-                                                <div class="document-editor__toolbar"></div>
-                                            </div>
-                                            <div class="row row-editor">
-                                                <div class="editor"></div>
-                                            </div>
+                                    <label for="editor" class="mb-2">Полный текст блока</label>
+                                    <div class="centered">
+                                        <div class="row">
+                                            <div class="document-editor__toolbar"></div>
+                                        </div>
+                                        <div class="row row-editor">
+                                            <div class="editor"></div>
                                         </div>
                                     </div>
                                 </div>

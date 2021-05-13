@@ -43,16 +43,18 @@
         public const EQUIPMENT_MONITOR = 256;
         // Опции показа результата тестирования
         public const SHOW_RESULTS = 1024;   // Показать результат на экране респондента
-        public const SHOW_SHORT = 2048;
-        public const SHOW_MIDDLE = 4096;
-        public const SHOW_FULL = 8192;
         public const MAIL_RESULTS = 16384;   // Отправить результат на почту респонеденту
-        public const MAIL_SHORT = 32768;
-        public const MAIL_MIDDLE = 65536;
-        public const MAIL_FULL = 131072;
 
-        protected $fillable = ['name', 'type', 'options', 'contract_id', 'test_id', 'questionset_id'];
+        protected $fillable = ['name', 'type', 'options', 'questionset_id', 'content', 'contract_id'];
 
+        // ID типов описания для разных ситуаций
+        public static array $descriptions = [
+            'show' => 0,    // ID для показа респонденту
+            'mail' => 0,    // ID для пересылки респонденту
+            'client' => 0   // ID для фиксации в ЛК клиента (итоги по респонденту)
+        ];
+
+        // Поля анкеты респондента
         public static array $ident = [
             [
                 [
@@ -218,9 +220,9 @@
             return $this->hasMany(History_test::class);
         }
 
-        public function sets()
+        public function set()
         {
-            return $this->belongsToMany(QuestionSet::class, 'test_questionset');
+            return $this->belongsTo(QuestionSet::class, 'questionset_id');
         }
     }
 

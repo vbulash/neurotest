@@ -48,13 +48,13 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="blocks-create">
                                     <li><a class="dropdown-item"
-                                           href="{{ route('blocks.create.type', ['type' => \App\Models\Block::TYPE_TEXT]) }}">Текстовый
+                                           href="{{ route('blocks.create', ['type' => \App\Models\Block::TYPE_TEXT]) }}">Текстовый
                                             блок</a></li>
                                     <li><a class="dropdown-item"
-                                           href="{{ route('blocks.create.type', ['type' => \App\Models\Block::TYPE_IMAGE]) }}">Блок
+                                           href="{{ route('blocks.create', ['type' => \App\Models\Block::TYPE_IMAGE]) }}">Блок
                                             с изображением</a></li>
                                     <li><a class="dropdown-item"
-                                           href="{{ route('blocks.create.type', ['type' => \App\Models\Block::TYPE_VIDEO]) }}">Блок
+                                           href="{{ route('blocks.create', ['type' => \App\Models\Block::TYPE_VIDEO]) }}">Блок
                                             с видео</a></li>
                                 </ul>
                             </div>

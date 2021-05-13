@@ -23,7 +23,7 @@ class Question extends Model
 
     public function set()
     {
-        return $this->belongsTo(QuestionSet::class);
+        return $this->belongsTo(QuestionSet::class, 'questionset_id');
     }
 
     public static function uploadImage(Request $request, string $imageField, string $image = null)

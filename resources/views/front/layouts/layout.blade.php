@@ -11,17 +11,22 @@
     @stack('styles')
 </head>
 <body>
-<div class="container-fluid main-header">
+<div class="container-fluid main-header pl-4">
     <nav class="navbar navbar-dark bg-primary">
-        <div class="navbar-brand">{{ env('APP_NAME') }}</div>
-        <div class="navbar-text">Здесь наименование теста...</div>
+        <div class="navbar-brand ml-4">{{ env('APP_NAME') }}</div>
+        <div class="navbar-text">@stack('testname')</div>
     </nav>
 
     {{--    <div class="container-fluid mt-2">--}}
     {{-- Область отображения сообщений --}}
     <div class="row mt-2">
         <div class="col-12">
-            @if ($errors->any())
+            @if (session()->has('error'))
+                <div class="alert alert-danger">
+                    {!! session('error') !!}
+                </div>
+                @php(session()->forget('error'))
+            @elseif ($errors->any())
                 <div class="alert alert-danger">
                     <ul class="list-unstyled mb-0">
                         @foreach ($errors->all() as $error)

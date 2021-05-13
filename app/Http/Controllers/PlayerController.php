@@ -2,74 +2,118 @@
 
     namespace App\Http\Controllers;
 
+    use App\Http\Requests\PKeyRequest;
     use App\Models\Contract;
+    use App\Models\License;
+    use App\Models\Question;
     use App\Models\Test;
     use Illuminate\Http\Request;
 
     class PlayerController extends Controller
     {
-        protected array $steps = [];
-
-        public function check(Request $request, string $mkey): int
+        public function check(Request $request, string $mkey): bool
         {
-            $message = [];
+            session()->forget('test');
+
             $contract = Contract::all()->where('mkey', $mkey)->first();
             if (!$contract) {
-                $message[] = 'Неверный мастер-ключ';
-                session()->flash('error', implode('<br/>', $message));
-                return 0;
+                session()->flash('error', 'Неверный мастер-ключ');
+                return false;
             } else {
+                $messages = [];
                 // TODO Сделать проверку на правильный URL
                 //$request->server('HTTP_REFERER')
-                // TODO Сделать проверку на акутальность контракта
                 $test = $contract->test;
-                session('test_id', $test->id);
-                return $test->id;
-            }
-            /*
-             * echo "# теста: " . $test . "<br/>";
-            $test = Test::find($test);
-            echo "Тест: <pre>" . print_r($test, true) . "</pre><br/><br/>";
+                if(!$test) {
+                    $messages[] = 'Нет привязки теста к контракту';
+                } else {
+                    if($test->type != Test::TYPE_ACTIVE)
+                        $messages[] = "Допускается тест только со статусом &laquo;Активный&raquo;";
+                }
 
-            echo "Мастер-ключ: " . $mkey . "<br/>";
-            if($test) {
-                $contract = Contract::find($test->contract_id);
-                echo "Контракт: <pre>" . print_r($contract, true) . "</pre><br/><br/>";
+                if(count($messages) > 0) {
+                    session()->flash('error', implode('<br/>', $messages));
+                    return false;
+                } else {
+                    session()->put('test', $test);
+                    return true;
+                }
             }
-            echo "Запущено с URL: " . $request->server('HTTP_REFERER') . "<br/>";
-            die(200);
-             */
         }
 
-        public function play(Request $request, string $mkey, int $block_id = 0)
+        public function index()
         {
-//            if ($block_id == 0) {    // Начало теста
-//                $test_id = $this->check($request, $mkey);
-//                if ($test_id == 0) {
-//                    return redirect()->route('admin.index');
-//                }
-//
-//                $test = Test::findOrFail($test_id);
-//                $this->steps = $test->blocks()
-//                    ->orderBy('sort_no')
-//                    ->orderBy('id')
-//                    ->pluck('id')
-//                    ->toArray();
-//
-////                session()->flash('success', 'Начинаем прохождение теста. Просто сообщение');
-//                return view('front.intro', compact('test'));
-//            } else {
-//                // TODO Решить - проверять mkey на каждом шаге или нет
-//                $block = Block::findOrFail($block_id);
-//                $handler = config('blocks.' . $block->type);
-//                $content = $handler::$content;
-//                // ...
-//            }
+            return view('front.index');
         }
 
-        public function step(Request $request, int $block_id = -1)
+        public function play(Request $request, string $mkey)
         {
-            dd($request);
-            // ...
+            if (!$this->check($request, $mkey)) {
+                return redirect()->route('player.index')->with('error', session('error'));
+            }else {
+                $test = session('test');
+                return view('front.intro', compact('test'));
+            }
+        }
+
+        public function card(Request $request, string $mkey)
+        {
+            if (!$this->check($request, $mkey)) {
+                return redirect()->route('player.index')->with('error', session('error'));
+            } else {
+                session()->forget('pkey');
+                $test = session('test');
+                if($test->options & Test::AUTH_GUEST) {
+                    return redirect()->route('player.body', ['mkey' => $mkey, 'question' => 0]);
+                    // TODO Перейти на следующий этап теста
+                } elseif($test->options & Test::AUTH_FULL) {
+                    // TODO Запрос полной анкеты перед тестом
+                } elseif($test->options & Test::AUTH_PKEY) {
+                    return view('front.pkey_card', compact('test', 'mkey'));
+                }
+            }
+        }
+        /*
+         * Route::get('/player.play/{mkey}', 'PlayerController@play')->name('player.play');
+        Route::get('/player.card/{mkey}', 'PlayerController@card')->name('player.card');
+        Route::get('/player.body/{mkey}/{block}', 'PlayerController@body')->name('player.body');
+        Route::get('/player.result/{mkey}', 'PlayerController@result')->name('player.result');
+         */
+
+        public function store_pkey(PKeyRequest $request)
+        {
+            $mkey = $request->mkey;
+            session()->put('pkey', $request->pkey);
+            return redirect()->route('player.body', ['mkey' => $mkey, 'question' => 0]);
+        }
+
+        public function body(Request $request, string $mkey, int $question = 0)
+        {
+            if (!$this->check($request, $mkey)) {
+                return redirect()->route('player.index')->with('error', session('error'));
+            } else {
+                $test = session('test');
+                $testname = 'Проверка';
+                if ($question == 0) {
+                    $questions = $test->set->questions->sortBy('sort_no')->pluck('id')->toArray();
+                    session()->put('steps', $questions);
+
+                    // Блокировка лицензии для прохождения теста
+                    if(session()->has('pkey')) {
+                        $license = $test->contract->licenses->where('pkey', session('pkey'))->first();
+                    } else {
+                        $license = $test->contract->licenses->where('status', License::FREE)->first();
+                    }
+                    $license->lock();
+
+                    // Переход на первый шаг теста
+                    $step = Question::findOrFail($questions[0]);
+                    return view('front.body', compact('step', 'testname'));
+                } else {
+                    // Переход на вопрос $question
+                    $step = Question::findOrFail($question);
+                    return view('front.body', compact('step', 'testname'));
+                }
+            }
         }
     }

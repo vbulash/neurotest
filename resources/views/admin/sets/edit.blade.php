@@ -1,5 +1,16 @@
 @extends('admin.layouts.layout')
 
+@push('title') - @if($show) Просмотр @else Редактирование @endif набора вопросов &laquo;{{ $set->name }}&raquo;@endpush
+
+@section('back')
+    <form action="{{ route('sets.back') }}" method="post">
+        @csrf
+        <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
+            <i class="fas fa-chevron-left"></i> Назад
+        </button>
+    </form>
+@endsection
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -58,7 +69,7 @@
                                     </select>
                                 </div>
                                 <div class="form-group col-lg-6 col-xs-12">
-                                    <label for="type">Тип набора вопросов</label>
+                                    <label for="type">Статус набора вопросов</label>
                                     <select name="type" id="type" class="select2"
                                             style="width: 100%;" @if($show) disabled @endif>
                                         @foreach(\App\Models\QuestionSet::types as $key => $value)

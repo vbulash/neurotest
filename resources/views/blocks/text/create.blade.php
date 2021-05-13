@@ -1,6 +1,6 @@
 @extends('admin.layouts.layout')
 
-@push('title') - Новый блок описания ФМП@endpush
+@push('title') - Новый блок описаний@endpush
 
 @section('body-params')
     data-editor="DecoupledDocumentEditor" data-collaboration="false"
@@ -21,7 +21,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Новый блок описания ФМП</h1>
+                    <h1>Новый блок описания</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -48,29 +48,19 @@
                               action="{{ route('blocks.store') }}"
                               enctype="multipart/form-data">
                             @csrf
-                            <input type="hidden" id="kind" name="kind" value="{{ \App\Models\Block::TYPE_IMAGE }}">
+                            <input type="hidden" id="kind" name="kind" value="{{ \App\Models\Block::TYPE_TEXT }}">
                             <input type="hidden" id="content" name="content">
                             <div class="card-body">
-                                <div class="form-group col-lg-3 col-xs-6">
-                                    <label for="code">Код нейропрофиля</label>
-                                    <input type="text" name="code" id="code"
-                                           class="form-control @error('code') is-invalid @enderror">
-                                </div>
+                                @include('blocks.partials.create')
+
                                 <div class="form-group">
-                                    <label for="description">Краткое наименование</label>
-                                    <input type="text" name="description" id="description"
-                                           class="form-control @error('description') is-invalid @enderror">
-                                </div>
-                                <div class="">
-                                    <div class="form-group">
-                                        <label for="editor" class="mb-2">Полный текст блока</label>
-                                        <div class="centered">
-                                            <div class="row">
-                                                <div class="document-editor__toolbar"></div>
-                                            </div>
-                                            <div class="row row-editor">
-                                                <div class="editor"></div>
-                                            </div>
+                                    <label for="editor" class="mb-2">Полный текст блока</label>
+                                    <div class="centered">
+                                        <div class="row">
+                                            <div class="document-editor__toolbar"></div>
+                                        </div>
+                                        <div class="row row-editor">
+                                            <div class="editor"></div>
                                         </div>
                                     </div>
                                 </div>

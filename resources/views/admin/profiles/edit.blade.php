@@ -139,17 +139,20 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="blocks-create">
                                     <li><a class="dropdown-item"
-                                           href="{{ route('blocks.create.type', ['type' => \App\Models\Block::TYPE_TEXT]) }}">Текстовый
+                                           href="{{ route('blocks.create',
+                                                ['type' => \App\Models\Block::TYPE_TEXT, 'profile_id' => $profile->id, 'embedded' => true]) }}">Текстовый
                                             блок</a></li>
                                     <li><a class="dropdown-item"
-                                           href="{{ route('blocks.create.type', ['type' => \App\Models\Block::TYPE_IMAGE]) }}">Блок
+                                           href="{{ route('blocks.create',
+                                                ['type' => \App\Models\Block::TYPE_IMAGE, 'profile_id' => $profile->id, 'embedded' => true]) }}">Блок
                                             с изображением</a></li>
                                     <li><a class="dropdown-item"
-                                           href="{{ route('blocks.create.type', ['type' => \App\Models\Block::TYPE_VIDEO]) }}">Блок
+                                           href="{{ route('blocks.create',
+                                                ['type' => \App\Models\Block::TYPE_VIDEO, 'profile_id' => $profile->id, 'embedded' => true]) }}">Блок
                                             с видео</a></li>
                                 </ul>
                             </div>
-                            @if ($blocks)
+                            @if (count($blocks) > 0)
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-hover text-nowrap" id="blocks_table">
                                         <thead>
@@ -182,7 +185,7 @@
 @endsection
 
 @once
-    @if (count($blocks))
+    @if (count($blocks) > 0)
         @push('styles')
             <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables/datatables.css') }}">
         @endpush
@@ -193,7 +196,7 @@
     @endif
 @endonce
 
-@if(count($blocks))
+@if(count($blocks) > 0)
     @push('scripts.injection')
         <script>
             function clickDelete(id) {

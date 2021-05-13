@@ -88,10 +88,11 @@ class BlockController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param Request $request
      * @param int $type
      * @return Application|Factory|View|Response
      */
-    public function create(int $type = Block::TYPE_TEXT)
+    public function create(Request $request)
     {
         $embedded = false;
         if($request->has('profile_id')) {
@@ -100,6 +101,11 @@ class BlockController extends Controller
         } else {
             $profiles = Neuroprofile::all();
         }
+        if($request->has('type')) {
+            $type = intval($request->type);
+        } else $type = Block::TYPE_TEXT;
+        if($request->has('embedded'))
+            $embedded = $request->embedded;
 
         switch($type) {
             case Block::TYPE_TEXT:

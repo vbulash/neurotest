@@ -46,22 +46,9 @@
                             @csrf
                             @method('PUT')
                             <div class="card-body">
-                                <div class="form-group col-lg-3 col-xs-6">
-                                    <label for="code">Код нейропрофиля</label>
-                                    <input type="text" name="code" id="code"
-                                           class="form-control @error('code') is-invalid @enderror"
-                                           value="{{ $block->code }}"
-                                           @if($show) disabled @endif>
-                                </div>
+                                @include('blocks.partials.edit')
+
                                 <div class="form-group">
-                                    <div class="form-group">
-                                        <label for="description">Краткое наименование</label>
-                                        <input type="text" name="description" id="description"
-                                               class="form-control @error('description') is-invalid @enderror"
-                                               value="{{ $block->description }}"
-                                               @if($show) disabled @endif
-                                        >
-                                    </div>
                                     <div class="col-lg-3 col-xs-12">
                                         <label
                                             for="clip">Видео</label>

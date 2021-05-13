@@ -30,6 +30,28 @@ class License extends Model
     // Генератор PKey
     public static function generateKey()
     {
-        return uniqid('mkey_', true);
+        return uniqid('pkey_', true);
+    }
+
+    /**
+     * Блокировка лицензии (тест начался)
+     */
+    public function lock(): void {
+        if($this->status == self::FREE) {
+            $this->update([
+                'status' => self::USING
+            ]);
+        }
+    }
+
+    /**
+     * Завершение работы с лицензией (тест завершен)
+     */
+    public function done(): void {
+        if($this->status == self::USING) {
+            $this->update([
+                'status' => self::USED
+            ]);
+        }
     }
 }

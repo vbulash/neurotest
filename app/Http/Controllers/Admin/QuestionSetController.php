@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSetRequest;
+use App\Http\Support\CallStack;
 use App\Models\Client;
 use App\Models\Question;
 use App\Models\QuestionSet;
@@ -193,6 +194,11 @@ class QuestionSetController extends Controller
             ->pluck('name', 'id')
             ->toArray();
         return json_encode($sets);
+    }
+
+    public function back(?string $key = null, ?string $message = null)
+    {
+        return CallStack::back($key, $message);
     }
 
     /**

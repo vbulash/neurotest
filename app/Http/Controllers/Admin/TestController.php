@@ -4,11 +4,11 @@
 
     use App\Http\Requests\StoreTestRequest;
     use App\Http\Requests\UpdateTestRequest;
+    use App\Http\Support\CallStack;
     use App\Models\Contract;
     use Exception;
     use App\Models\Test;
     use App\Http\Controllers\Controller;
-    //use App\Http\Requests\StoreCategory;
     use Illuminate\Contracts\View\Factory;
     use Illuminate\Http\JsonResponse;
     use Illuminate\Http\RedirectResponse;
@@ -106,25 +106,43 @@
         public function store(StoreTestRequest $request)
         {
             $data = $request->all();
-            $options = intval($data['auth']);
-            if ($request->has('result'))
-                foreach ($data['result'] as $result) {
-                    $options |= intval($result);
-                }
-            $options |= intval($data['show_options']);
-            $options |= intval($data['mail_options']);
+
+            $content = ['card' => []];
+            // Step 1
+            $auth = intval($data['auth']);
+            // Step 2
+            if($auth == Test::AUTH_FULL) {
+                foreach ($request->keys() as $key)
+                    if(strpos($key, 'ident_') !== false) {
+                        $name = str_replace('ident_', '', $key);
+                        $value = $request->get($key);
+                        $content['card'][$name] = $value;
+                    }
+            }
+            $options = $auth;
+            // Step 3
             $options |= intval($data['mechanics']);
             if ($request->has('aux_mechanics'))
                 foreach ($data['aux_mechanics'] as $result) {
                     $options |= intval($result);
                 }
+            // Step 4
+            if ($request->has('result'))
+                foreach ($data['result'] as $result) {
+                    $options |= intval($result);
+                };
+            $content['descriptions']['show'] = $data['show_description'];
+            $content['descriptions']['mail'] = $data['mail_description'];
+            $content['descriptions']['client'] = $data['client_description'];
+
 
             $test = Test::create([
                 'name' => $data['title'],
                 'type' => $data['kind'],
                 'options' => $options,
+                'questionset_id' => $data['sets'],
                 'contract_id' => $data['contract'],
-                'questionset_id' => 5,  // TODO Только для отладки
+                'content' => json_encode($content)
             ]);
             $test->save();
             $message = [];
@@ -155,10 +173,11 @@
         {
             $test = Test::findOrFail($id);
             $contracts = Contract::all();
+            $content = json_decode($test->content, true);
 
-            session()->put('test_id', $id);
-            session()->put('test_show', $show);
-            return view('admin.tests.edit', compact('test', 'contracts', 'show'));
+//            session()->put('test_id', $id);
+//            session()->put('test_show', $show);
+            return view('admin.tests.edit', compact('test', 'contracts', 'show', 'content'));
         }
 
         /**
@@ -171,11 +190,39 @@
         public function update(UpdateTestRequest $request, int $id)
         {
             $data = $request->all();
-            $test = Test::find($id);
+
+            $content = ['card' => []];
+            $auth = intval($data['auth']);
+            if($auth == Test::AUTH_FULL) {
+                foreach ($request->keys() as $key)
+                    if(strpos($key, 'ident_') !== false) {
+                        $name = str_replace('ident_', '', $key);
+                        $value = $request->get($key);
+                        $content['card'][$name] = $value;
+                    }
+            }
+            $options = $auth;
+            $options |= intval($data['mechanics']);
+            if ($request->has('aux_mechanics'))
+                foreach ($data['aux_mechanics'] as $result) {
+                    $options |= intval($result);
+                }
+            if ($request->has('result'))
+                foreach ($data['result'] as $result) {
+                    $options |= intval($result);
+                };
+            $content['descriptions']['show'] = $data['show_description'];
+            $content['descriptions']['mail'] = $data['mail_description'];
+            $content['descriptions']['client'] = $data['client_description'];
+
+            $test = Test::findOrFail($id);
             $test->update([
                 'name' => $data['title'],
                 'type' => $data['kind'],
-                'options' => $data['auth'] | $data['result'],
+                'options' => $options,
+                'questionset_id' => $data['sets'],
+                'contract_id' => $data['contract'],
+                'content' => json_encode($content)
             ]);
             $message[] = "Изменения теста &laquo;{$data['title']}&raquo; сохранены";
 
@@ -198,5 +245,10 @@
             $title = $test->name;
             $test->delete();
             return redirect()->route('tests.index')->with('success', "Тест \"$title\" удалён");
+        }
+
+        public function back(?string $key = null, ?string $message = null)
+        {
+            return CallStack::back($key, $message);
         }
     }

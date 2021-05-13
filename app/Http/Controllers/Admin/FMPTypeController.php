@@ -19,6 +19,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use phpDocumentor\Reflection\DocBlock\Tags\Source;
 use Yajra\DataTables\DataTables;
 
 class FMPTypeController extends Controller
@@ -37,6 +38,7 @@ class FMPTypeController extends Controller
             ->addColumn('action', function ($fmptype) {
                 $editRoute = route('fmptypes.edit', ['fmptype' => $fmptype->id]);
                 $showRoute = route('fmptypes.show', ['fmptype' => $fmptype->id]);
+                $copyRoute = route('fmptypes.copy', ['fmptype' => $fmptype->id]);
                 $actions =
                     "<a href=\"{$editRoute}\" class=\"btn btn-info btn-sm float-left mr-1\" " .
                     "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Редактирование\">\n" .
@@ -51,6 +53,11 @@ class FMPTypeController extends Controller
                     "<a href=\"javascript:void(0)\" class=\"btn btn-info btn-sm float-left mr-1\" " .
                     "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Удаление\" onclick=\"clickDelete({$fmptype->id})\">\n" .
                     "<i class=\"fas fa-trash-alt\"></i>\n" .
+                    "</a>\n";
+                $actions .=
+                    "<a href=\"{$copyRoute}\" class=\"btn btn-info btn-sm float-left ml-3\" " .
+                    "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Дублирование\">\n" .
+                    "<i class=\"fas fa-copy\"></i>\n" .
                     "</a>\n";
 
                 return $actions;
@@ -160,6 +167,31 @@ class FMPTypeController extends Controller
         $fmptype->delete();
 
         return CallStack::back('success', "Тип описания ФМП {$name} удален");
+    }
+
+    public function copy(Request $request, int $fmptype)
+    {
+        $source = FMPType::findOrFail($fmptype);
+
+        // Дублирование типа описания
+        $target = $source->replicate();
+        $target->name = $source->name . ' (Копия)';
+        $target->save();
+
+        // Дублирования нейропрофилей в типе
+        foreach ($source->profiles as $profile) {
+            $targetProfile = $profile->replicate();
+            $target->profiles()->save($targetProfile);
+
+            // Дубирование блоков профиля
+            foreach ($profile->blocks as $block) {
+                $targetBlock = $block->replicate();
+                $targetProfile->blocks()->save($targetBlock);
+            }
+        }
+
+        return redirect()->route('fmptypes.edit', ['fmptype' => $target->id])
+            ->with('success', "Тип описания &laquo;{$source->name}&raquo; скопирован");
     }
 
     public function back(?string $key = null, ?string $message = null)

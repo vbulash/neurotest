@@ -46,12 +46,18 @@
                                                value="{{ $fmptypes->name }}" disabled>
                                         <input type="hidden" id="fmptype" name="fmptype" value="{{ $fmptypes->id }}">
                                     </div>
+                                @else
+                                    <div class="form-group col-lg-6 col-xs-12">
+                                        <label for="fmptype">Тип описания</label>
+                                        <select name="fmptype" id="fmptype" class="select2 form-control"
+                                                data-placeholder="Выбор типа описания">
+                                            @foreach($fmptypes as $fmptype)
+                                                <option value="{{ $fmptype->id }}"
+                                                        @if($loop->first) selected @endif>{{ $fmptype->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 @endif
-                                <div class="form-group col-lg-3 col-xs-6">
-                                    <label for="code">Код нейропрофиля</label>
-                                    <input type="text" name="code"
-                                           class="form-control @error('code') is-invalid @enderror" id="code">
-                                </div>
 
                                 <div class="form-group col-lg-6 col-xs-12">
                                     <label for="code">Код нейропрофиля</label>
@@ -77,18 +83,6 @@
                                     <input type="text" name="name"
                                            class="form-control @error('name') is-invalid @enderror" id="name">
                                 </div>
-                                @if(!$embedded)
-                                    <div class="form-group col-lg-6 col-xs-12">
-                                        <label for="fmptype">Тип описания</label>
-                                        <select name="fmptype" id="fmptype" class="select2 form-control"
-                                                data-placeholder="Выбор типа описания">
-                                            @foreach($fmptypes as $fmptype)
-                                                <option value="{{ $fmptype->id }}"
-                                                        @if($loop->first) selected @endif>{{ $fmptype->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                @endif
                                 <div class="form-group btn-group mt-3 col-lg-3 col-xs-12" role="group"
                                      aria-label="Тип нейропрофиля">
                                     <input type="radio" class="btn-check" name="profiletype" id="profiletype1"

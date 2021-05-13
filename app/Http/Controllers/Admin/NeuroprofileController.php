@@ -124,7 +124,7 @@
         public function show(Request $request, int $id)
         {
             $show = true;
-            $fmptype = $id;
+            $neuroprofile = $id;
             return redirect()->route('neuroprofiles.edit', compact('neuroprofile', 'show'));
         }
 
@@ -133,10 +133,9 @@
          *
          * @param Request $request
          * @param int $id
-         * @param bool $show
          * @return Application|Factory|View|Response
          */
-        public function edit(Request $request, int $id, bool $show = false)
+        public function edit(Request $request, int $id)
         {
             $profile = Neuroprofile::findOrFail($id);
             $embedded = false;
@@ -149,6 +148,7 @@
                 }
             else $fmptypes = FMPType::all();
             $blocks = Block::all()->where('neuroprofile_id', $profile->id);
+            $show = $request->has('show');
 
             return view('admin.profiles.edit', compact('profile', 'fmptypes', 'blocks', 'show', 'embedded'));
         }

@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\PKeyRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTestRequest extends FormRequest
+class PKeyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,14 +25,17 @@ class StoreTestRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required',
+            'pkey' => [
+                'required',
+                new PKeyRule()
+            ]
         ];
     }
 
     public function attributes()
     {
         return [
-            'title' => 'Наименование',
+            'pkey' => 'Персональный ключ'
         ];
     }
 }

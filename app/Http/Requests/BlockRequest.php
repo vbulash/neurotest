@@ -25,7 +25,7 @@
         public function rules()
         {
             $rules = [
-                'code' => 'required|exists:neuroprofiles,code',
+                'neuroprofile_id' => 'required',
                 'description' => 'required'
             ];
             switch ($this->kind) {
@@ -45,7 +45,7 @@
         public function attributes()
         {
             $attr = [
-                'code' => 'Код нейропрофиля',
+                'neuroprofile_id' => 'Код нейропрофиля',
                 'description' => 'Краткое наименование'
             ];
             switch ($this->kind) {

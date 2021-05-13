@@ -37,7 +37,7 @@ class QuestionSet extends Model
 
     public function tests()
     {
-        return $this->belongsToMany(Test::class, 'test_questionset');
+        return $this->hasMany(Test::class);
     }
 
     public function questions()
