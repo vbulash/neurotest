@@ -25,7 +25,6 @@
         public function rules()
         {
             $rules = [
-                'neuroprofile_id' => 'required',
                 'description' => 'required'
             ];
             switch ($this->kind) {
@@ -45,8 +44,7 @@
         public function attributes()
         {
             $attr = [
-                'neuroprofile_id' => 'Код нейропрофиля',
-                'description' => 'Краткое наименование'
+                'description' => 'Наименование'
             ];
             switch ($this->kind) {
                 case Block::TYPE_TEXT:

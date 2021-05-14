@@ -52,8 +52,8 @@
                                             <th style="width: 30px">#</th>
                                             <th>Наименование набора</th>
                                             <th>Тип набора</th>
-                                            <th>Количество изображений в вопросе</th>
-                                            <th>Текущее количество вопросов</th>
+                                            <th>Изображений в вопросе</th>
+                                            <th>Всего вопросов</th>
                                             <th>Действия</th>
                                         </tr>
                                         </thead>
@@ -122,7 +122,7 @@
                                 } else return data;
                             }
                         },
-                        {data: 'action', name: 'action', sortable: false, responsivePriority: 1}
+                        {data: 'action', name: 'action', sortable: false, responsivePriority: 1, className: 'no-wrap dt-actions'}
                     ]
                 });
 

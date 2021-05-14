@@ -93,15 +93,22 @@ class FMPTypeController extends Controller
      * Store a newly created resource in storage.
      *
      * @param FMPTypeRequest $request
-     * @return RedirectResponse
+     * @return Application|Factory|View|RedirectResponse
      */
     public function store(FMPTypeRequest $request)
     {
-        $fmptype = FMPType::create($request->all());
+        $fmptype = FMPType::create([
+            'name' => $request->name,
+            'cluster' => $request->profiletype
+        ]);
         $name = $request->name;
         $fmptype->save();
 
-        return CallStack::back('success', "Тип описания ФМП &laquo;{$name}&raquo; создан");
+        session()->put('success', "Тип описания ФМП &laquo;{$name}&raquo; создан");
+
+        $profiles = [];
+        $show = false;
+        return view('admin.fmptypes.edit', compact('fmptype', 'profiles', 'show'));
     }
 
     /**
@@ -145,7 +152,10 @@ class FMPTypeController extends Controller
     {
         $fmptype = FMPtype::findOrFail($id);
         $name = $fmptype->name;
-        $fmptype->update($request->all());
+        $fmptype->update([
+            'name' => $request->name,
+            'cluster' => $request->profiletype
+        ]);
 
         return CallStack::back('success', "Изменения типа описания ФМП &laquo;{$name}&raquo; сохранены");
     }

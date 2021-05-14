@@ -170,26 +170,19 @@ class BlockController extends Controller
      * @param bool $show
      * @return Application|Factory|View|Response
      */
-    public function edit(Request $request, int $id, bool $show = false)
+    public function edit(Request $request, int $id)
     {
         $block = Block::findOrFail($id);
-        $embedded = false;
-        if ($request->has('profile_id'))
-            if ($request->fmptype == 0) {
-                $profiles = Neuroprofile::all();
-            } else {
-                $profiles = Neuroprofile::find($request->profile_id);
-                $embedded = true;
-            }
-        else $profiles = Neuroprofile::all();
+        $profile = $block->profile;
+        $show = $request->has('show') ? $request->show : false;
 
         switch($block->type) {
             case Block::TYPE_TEXT:
-                return view('blocks.text.edit', compact('block', 'profiles', 'embedded', 'show'));
+                return view('blocks.text.edit', compact('block', 'profile', 'show'));
             case Block::TYPE_IMAGE:
-                return view('blocks.image.edit', compact('block', 'profiles', 'embedded', 'show'));
+                return view('blocks.image.edit', compact('block', 'profile', 'show'));
             case Block::TYPE_VIDEO:
-                return view('blocks.video.edit', compact('block', 'profiles', 'embedded', 'show'));
+                return view('blocks.video.edit', compact('block', 'profile', 'show'));
         }
     }
 

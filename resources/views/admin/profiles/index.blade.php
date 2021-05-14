@@ -52,7 +52,6 @@
                                             <th style="width: 30px">#</th>
                                             <th>Код</th>
                                             <th>Наименование</th>
-                                            <th>ФМП / Нейрокластер</th>
                                             <th>Тип описания</th>
                                             <th>Действия</th>
                                         </tr>
@@ -107,13 +106,6 @@
                         {data: 'id', name: 'id'},
                         {data: 'code', name: 'code'},
                         {data: 'name', name: 'name'},
-                        {data: 'cluster', name: 'cluster', render: (data) => {
-                            if(data) {
-                                return 'Нейрокластер';
-                            } else {
-                                return 'ФМП';
-                            }
-                            }},
                         {data: 'fmptype', name: 'fmptype'},
                         {data: 'action', name: 'action', sortable: false}
                     ]

@@ -65,9 +65,9 @@
                                             data-placeholder="Выбор кода нейропрофиля">
                                         @php
                                             $codes = [
-                                                'OV', 'OJ', 'OA', 'OO',
+                                                'OV', 'OI', 'OA', 'OO',
                                                 'PA', 'PP', 'PK', 'PR',
-                                                'CS', 'CJ', 'CO', 'CV',
+                                                'CS', 'CI', 'CO', 'CV',
                                                 'BD', 'BH', 'BP', 'BO'
                                             ];
                                         @endphp
@@ -82,16 +82,6 @@
                                     <label for="name">Наименование</label>
                                     <input type="text" name="name"
                                            class="form-control @error('name') is-invalid @enderror" id="name">
-                                </div>
-                                <div class="form-group btn-group mt-3 col-lg-3 col-xs-12" role="group"
-                                     aria-label="Тип нейропрофиля">
-                                    <input type="radio" class="btn-check" name="profiletype" id="profiletype1"
-                                           autocomplete="off" checked value="1">
-                                    <label class="btn btn-outline-primary" for="profiletype1">Нейрокластер</label>
-
-                                    <input type="radio" class="btn-check" name="profiletype" id="profiletype2"
-                                           autocomplete="off" value="0">
-                                    <label class="btn btn-outline-primary" for="profiletype2">ФМП</label>
                                 </div>
                             </div>
                             <!-- /.card-body -->

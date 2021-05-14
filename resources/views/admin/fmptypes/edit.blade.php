@@ -48,6 +48,22 @@
                                            value="{{ $fmptype->name }}" @if($show) disabled @endif
                                     >
                                 </div>
+                                <div class="form-group btn-group mt-3 col-lg-3 col-xs-12" role="group"
+                                     aria-label="Тип описания">
+                                    <input type="radio" class="btn-check" name="profiletype" id="profiletype1"
+                                           autocomplete="off" value="1"
+                                           @if($fmptype->cluster) checked @endif
+                                           @if($show) disabled @endif
+                                    >
+                                    <label class="btn btn-outline-primary" for="profiletype1">Нейрокластер</label>
+
+                                    <input type="radio" class="btn-check" name="profiletype" id="profiletype2"
+                                           autocomplete="off" value="0"
+                                           @if(!$fmptype->cluster) checked @endif
+                                           @if($show) disabled @endif
+                                    >
+                                    <label class="btn btn-outline-primary" for="profiletype2">ФМП</label>
+                                </div>
                             </div>
                             <!-- /.card-body -->
 
@@ -90,7 +106,6 @@
                                             <th style="width: 30px">#</th>
                                             <th>Код</th>
                                             <th>Наименование</th>
-                                            <th>ФМП / Нейрокластер</th>
                                             <th>Тип описания</th>
                                             <th>Действия</th>
                                         </tr>
@@ -145,15 +160,6 @@
                         {data: 'id', name: 'id'},
                         {data: 'code', name: 'code'},
                         {data: 'name', name: 'name'},
-                        {
-                            data: 'cluster', name: 'cluster', render: (data) => {
-                                if (data) {
-                                    return 'Нейрокластер';
-                                } else {
-                                    return 'ФМП';
-                                }
-                            }
-                        },
                         {data: 'fmptype', name: 'fmptype', visible: false},
                         {data: 'action', name: 'action', sortable: false}
                     ]

@@ -99,19 +99,23 @@
          * Store a newly created resource in storage.
          *
          * @param Request $request
-         * @return RedirectResponse|Response
+         * @return Application|Factory|View|RedirectResponse|Response
          */
         public function store(NeuroprofileRequest $request)
         {
+            $fmptypes = FMPType::find($request->fmptype);
+            $embedded = true;
+            $blocks = [];
+            $show = false;
+
             $profile = Neuroprofile::create([
                 'code' => $request->code,
                 'name' => $request->name,
-                'fmptype_id' => $request->fmptype,
-                'cluster' => $request->profiletype
+                'fmptype_id' => $request->fmptype
             ]);
             $profile->save();
 
-            return CallStack::back('success', "Нейропрофиль &laquo;{$request->name}&raquo; создан");
+            return view('admin.profiles.edit', compact('profile', 'fmptypes', 'blocks', 'show', 'embedded'));
         }
 
         /**
@@ -148,7 +152,7 @@
                 }
             else $fmptypes = FMPType::all();
             $blocks = Block::all()->where('neuroprofile_id', $profile->id);
-            $show = $request->has('show');
+            $show = $request->has('show') ? $request->show : false;
 
             return view('admin.profiles.edit', compact('profile', 'fmptypes', 'blocks', 'show', 'embedded'));
         }
@@ -166,8 +170,7 @@
             $profile->update([
                 'code' => $request->code,
                 'name' => $request->name,
-                'fmptype_id' => $request->fmptype,
-                'cluster' => $request->profiletype
+                'fmptype_id' => $request->fmptype
             ]);
             return CallStack::back('success', "Изменения нейропрофиля &laquo;{$request->name}&raquo; сохранены");
         }
@@ -175,16 +178,20 @@
         /**
          * Remove the specified resource from storage.
          *
+         * @param Request $request
          * @param int $id
-         * @return RedirectResponse|Response
+         * @return RedirectResponse
          */
-        public function destroy($id)
+        public function destroy(Request $request, int $id)
         {
+            if ($id == 0)
+                $id = $request->delete_id;
+
             $profile = Neuroprofile::findOrFail($id);
             $name = $profile->name;
             $profile->delete();
 
-            return CallStack::back('success', "Нейропрофиль &laquo;{$request->name}&raquo; удален");
+            return CallStack::back('success', "Нейропрофиль &laquo;{$name}&raquo; удален");
         }
 
         public function back(?string $key = null, ?string $message = null)

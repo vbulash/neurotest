@@ -11,7 +11,7 @@ class Neuroprofile extends Model
     use HasFactory, LogsActivity;
 
     protected $table = 'neuroprofiles';
-    protected $fillable = ['code', 'name', 'fmptype_id', 'cluster'];
+    protected $fillable = ['code', 'name', 'fmptype_id'];
     protected static $logAttributes = ['*'];
 
     public function getDescriptionForEvent(string $eventName): string

@@ -161,7 +161,7 @@
                 document.querySelector('.document-editor__toolbar').appendChild(editor.ui.view.toolbar.element);
                 document.querySelector('.ck-toolbar').classList.add('ck-reset_all');
 
-                editor.setData("{!! $block->content !!}");
+                editor.setData('{!! $block->content !!}');
                 @if($show)
                     editor.isReadOnly = true;
                 @endif

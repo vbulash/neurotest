@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ProfileCodeRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class NeuroprofileRequest extends FormRequest
@@ -24,7 +25,10 @@ class NeuroprofileRequest extends FormRequest
     public function rules()
     {
         return [
-            'code' => 'required',
+            'code' => [
+                'required',
+                new ProfileCodeRule($this)
+            ],
             'name' => 'required'
         ];
     }

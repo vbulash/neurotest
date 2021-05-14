@@ -11963,6 +11963,14 @@ form.was-validated select:valid ~ .select2-container--bootstrap4 .select2-select
     padding: 20px;
 }
 
+th, td {
+    font-size: 14px;
+}
+
+td.dt-actions {
+    min-width: 10rem;
+}
+
 
 /* Main */
 .user-name {

@@ -36,6 +36,7 @@
                             @csrf
                             @method('PUT')
                             <div class="card-body">
+                                <input type="hidden" value="{{ $profile->id }}" name="id">
                                 @if($embedded)
                                     <div class="form-group col-lg-3 col-xs-6">
                                         <label for="fmptype_">Тип описания</label>
@@ -52,9 +53,9 @@
                                             data-placeholder="Выбор кода нейропрофиля">
                                         @php
                                             $codes = [
-                                                'OV', 'OJ', 'OA', 'OO',
+                                                'OV', 'OI', 'OA', 'OO',
                                                 'PA', 'PP', 'PK', 'PR',
-                                                'CS', 'CJ', 'CO', 'CV',
+                                                'CS', 'CI', 'CO', 'CV',
                                                 'BD', 'BH', 'BP', 'BO'
                                             ];
                                         @endphp
@@ -84,22 +85,6 @@
                                         </select>
                                     </div>
                                 @endif
-                                <div class="form-group btn-group mt-3 col-lg-3 col-xs-12" role="group"
-                                     aria-label="Тип нейропрофиля">
-                                    <input type="radio" class="btn-check" name="profiletype" id="profiletype1"
-                                           autocomplete="off" value="1"
-                                           @if($profile->cluster) checked @endif
-                                           @if($show) disabled @endif
-                                    >
-                                    <label class="btn btn-outline-primary" for="profiletype1">Нейрокластер</label>
-
-                                    <input type="radio" class="btn-check" name="profiletype" id="profiletype2"
-                                           autocomplete="off" value="0"
-                                           @if(!$profile->cluster) checked @endif
-                                           @if($show) disabled @endif
-                                    >
-                                    <label class="btn btn-outline-primary" for="profiletype2">ФМП</label>
-                                </div>
                             </div>
                             <!-- /.card-body -->
 
@@ -158,7 +143,7 @@
                                         <thead>
                                         <tr>
                                             <th style="width: 30px">#</th>
-                                            <th>Краткое описание</th>
+                                            <th>Наименование</th>
                                             <th>Тип блока</th>
                                             <th>Код нейропрофиля</th>
                                             <th>Наименование нейропрофиля</th>

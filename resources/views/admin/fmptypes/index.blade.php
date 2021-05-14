@@ -51,6 +51,7 @@
                                         <tr>
                                             <th style="width: 30px">#</th>
                                             <th>Наименование</th>
+                                            <th>Тип</th>
                                             <th>Действия</th>
                                         </tr>
                                         </thead>
@@ -103,6 +104,15 @@
                     columns: [
                         {data: 'id', name: 'id'},
                         {data: 'name', name: 'name'},
+                        {
+                            data: 'cluster', name: 'cluster', render: (data) => {
+                                if (data) {
+                                    return 'Нейрокластер';
+                                } else {
+                                    return 'ФМП';
+                                }
+                            }
+                        },
                         {data: 'action', name: 'action', sortable: false}
                     ]
                 });
