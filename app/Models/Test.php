@@ -215,9 +215,9 @@
          * Записи журнала (истории) прохождения теста
          * @return HasMany
          */
-        public function histories()
+        public function history()
         {
-            return $this->hasMany(History_test::class);
+            return $this->hasMany(History::class);
         }
 
         public function set()

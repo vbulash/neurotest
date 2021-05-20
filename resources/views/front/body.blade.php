@@ -1,15 +1,27 @@
 @extends('front.layouts.layout')
 
-@push('title') - Тест &laquo;{{ $testname }}&raquo;@endpush
+@push('title') - Тест &laquo;{{ $test->name }}&raquo;@endpush
 
-@push('testname'){{ $testname }}@endpush
+@push('testname'){{ $test->name }}@endpush
+
+@push('step_description')
+    @if($step->learning == 1)
+        Учебный вопрос, осталось секунд:
+    @elseif(intval($step->timeout) > 0)
+        Вопрос теста, осталось секунд:
+    @endif
+@endpush
 
 @section('content')
-    <form method="get" action="#" enctype="multipart/form-data">
+    <form method="get" action="{{ route('player.body', ['mkey' => $mkey, 'question' => $step->id]) }}"
+          enctype="multipart/form-data"
+          name="step-form" id="step-form">
         @csrf
+        <h2 class="mt-4 mb-4 text-center">Кликните мышкой на одно из изображений</h2>
         @php
             if(!isset($step)) return;
 
+            $countdown = 0;
             $rows = 1;
             $columns = 2;
             if($step->set->quantity == \App\Models\QuestionSet::IMAGES2) {
@@ -27,33 +39,112 @@
             $qa = $step->toArray();
         @endphp
         @for ($row = 0; $row < $rows; $row++)
-            <div class="row mb-4">
+            <div class="row test-row mb-4">
                 @for ($column = 0; $column < $columns; $column++)
-                    <div class="col-lg-{{ $grid }} col-xs-12">
-                        <div class="form-group">
-                            <div>
-                                <img id="image{{ $letters[$imageNo] }}"
-                                     src="/uploads/{{ $qa['image' . $letters[$imageNo]] }}"
-                                     alt=""
-                                     class="step-image">
-                            </div>
+                    <div class="col-{{ $grid }}">
+                        <div class="@if($column == 0) mr-4 @endif">
+                            <img id="image{{ $letters[$imageNo] }}"
+                                 src="/uploads/{{ $qa['image' . $letters[$imageNo]] }}"
+                                 data-id="{{ $letters[$imageNo] }}"
+                                 alt=""
+                                 class="step-image img-fluid">
                         </div>
                     </div>
                     @php($imageNo++)
                 @endfor
             </div>
         @endfor
-        <button type="submit" style="display:none;" name="answer" id="answer" value="timeout"></button>
+        <input type="hidden" name="answer" id="answer" value="0">
+        <button type="submit" style="display:none;"></button>
     </form>
 
 @endsection
 
 @push('scripts.injection')
     <script>
-        $(function () {
-            $('.step-image').on('click', () => {
-                alert();
+        @php($countdown = 0)
+        @if($step->learning == 1)
+        @php($countdown = 10)
+        @elseif(intval($step->timeout) > 0)
+        @php($countdown = $step->timeout)
+        @endif
+
+        const form = document.getElementById('step-form');
+
+        document.querySelectorAll(".step-image").forEach((input) => {
+            input.addEventListener('click', event => {
+                if (window.timer) clearInterval(window.timer);
+                if (window.moves) {
+                    clearInterval(window.moves);
+                    // TODO Сбросить информацию в общую базу данных
+                    localStorage.setItem('mousemoves', mouseMoves);
+                }
+
+                let image = event.target;
+                document.getElementById('answer').value = image.dataset.id
+                form.submit();
             });
+        });
+
+        @if(intval($test->options) & \App\Models\Test::MOUSE_TRACKING)
+        let mousePos;
+        let mouseMoves = [];
+
+        document.addEventListener('mousemove', event => {
+            let dot, eventDoc, doc, body, pageX, pageY;
+
+            event = event || window.event; // IE-ism
+
+            // If pageX/Y aren't available and clientX/Y are,
+            // calculate pageX/Y - logic taken from jQuery.
+            // (This is to support old IE)
+            if (event.pageX == null && event.clientX != null) {
+                eventDoc = (event.target && event.target.ownerDocument) || document;
+                doc = eventDoc.documentElement;
+                body = eventDoc.body;
+
+                event.pageX = event.clientX +
+                    (doc && doc.scrollLeft || body && body.scrollLeft || 0) -
+                    (doc && doc.clientLeft || body && body.clientLeft || 0);
+                event.pageY = event.clientY +
+                    (doc && doc.scrollTop || body && body.scrollTop || 0) -
+                    (doc && doc.clientTop || body && body.clientTop || 0);
+            }
+
+            let X = Math.min(event.pageX / window.innerWidth, 1);
+            let Y = Math.min(event.pageY / window.innerHeight, 1);
+            mousePos = {
+                x: X,
+                y: Y
+            };
+        });
+        @endif
+
+        document.addEventListener("DOMContentLoaded", () => {
+            @if(intval($test->options) & \App\Models\Test::MOUSE_TRACKING)
+            window.moves = setInterval(() => {
+                let pos = mousePos;
+                if (pos) {
+                    let coords = JSON.stringify(pos);
+                    mouseMoves.push(coords);
+                }
+            }, 100);
+            @endif
+
+            @if($countdown > 0)
+            document.getElementById('step-countdown').innerText = {{ $countdown }};
+            window.counter = {{ $countdown }};
+
+            window.timer = setInterval(() => {
+                console.log(window.counter);
+                document.getElementById('step-countdown').innerText = window.counter;
+                window.counter--;
+                if (window.counter < 0) {
+                    clearInterval(window.timer);
+                    form.submit();
+                }
+            }, 1000);
+            @endif
         });
     </script>
 @endpush

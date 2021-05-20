@@ -27,6 +27,11 @@ class License extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function history()
+    {
+        return $this->hasOne(History::class);
+    }
+
     // Генератор PKey
     public static function generateKey()
     {

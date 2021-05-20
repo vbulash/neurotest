@@ -58,7 +58,7 @@
     Route::group(['namespace' => 'App\Http\Controllers\Admin', 'middleware' => 'auth'], function () {
         // Пользователи
         Route::resource('/users', 'UserController');
-        Route::post('/users.data', 'UserController@getData')->name('users.index.data');
+        Route::get('/users.data', 'UserController@getData')->name('users.index.data');
         // Роли
         Route::resource('/roles', 'RoleController');
         Route::get('/roles.data', 'RoleController@getData')->name('roles.index.data');

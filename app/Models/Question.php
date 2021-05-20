@@ -26,6 +26,11 @@ class Question extends Model
         return $this->belongsTo(QuestionSet::class, 'questionset_id');
     }
 
+    public function history()
+    {
+        return $this->hasMany(History::class);
+    }
+
     public static function uploadImage(Request $request, string $imageField, string $image = null)
     {
         if($request->hasFile($imageField)) {

@@ -66,7 +66,7 @@
 @endsection
 
 @once
-    @if (count($users))
+    @if (count($users) > 0)
         @push('styles')
             <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables/datatables.css') }}">
         @endpush
@@ -77,7 +77,7 @@
     @endif
 @endonce
 
-@if(count($users))
+@if(count($users) > 0)
     @push('scripts.injection')
         <script>
             $(function () {
@@ -106,10 +106,6 @@
                         {data: 'action', name: 'action', sortable: false}
                     ]
                 });
-
-                // $(window).resize( () => {
-                //     window.table.columns.adjust().draw();
-                // });
             });
         </script>
     @endpush

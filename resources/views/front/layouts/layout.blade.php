@@ -13,8 +13,13 @@
 <body>
 <div class="container-fluid main-header pl-4">
     <nav class="navbar navbar-dark bg-primary">
-        <div class="navbar-brand ml-4">{{ env('APP_NAME') }}</div>
-        <div class="navbar-text">@stack('testname')</div>
+        <div class="navbar-brand">{{ env('APP_NAME') }}</div>
+        <div class="navbar-text">
+            <p>@stack('testname')</p>
+            <div>
+                @stack('step_description') <span id="step-countdown"></span>
+            </div>
+        </div>
     </nav>
 
     {{--    <div class="container-fluid mt-2">--}}
@@ -47,7 +52,7 @@
         {{-- Область тестирования --}}
         <div class="container">
             <div class="row module-wrapper">
-                <div class="offset-lg-2 col-lg-8">
+                <div class="col-8">
                     @yield('content')
                 </div>
             </div>
