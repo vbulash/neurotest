@@ -13,7 +13,7 @@
 @endpush
 
 @section('content')
-    <form method="get" action="{{ route('player.body', ['mkey' => $mkey, 'question' => $step->id]) }}"
+    <form method="get" action="{{ route('player.body', ['question' => $step->id]) }}"
           enctype="multipart/form-data"
           name="step-form" id="step-form">
         @csrf

@@ -12045,6 +12045,12 @@ sup.required-mark {
     height: 200px;
 }
 
+.thumb-row {
+    max-width: 40px;
+    max-height: 40px;
+    margin-right: 1em;
+}
+
 .tab-content {
     min-height: 60vh;
 }

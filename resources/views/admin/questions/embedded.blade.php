@@ -6,6 +6,7 @@
     </div>
     <!-- /.card-header -->
     <div class="card-body">
+        <!-- Удаление -->
         <form
             style="display:none"
             action="{{ route('questions.destroy', ['question' => 0]) }}"
@@ -21,9 +22,10 @@
         <a href="{{ route('questions.create') }}" class="btn btn-primary mb-3">Добавить вопрос</a>
         @if ($questions_count)
             <div class="table-responsive">
-                <table class="table table-bordered table-hover text-nowrap" id="questions_table">
+                <table class="table table-bordered table-hover text-nowrap" id="questions_table" style="width: 100%;">
                     <thead>
                     <th>Номер по порядку</th>
+                    <th>Миниатюры изображений</th>
                     <th>Режим прохождения</th>
                     <th>Таймаут, секунд</th>
                     <th>Действия</th>
@@ -58,8 +60,34 @@
                 document.getElementById('delete_btn').click();
             }
 
+            function clickUp(id) {
+                $.post({
+                    url: "{{ route('questions.up') }}",
+                    data: {
+                        id: id,
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    success: () => {
+                        window.datatable.ajax.reload();
+                    }
+                });
+            }
+
+            function clickDown(id) {
+                $.post({
+                    url: "{{ route('questions.down') }}",
+                    data: {
+                        id: id,
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    success: () => {
+                        window.datatable.ajax.reload();
+                    }
+                });
+            }
+
             $(function () {
-                let dt = $('#questions_table').DataTable({
+                window.datatable = $('#questions_table').DataTable({
                     language: {
                         "url": "{{ asset('assets/admin/plugins/datatables/lang/ru/Russian.json') }}"
                     },
@@ -67,8 +95,19 @@
                     serverSide: true,
                     ajax: '{!! route('questions.index.data') !!}',
                     columns: [
-                        {data: 'sort_no', name: 'sort_no'},
-                        {data: 'learning', name: 'learning', render: (data) => {
+                        {data: 'sort_no', name: 'sort_no', responsivePriority: 1},
+                        {data: 'thumb', name: 'thumb', responsivePriority: 3, sortable: false, render: (data) => {
+                            if(data) {
+                                let thumbs = JSON.parse(data.replace(/&quot;/g,'"'));
+                                let preview = '';
+                                thumbs.forEach((thumb) => {
+                                    preview = preview +
+                                        "<img src=\"" + thumb + "\" alt=\"\" class=\"thumb-row\">\n";
+                                });
+                                return preview;
+                            } else return '';
+                            }},
+                        {data: 'learning', name: 'learning', responsivePriority: 1, render: (data) => {
                             switch(data) {
                                 case 0:
                                     return 'Реальный';
@@ -76,8 +115,8 @@
                                     return 'Учебный';
                             }
                             }},
-                        {data: 'timeout', name: 'timeout'},
-                        {data: 'action', name: 'action', sortable: false}
+                        {data: 'timeout', name: 'timeout', responsivePriority: 2},
+                        {data: 'action', name: 'action', sortable: false, responsivePriority: 1, className: 'no-wrap dt-actions'}
                     ]
                 });
             });

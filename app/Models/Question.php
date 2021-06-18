@@ -55,7 +55,7 @@ class Question extends Model
             if(!$imageField) continue;
 
             $mediaPath = $target->getAttributeValue($imageField);
-            FileLink::link($mediaPath);
+            if($mediaPath) FileLink::link($mediaPath);
         }
         $target->save();
 

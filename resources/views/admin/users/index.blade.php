@@ -35,7 +35,7 @@
                             @endcan
                             @if (count($users))
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover text-nowrap" id="users_table">
+                                    <table class="table table-bordered table-hover text-nowrap" id="users_table" style="width: 100%;">
                                         <thead>
                                         <tr>
                                             <th style="width: 30px">#</th>
@@ -88,22 +88,23 @@
                     processing: true,
                     serverSide: true,
                     ajax: '{!! route('users.index.data') !!}',
+                    responsive: true,
                     columns: [
-                        {data: 'id', name: 'id'},
-                        {data: 'name', name: 'name'},
-                        {data: 'email', name: 'email'},
-                        {data: 'phone', name: 'phone'},
+                        {data: 'id', name: 'id', responsivePriority: 1},
+                        {data: 'name', name: 'name', responsivePriority: 1},
+                        {data: 'email', name: 'email', responsivePriority: 2},
+                        {data: 'phone', name: 'phone', responsivePriority: 2},
                         {
-                            data: 'roles', name: 'roles', render: (data) => {
+                            data: 'roles', name: 'roles', responsivePriority: 3, render: (data) => {
                                 return data.join(",<br/>");
                             }
                         },
                         {
-                            data: 'clients', name: 'clients', sortable: false, render: (data) => {
+                            data: 'clients', name: 'clients', sortable: false, responsivePriority: 4, render: (data) => {
                                 return data.join(",<br/>");
                             }
                         },
-                        {data: 'action', name: 'action', sortable: false}
+                        {data: 'action', name: 'action', sortable: false, responsivePriority: 1, className: 'no-wrap dt-actions'}
                     ]
                 });
             });

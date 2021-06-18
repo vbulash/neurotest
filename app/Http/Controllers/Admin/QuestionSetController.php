@@ -95,7 +95,7 @@ class QuestionSetController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreSetRequest $request
-     * @return RedirectResponse|Response
+     * @return Application|Factory|View|RedirectResponse|Response
      */
     public function store(StoreSetRequest $request)
     {
@@ -103,7 +103,11 @@ class QuestionSetController extends Controller
         $set = QuestionSet::create($data);
         $set->save();
 
-        return redirect()->route('sets.index')->with('success', "Набор вопросов &laquo;{$data['name']}&raquo; добавлен");
+        //return redirect()->route('sets.index')->with('success', "Набор вопросов &laquo;{$data['name']}&raquo; добавлен");
+        $clients = Client::all();
+        $questions_count = Question::all()->where('questionset_id', $set->id)->count();
+        $show = false;
+        return view('admin.sets.edit', compact('set', 'clients', 'questions_count', 'show'));
     }
 
     /**

@@ -2,6 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\INNRule;
+use App\Rules\OGRNControlSumRule;
+use App\Rules\OGRNRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateClientRequest extends FormRequest
@@ -25,8 +28,16 @@ class UpdateClientRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'inn' => 'required',
-            'ogrn' => 'required',
+            'inn' => [
+                'bail',
+                'required',
+                new INNRule($this)],
+            'ogrn' => [
+                'bail',
+                'required',
+                new OGRNRule($this),
+                new OGRNControlSumRule($this)
+            ],
             'address' => 'required'
         ];
     }

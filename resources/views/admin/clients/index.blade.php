@@ -34,7 +34,7 @@
                             <a href="{{ route('clients.create') }}" class="btn btn-primary mb-3">Добавить клиента</a>
                             @if ($count)
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover text-nowrap" id="clients_table">
+                                    <table class="table table-bordered table-hover text-nowrap" id="clients_table" style="width: 100%;">
                                         <thead>
                                         <tr>
                                             <th style="width: 30px">#</th>
@@ -84,11 +84,12 @@
                     processing: true,
                     serverSide: true,
                     ajax: '{!! route('clients.index.data') !!}',
+                    responsive: true,
                     columns: [
-                        {data: 'id', name: 'id'},
-                        {data: 'name', name: 'name'},
-                        {data: 'contracts', name: 'contracts', sortable: false},
-                        {data: 'action', name: 'action', sortable: false}
+                        {data: 'id', name: 'id', responsivePriority: 1},
+                        {data: 'name', name: 'name', responsivePriority: 1},
+                        {data: 'contracts', name: 'contracts', responsivePriority: 2, sortable: false},
+                        {data: 'action', name: 'action', sortable: false, responsivePriority: 1, className: 'no-wrap dt-actions'}
                     ]
                 });
             });

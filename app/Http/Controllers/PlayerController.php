@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PKeyRequest;
 use App\Models\Contract;
 use App\Models\History;
+use App\Models\HistoryStep;
 use App\Models\License;
 use App\Models\Question;
 use App\Models\Test;
@@ -12,8 +13,14 @@ use Illuminate\Http\Request;
 
 class PlayerController extends Controller
 {
-    public function check(Request $request, string $mkey): bool
+    public function check(Request $request, string $mkey = null): bool
     {
+        if(!$mkey) {
+            if(!session()->has('mkey')) {
+                session()->flash('error', 'Внутренняя ошибка: потерян мастер-ключ');
+                return false;
+            } else return true;
+        }
         session()->forget('test');
 
         $contract = Contract::all()->where('mkey', $mkey)->first();
@@ -37,6 +44,7 @@ class PlayerController extends Controller
                 return false;
             } else {
                 session()->put('test', $test);
+                session()->put('mkey', $mkey);
                 return true;
             }
         }
@@ -57,20 +65,19 @@ class PlayerController extends Controller
         }
     }
 
-    public function card(Request $request, string $mkey)
+    public function card(Request $request)
     {
-        if (!$this->check($request, $mkey)) {
+        if (!$this->check($request)) {
             return redirect()->route('player.index')->with('error', session('error'));
         } else {
             session()->forget('pkey');
             $test = session('test');
             if ($test->options & Test::AUTH_GUEST) {
-                return redirect()->route('player.body', ['mkey' => $mkey, 'question' => 0]);
-                // TODO Перейти на следующий этап теста
+                return redirect()->route('player.body', ['question' => 0]);
             } elseif ($test->options & Test::AUTH_FULL) {
                 // TODO Запрос полной анкеты перед тестом
             } elseif ($test->options & Test::AUTH_PKEY) {
-                return view('front.pkey_card', compact('test', 'mkey'));
+                return view('front.pkey_card', compact('test'));
             }
         }
     }
@@ -84,14 +91,13 @@ class PlayerController extends Controller
 
     public function store_pkey(PKeyRequest $request)
     {
-        $mkey = $request->mkey;
         session()->put('pkey', $request->pkey);
-        return redirect()->route('player.body', ['mkey' => $mkey, 'question' => 0]);
+        return redirect()->route('player.body', ['question' => 0]);
     }
 
-    public function body(Request $request, string $mkey, int $question = 0)
+    public function body(Request $request, int $question = 0)
     {
-        if (!$this->check($request, $mkey))
+        if (!$this->check($request))
             return redirect()->route('player.index')->with('error', session('error'));
 
         if($request->has('answer')) {
@@ -113,9 +119,13 @@ class PlayerController extends Controller
             if($jumpNext) {
                 $index++;
                 if($step->learning != 1) {  // Веса есть только у реальных (не учебных) вопросов
-                    $old = $history->getAttribute('channel' . $request->answer);
-                    $history->setAttribute('channel' . $request->answer, ++$old);
-                    $history->update();
+                    $hs = HistoryStep::create([
+                        'history_id' => $history->id,
+                        'question_id' => $step->id,
+                        'channel' . $request->answer => true,
+                        'done' => date("Y-m-d H:i:s")
+                    ]);
+                    $hs->save();
                 }
             }
 
@@ -126,12 +136,12 @@ class PlayerController extends Controller
                 $license = License::all()->where('pkey', session('pkey'))->first();
                 $license->done();
 
+                // TODO Отобразить результаты прохождения теста
                 return redirect()->route('player.index')
                     ->with('success', "Тест успешно завершен, нужно отобразить / переслать результат.<br/>Пока результат можно увидеть в базе данных в таблице history");
             }
         }
         $test = session('test');
-        $testname = $test->name;
         if ($question == 0) {
             $questions = array_values($test->set->questions->sortBy('sort_no')->pluck('id')->toArray());
             session()->put('steps', $questions);
@@ -148,7 +158,7 @@ class PlayerController extends Controller
             $history = History::create([
                 'test_id' => $test->id,
                 'license_id' => $license->id,
-                'card' => null, // TODO взять карточку с предыдщего маршрута
+                'card' => null, // TODO взять карточку с предыдущего маршрута
             ]);
             $history->save();
             session()->put('history', $history);
@@ -156,11 +166,11 @@ class PlayerController extends Controller
             // Переход на первый шаг теста
             $step = Question::findOrFail($questions[0]);
 
-            return view('front.body', compact('step', 'test', 'mkey'));
+            return view('front.body', compact('step', 'test'));
         } else {
             // Переход на вопрос $question
             $step = Question::findOrFail($question);
-            return view('front.body', compact('step', 'test', 'mkey'));
+            return view('front.body', compact('step', 'test'));
         }
     }
 }

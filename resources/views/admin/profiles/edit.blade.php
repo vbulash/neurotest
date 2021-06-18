@@ -139,14 +139,13 @@
                             </div>
                             @if (count($blocks) > 0)
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover text-nowrap" id="blocks_table">
+                                    <table class="table table-bordered table-hover text-nowrap" id="blocks_table" style="width: 100%;">
                                         <thead>
                                         <tr>
                                             <th style="width: 30px">#</th>
                                             <th>Наименование</th>
                                             <th>Тип блока</th>
-                                            <th>Код нейропрофиля</th>
-                                            <th>Наименование нейропрофиля</th>
+                                            <th>Нейропрофиль / тип описания</th>
                                             <th>Действия</th>
                                         </tr>
                                         </thead>
@@ -197,11 +196,12 @@
                     processing: true,
                     serverSide: true,
                     ajax: '{!! route('blocks.index.data', ['profile_id' => $profile->id]) !!}',
+                    responsive: true,
                     columns: [
-                        {data: 'id', name: 'id'},
-                        {data: 'description', name: 'description'},
+                        {data: 'id', name: 'id', responsivePriority: 1},
+                        {data: 'description', name: 'description', responsivePriority: 1},
                         {
-                            data: 'type', name: 'type', render: (data) => {
+                            data: 'type', name: 'type', responsivePriority: 3, render: (data) => {
                                 switch (data) {
                                     case {{ \App\Models\Block::TYPE_TEXT }}:
                                         return 'Текстовый блок';
@@ -212,9 +212,8 @@
                                 }
                             }
                         },
-                        {data: 'profile_code', name: 'profile_code'},
-                        {data: 'profile_name', name: 'profile_name'},
-                        {data: 'action', name: 'action', sortable: false}
+                        {data: 'profile', name: 'profile', responsivePriority: 2},
+                        {data: 'action', name: 'action', sortable: false, responsivePriority: 1, className: 'no-wrap dt-actions'}
                     ]
                 });
             });

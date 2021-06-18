@@ -46,7 +46,7 @@
                             <a href="{{ route('fmptypes.create') }}" class="btn btn-primary mb-3">Добавить тип</a>
                             @if (count($fmptypes) > 0)
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover text-nowrap" id="fmptypes_table">
+                                    <table class="table table-bordered table-hover text-nowrap" id="fmptypes_table" style="width: 100%;">
                                         <thead>
                                         <tr>
                                             <th style="width: 30px">#</th>
@@ -101,11 +101,12 @@
                     processing: true,
                     serverSide: true,
                     ajax: '{!! route('fmptypes.index.data') !!}',
+                    responsive: true,
                     columns: [
-                        {data: 'id', name: 'id'},
-                        {data: 'name', name: 'name'},
+                        {data: 'id', name: 'id', responsivePriority: 1},
+                        {data: 'name', name: 'name', responsivePriority: 1},
                         {
-                            data: 'cluster', name: 'cluster', render: (data) => {
+                            data: 'cluster', name: 'cluster', responsivePriority: 2, render: (data) => {
                                 if (data) {
                                     return 'Нейрокластер';
                                 } else {
@@ -113,7 +114,7 @@
                                 }
                             }
                         },
-                        {data: 'action', name: 'action', sortable: false}
+                        {data: 'action', name: 'action', sortable: false, responsivePriority: 1, className: 'no-wrap dt-actions'}
                     ]
                 });
             });

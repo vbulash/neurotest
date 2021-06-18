@@ -46,7 +46,7 @@
                                 вопросов</a>
                             @if ($count)
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover text-nowrap" id="sets_table">
+                                    <table class="table table-bordered table-hover text-nowrap" id="sets_table" style="width: 100%">
                                         <thead>
                                         <tr>
                                             <th style="width: 30px">#</th>

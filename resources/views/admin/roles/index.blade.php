@@ -34,7 +34,7 @@
                             @endcan
                             @if (count($roles))
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover text-nowrap" id="roles_table">
+                                    <table class="table table-bordered table-hover text-nowrap" id="roles_table" style="width: 100%;">
                                         <thead>
                                         <tr>
                                             <th style="width: 30px">#</th>
@@ -85,20 +85,17 @@
                     processing: true,
                     serverSide: true,
                     ajax: '{!! route('roles.index.data') !!}',
+                    responsive: true,
                     columns: [
-                        {data: 'id', name: 'id'},
-                        {data: 'name', name: 'name'},
-                        {data: 'permissions', name: 'permissions', sortable: false, render: (data) => {
+                        {data: 'id', name: 'id', responsivePriority: 1},
+                        {data: 'name', name: 'name', responsivePriority: 1},
+                        {data: 'permissions', name: 'permissions', sortable: false, responsivePriority: 2, render: (data) => {
                             return data.join(",<br/>");
                             }},
-                        {data: 'wildcards', name: 'wildcards'},
-                        {data: 'action', name: 'action', sortable: false}
+                        {data: 'wildcards', name: 'wildcards', responsivePriority: 3},
+                        {data: 'action', name: 'action', sortable: false, responsivePriority: 1, className: 'no-wrap dt-actions'}
                     ]
                 });
-
-                // $(window).resize( () => {
-                //     window.table.columns.adjust().draw();
-                // });
             });
         </script>
     @endpush

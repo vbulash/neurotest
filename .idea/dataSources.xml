@@ -9,6 +9,7 @@
       <working-dir>$ProjectFileDir$</working-dir>
       <driver-properties>
         <property name="serverTimezone" value="UTC" />
+        <property name="enabledTLSProtocols" value="TLSv1,TLSv1.1,TLSv1.2,TLSv1.3" />
       </driver-properties>
     </data-source>
   </component>

@@ -78,18 +78,18 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group col-lg-6 col-xs-12" id="contract-div">
-                                    <label for="client_id">Клиент для набора вопросов (имеет смысл только для типа
-                                        &laquo;Исключительный&raquo;)</label>
-                                    <select name="client_id" id="client_id" class="select2"
-                                            data-placeholder="Выбор клиента"
-                                            style="width: 100%;" @if($show) disabled @endif>
-                                        @foreach($clients as $client)
-                                            <option value="{{ $client->id }}"
-                                                    @if($set->client_id == $client->id) selected @endif>{{ $client->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+{{--                                <div class="form-group col-lg-6 col-xs-12" id="contract-div">--}}
+{{--                                    <label for="client_id">Клиент для набора вопросов (имеет смысл только для типа--}}
+{{--                                        &laquo;Исключительный&raquo;)</label>--}}
+{{--                                    <select name="client_id" id="client_id" class="select2"--}}
+{{--                                            data-placeholder="Выбор клиента"--}}
+{{--                                            style="width: 100%;" @if($show) disabled @endif>--}}
+{{--                                        @foreach($clients as $client)--}}
+{{--                                            <option value="{{ $client->id }}"--}}
+{{--                                                    @if($set->client_id == $client->id) selected @endif>{{ $client->name }}</option>--}}
+{{--                                        @endforeach--}}
+{{--                                    </select>--}}
+{{--                                </div>--}}
                             </div>
                             <!-- /.card-body -->
 
@@ -117,7 +117,7 @@
 @push('scripts.injection')
     <script>
         $(function () {
-            $('#contract-div').hide();
+            // $('#contract-div').hide();
         });
     </script>
 @endpush

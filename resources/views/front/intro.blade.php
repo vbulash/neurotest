@@ -6,7 +6,7 @@
 
 @section('content')
     <form role="form" method="get"
-          action="{{ route('player.card', ['mkey' => $test->contract->mkey]) }}">
+          action="{{ route('player.card') }}">
         @csrf
         <input type="hidden" name="nextblock" value="card">
         <p>Здесь описание теста или напутствие тестируемому...</p>

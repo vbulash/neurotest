@@ -50,7 +50,7 @@
                             {{--                            <a href="{{ route('tests.create') }}" class="btn btn-primary mb-3">Добавить тест</a>--}}
                             @if ($count)
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover text-nowrap" id="tests_table">
+                                    <table class="table table-bordered table-hover text-nowrap" id="tests_table" style="width: 100%;">
                                         <thead>
                                         <tr>
                                             <th style="width: 30px">#</th>
@@ -85,15 +85,11 @@
 @once
     @if ($count)
         @push('styles')
-            {{--            <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables/datatables.css') }}">--}}
-            <link rel="stylesheet" type="text/css"
-                  href="https://cdn.datatables.net/v/bs4/dt-1.10.24/datatables.min.css"/>
+            <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables/datatables.css') }}">
         @endpush
 
         @push('scripts')
-            {{--            <script src="{{ asset('assets/admin/plugins/datatables/datatables.js') }}"></script>--}}
-            <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
-            <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
+            <script src="{{ asset('assets/admin/plugins/datatables/datatables.js') }}"></script>
         @endpush
     @endif
 @endonce
@@ -114,11 +110,12 @@
                     processing: true,
                     serverSide: true,
                     ajax: '{!! route('tests.index.data') !!}',
+                    responsive: true,
                     columns: [
-                        {data: 'id', name: 'id'},
-                        {data: 'name', name: 'name'},
+                        {data: 'id', name: 'id', responsivePriority: 1},
+                        {data: 'name', name: 'name', responsivePriority: 1},
                         {
-                            data: 'type', name: 'type', render: (data) => {
+                            data: 'type', name: 'type', responsivePriority: 2, render: (data) => {
                                 switch (data) {
                                     case {{ \App\Models\Test::TYPE_DRAFT }}:
                                         return 'Черновик';
@@ -134,11 +131,11 @@
                             }
                         },
                         {
-                            data: 'contract', name: 'contract', render: (data) => {
+                            data: 'contract', name: 'contract', responsivePriority: 3, render: (data) => {
                                 return data != null ? data : 'Не применимо';
                             }
                         },
-                        {data: 'action', name: 'action', sortable: false}
+                        {data: 'action', name: 'action', sortable: false, responsivePriority: 1, className: 'no-wrap dt-actions'}
                     ]
                 });
             });

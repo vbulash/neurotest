@@ -17,8 +17,15 @@ class CreateHistoryTable extends Migration
             $table->id();
             $table->foreignId('test_id')->constrained()->cascadeOnDelete();
             $table->foreignId('license_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('question_id')->constrained()->cascadeOnDelete();
             $table->longText('card')->nullable();
+            $table->timestamp('done')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('historysteps', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('history_id')->constrained('history')->cascadeOnDelete();
+            $table->foreignId('question_id')->constrained()->cascadeOnDelete();
             $table->boolean('channelA')->default(false);
             $table->boolean('channelB')->default(false);
             $table->boolean('channelC')->default(false);
@@ -35,6 +42,7 @@ class CreateHistoryTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('historysteps');
         Schema::dropIfExists('history');
     }
 }

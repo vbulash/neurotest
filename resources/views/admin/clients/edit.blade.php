@@ -128,7 +128,7 @@
                                class="btn btn-primary mb-3">Добавить контракт</a>
                             @if ($count)
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover text-nowrap" id="contracts_table">
+                                    <table class="table table-bordered table-hover text-nowrap" id="contracts_table" style="width: 100%;">
                                         <thead>
                                         <tr>
                                             <th>Номер контракта</th>
@@ -180,13 +180,14 @@
                     processing: true,
                     serverSide: true,
                     ajax: '{!! route('contracts.index.data', ['client' => $client->id]) !!}',
+                    responsive: true,
                     columns: [
-                        {data: 'number', name: 'number'},
-                        {data: 'start', name: 'start'},
-                        {data: 'end', name: 'end'},
-                        {data: 'license_count', name: 'license_count'},
-                        {data: 'status', name: 'status'},
-                        {data: 'action', name: 'action', sortable: false}
+                        {data: 'number', name: 'number', responsivePriority: 1},
+                        {data: 'start', name: 'start',responsivePriority: 2},
+                        {data: 'end', name: 'end', responsivePriority: 2},
+                        {data: 'license_count', name: 'license_count', responsivePriority: 4},
+                        {data: 'status', name: 'status', responsivePriority: 3},
+                        {data: 'action', name: 'action', sortable: false, responsivePriority: 1, className: 'no-wrap dt-actions'}
                     ]
                 });
             });

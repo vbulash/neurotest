@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\ToastEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreQuestionRequest;
 use App\Models\FileLink;
@@ -14,6 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
@@ -31,9 +33,20 @@ class QuestionsController extends Controller
     {
         $set_id = session('set_id');
         $questions = Question::all()->where('questionset_id', $set_id)->sortBy('sort_no');
+        $first = $questions->first()->id;
+        $last = $questions->last()->id;
 
         return Datatables::of($questions)
-            ->addColumn('action', function ($question) {
+            ->addColumn('thumb', function ($question) {
+                $data = [];
+                $letters = ['A', 'B', 'C', 'D'];
+                foreach ($letters as $letter) {
+                    $image = $question->getAttributeValue('image' . $letter);
+                    if($image) $data[] = '/uploads/' . $image;
+                }
+                return ($data ? json_encode($data) : '');
+            })
+            ->addColumn('action', function ($question) use($first, $last) {
                 $editRoute = route('questions.edit', ['question' => $question->id]);
                 $showRoute = route('questions.show', ['question' => $question->id]);
                 $actions =
@@ -47,10 +60,23 @@ class QuestionsController extends Controller
                     "<i class=\"fas fa-eye\"></i>\n" .
                     "</a>\n";
                 $actions .=
-                    "<a href=\"javascript:void(0)\" class=\"btn btn-info btn-sm float-left mr-1\" " .
+                    "<a href=\"javascript:void(0)\" class=\"btn btn-info btn-sm float-left mr-5\" " .
                     "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Удаление\" onclick=\"clickDelete({$question->id})\">\n" .
                     "<i class=\"fas fa-trash-alt\"></i>\n" .
                     "</a>\n";
+
+                if($question->id != $first)
+                    $actions .=
+                        "<a href=\"javascript:void(0)\" class=\"btn btn-info btn-sm float-left mr-1\" " .
+                        "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Выше\" onclick=\"clickUp({$question->id})\">\n" .
+                        "<i class=\"fas fa-arrow-up\"></i>\n" .
+                        "</a>\n";
+                if($question->id != $last)
+                    $actions .=
+                        "<a href=\"javascript:void(0)\" class=\"btn btn-info btn-sm float-left\" " .
+                        "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Ниже\" onclick=\"clickDown({$question->id})\">\n" .
+                        "<i class=\"fas fa-arrow-down\"></i>\n" .
+                        "</a>\n";
 
                 return $actions;
             })
@@ -98,7 +124,7 @@ class QuestionsController extends Controller
         for($imageNo = 0; $imageNo < $set->quantity; $imageNo++) {
             $field = 'image' . $letters[$imageNo];
             $mediaPath = Question::uploadImage($request, $field);
-            FileLink::link($mediaPath);
+            if($mediaPath) FileLink::link($mediaPath);
             $data[$field] = $mediaPath;
         }
 
@@ -161,7 +187,7 @@ class QuestionsController extends Controller
             $field = 'image' . $letters[$imageNo];
             if($request->has($field)) {
                 $mediaPath = Question::uploadImage($request, $field, $qa[$field]);
-                FileLink::link($mediaPath);
+                if($mediaPath) FileLink::link($mediaPath);
                 $data[$field] = $mediaPath;
             }
         }
@@ -193,8 +219,9 @@ class QuestionsController extends Controller
             if(!$imageField) continue;
 
             $mediaPath = $question->getAttributeValue($imageField);
-            if(FileLink::unlink($mediaPath))
-                Storage::delete($mediaPath);
+            if($mediaPath)
+                if(FileLink::unlink($mediaPath))
+                    Storage::delete($mediaPath);
         }
         $question->delete();
 
@@ -203,6 +230,68 @@ class QuestionsController extends Controller
         $route = 'sets.' . ($set_show ? 'show' : 'edit');
         return redirect()->route($route, ['set' => $set_id])->with('success', "Вопрос № {$sort_no} удалён");
     }
+
+    private function move(int $id, bool $up) {
+        $question = Question::findOrFail($id);
+
+        $set = $question->set()->pluck('id')->first();
+        $questions = Question::all()->where('questionset_id', $set)->sortBy('sort_no')->pluck('sort_no', 'id')->toArray();
+
+        $indexes = array_keys($questions);
+
+        $currentPos = array_search($question->id, $indexes);
+        $currentID = $question->id;
+        $currentOrder = $question->sort_no;
+        $current = Question::findOrFail($currentID);
+
+        $targetPos = ($up ? $currentPos - 1 : $currentPos + 1);
+        $targetID = $indexes[$targetPos];
+        $targetOrder = $questions[$targetID];
+        $target = Question::findOrFail($targetID);
+
+        // Обмен sort_no в 2 записях в рамках транзакции
+        DB::transaction(function() use ($current, $target, $currentOrder, $targetOrder) {
+            $current->update([
+                'sort_no' => $targetOrder
+            ]);
+            $target->update([
+                'sort_no' => $currentOrder
+            ]);
+        });
+    }
+
+    /**
+     * Move question up on sort order
+     *
+     * @param Request $request
+     * @param int $id
+     * @return bool
+     */
+    public function up(Request $request)
+    {
+        $id = $request->id;
+        $this->move($id, true);
+        event(new ToastEvent('Работа с вопросами тестов', 'Вопрос перемещен ближе к началу списка'));
+
+        return true;
+    }
+
+    /**
+     * Move question down on sort order
+     *
+     * @param Request $request
+     * @param int $id
+     * @return bool
+     */
+    public function down(Request $request)
+    {
+        $id = $request->id;
+        $this->move($id, false);
+        event(new ToastEvent('Работа с вопросами тестов', 'Вопрос перемещен ближе к концу списка'));
+
+        return true;
+    }
+
 
 //    public function copy(int $qid, int $setId, bool $massCopy = true)
 //    {

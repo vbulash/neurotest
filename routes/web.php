@@ -39,6 +39,8 @@
         //  Вопросы
         Route::resource('/questions', 'QuestionsController');
         Route::get('/questions.data', 'QuestionsController@getData')->name('questions.index.data');
+        Route::post('/questions.up', 'QuestionsController@up')->name('questions.up');
+        Route::post('/questions.down', 'QuestionsController@down')->name('questions.down');
         // Блоки описания ФМП
         Route::resource('/blocks', 'BlockController');
         Route::get('/blocks.data/{profile_id?}', 'BlockController@getData')->name('blocks.index.data');
@@ -78,10 +80,10 @@
     Route::group(['namespace' => 'App\Http\Controllers'], function () {
         Route::get('/player.index', 'PlayerController@index')->name('player.index');
         Route::get('/player.play/{mkey}', 'PlayerController@play')->name('player.play');
-        Route::get('/player.card/{mkey}', 'PlayerController@card')->name('player.card');
+        Route::get('/player.card', 'PlayerController@card')->name('player.card');
         Route::get('/player.pkey', 'PlayerController@store_pkey')->name('player.pkey');
         // TODO Реализовать маршрут сохранения полной карты
 
-        Route::get('/player.body/{mkey}/{question?}', 'PlayerController@body')->name('player.body');
-        Route::get('/player.result/{mkey}', 'PlayerController@result')->name('player.result');
+        Route::get('/player.body/{question?}', 'PlayerController@body')->name('player.body');
+        Route::get('/player.result', 'PlayerController@result')->name('player.result');
     });

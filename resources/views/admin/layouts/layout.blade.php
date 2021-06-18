@@ -214,12 +214,12 @@
                                     <p>Клиенты</p>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link"> {{-- route('contracts.index') --}}
-                                    <i class="nav-icon fas fa-file-signature"></i>
-                                    <p>Контракты</p>
-                                </a>
-                            </li>
+{{--                            <li class="nav-item">--}}
+{{--                                <a href="#" class="nav-link"> --}}{{-- route('contracts.index') --}}
+{{--                                    <i class="nav-icon fas fa-file-signature"></i>--}}
+{{--                                    <p>Контракты</p>--}}
+{{--                                </a>--}}
+{{--                            </li>--}}
                         </ul>
                     </li>
                     <!-- .Клиенты -->

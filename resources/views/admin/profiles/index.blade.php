@@ -46,7 +46,7 @@
                             <a href="{{ route('neuroprofiles.create') }}" class="btn btn-primary mb-3">Добавить нейропрофиль</a>
                             @if (count($profiles) > 0)
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover text-nowrap" id="profiles_table">
+                                    <table class="table table-bordered table-hover text-nowrap" id="profiles_table" style="width: 100%;">
                                         <thead>
                                         <tr>
                                             <th style="width: 30px">#</th>
@@ -102,12 +102,13 @@
                     processing: true,
                     serverSide: true,
                     ajax: '{!! route('neuroprofiles.index.data', ['fmptype_id' => 0]) !!}',
+                    responsive: true,
                     columns: [
-                        {data: 'id', name: 'id'},
-                        {data: 'code', name: 'code'},
-                        {data: 'name', name: 'name'},
-                        {data: 'fmptype', name: 'fmptype'},
-                        {data: 'action', name: 'action', sortable: false}
+                        {data: 'id', name: 'id', responsivePriority: 1},
+                        {data: 'code', name: 'code', responsivePriority: 1},
+                        {data: 'name', name: 'name', responsivePriority: 1},
+                        {data: 'fmptype', name: 'fmptype', responsivePriority: 2},
+                        {data: 'action', name: 'action', sortable: false, responsivePriority: 1, className: 'no-wrap dt-actions'}
                     ]
                 });
             });

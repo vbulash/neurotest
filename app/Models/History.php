@@ -8,21 +8,13 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class History extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory;
 
     protected $table = 'history';
 
     protected $fillable = [
-        'test_id', 'license_id', 'question_id', 'card',
-        'channelA', 'channelB', 'channelC', 'channelD', 'done'
+        'test_id', 'license_id', 'card', 'done'
     ];
-
-    protected static $logAttributes = ['*'];
-
-    public function getDescriptionForEvent(string $eventName): string
-    {
-        return "Событие изменения истории прохождения теста: {$eventName}";
-    }
 
     public function test()
     {
@@ -34,9 +26,9 @@ class History extends Model
         return $this->belongsTo(License::class);
     }
 
-    public function question()
+    public function steps()
     {
-        return $this->belongsTo(Question::class);
+        return $this->hasMany(HistoryStep::class);
     }
 
     public function mousemoves()

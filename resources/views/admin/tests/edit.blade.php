@@ -67,7 +67,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group" id="contract-div">
+                                <div class="form-group mt-4 mb-4" id="contract-div">
                                     <label for="contract">Контракт теста</label>
                                     <select name="contract" id="contract" class="select2 col-lg-6 col-xs-12"
                                             data-placeholder="Выбор контракта" @if($show) disabled @endif>
@@ -78,6 +78,10 @@
                                             </option>
                                         @endforeach
                                     </select>
+
+{{--                                    <label for="mkey">Мастер-ключ</label>--}}
+{{--                                    <input type="text" id="mkey" name="mkey" class="form-control col-lg-6 col-xs-12" disabled--}}
+{{--                                           value="{{ $test->contract->mkey }}">--}}
                                 </div>
                                 <div class="form-group mt-2">
                                     <label for="auth">Анкетирование в начале теста</label>

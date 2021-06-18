@@ -17,7 +17,9 @@
                 data-placeholder="Выбор нейропрофиля">
             @foreach($profiles as $profile)
                 <option value="{{ $profile->id }}"
-                        @if($loop->first) selected @endif>{{ $profile->name }}</option>
+                        @if($loop->first) selected @endif>
+                    ({{ $profile->code }}) {{ $profile->name }}, тип: {{ $profile->fmptype->name }}
+                </option>
             @endforeach
         </select>
     </div>

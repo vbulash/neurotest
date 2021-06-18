@@ -2,6 +2,9 @@
 
     namespace App\Http\Requests;
 
+    use App\Rules\INNRule;
+    use App\Rules\OGRNControlSumRule;
+    use App\Rules\OGRNRule;
     use Illuminate\Foundation\Http\FormRequest;
 
     class StoreClientRequest extends FormRequest
@@ -25,8 +28,17 @@
         {
             return [
                 'name' => 'required',
-                'inn' => 'required|unique:clients,inn',
-                'ogrn' => 'required|unique:clients,ogrn',
+                'inn' => [
+                    'bail',
+                    'required|unique:clients,inn',
+                    new INNRule($this)
+                ],
+                'ogrn' => [
+                    'bail',
+                    'required|unique:clients,ogrn',
+                    new OGRNRule($this),
+                    new OGRNControlSumRule($this)
+                ],
                 'address' => 'required'
             ];
         }

@@ -134,7 +134,7 @@
                 });
             }
 
-            return redirect()->route('admin.clients.index')
+            return redirect()->route('clients.index')
                 ->with('success', "Контракт &laquo;{$contract->number}&raquo; добавлен и " .
                     "сгенерированы лицензии контракта ({$contract->license_count})");
         }
@@ -235,5 +235,16 @@
         public function destroy($id)
         {
             //
+        }
+
+        /**
+         * Получение мастер-ключа по ID контракта
+         *
+         * @param Request $request
+         * @return string Мастер-ключ
+         */
+        public function getMKey(Request $request): string {
+            $contract = Contract::findOrFail($request->id);
+            return $contract->mkey;
         }
     }

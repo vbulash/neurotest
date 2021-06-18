@@ -39,13 +39,12 @@ class BlockController extends Controller
         }
 
         return Datatables::of($blocks)
-            ->editColumn('profile_code', function ($block) {
-                if($block->profile)
-                    return $block->profile->code;
-            })
-            ->editColumn('profile_name', function ($block) {
-                if($block->profile)
-                    return $block->profile->name;
+            ->editColumn('profile', function ($block) {
+                if(!$block->profile) {
+                    return 'Нет привязки, исправьте в режиме Редактирование';
+                } else {
+                    return sprintf("(%s) %s, тип: %s", $block->profile->code, $block->profile->name, $block->profile->fmptype->name);
+                }
             })
             ->addColumn('action', function ($block) use($profile_id) {
                 $params = ['block' => $block->id];
@@ -107,16 +106,13 @@ class BlockController extends Controller
         if($request->has('embedded'))
             $embedded = $request->embedded;
 
-        switch($type) {
-            case Block::TYPE_TEXT:
-                return view('blocks.text.create', compact('profiles', 'embedded'));
-            case Block::TYPE_IMAGE:
-                return view('blocks.image.create', compact('profiles', 'embedded'));
-            case Block::TYPE_SCRIPT:
-                return view('blocks.script.create', compact('profiles', 'embedded'));
-            case Block::TYPE_VIDEO:
-                return view('blocks.video.create', compact('profiles', 'embedded'));
-        }
+        $views = [
+            Block::TYPE_TEXT => 'blocks.text.create',
+            Block::TYPE_IMAGE => 'blocks.image.create',
+            Block::TYPE_SCRIPT => 'blocks.script.create',
+            Block::TYPE_VIDEO => 'blocks.video.create'
+        ];
+        return view($views[$type], compact('profiles', 'embedded'));
     }
 
     /**
@@ -175,15 +171,14 @@ class BlockController extends Controller
         $block = Block::findOrFail($id);
         $profile = $block->profile;
         $show = $request->has('show') ? $request->show : false;
+        $profiles = Neuroprofile::all();
 
-        switch($block->type) {
-            case Block::TYPE_TEXT:
-                return view('blocks.text.edit', compact('block', 'profile', 'show'));
-            case Block::TYPE_IMAGE:
-                return view('blocks.image.edit', compact('block', 'profile', 'show'));
-            case Block::TYPE_VIDEO:
-                return view('blocks.video.edit', compact('block', 'profile', 'show'));
-        }
+        $views = [
+            Block::TYPE_TEXT => 'blocks.text.edit',
+            Block::TYPE_IMAGE => 'blocks.image.edit',
+            Block::TYPE_VIDEO => 'blocks.video.edit'
+        ];
+        return view($views[$block->type], compact('block', 'profile', 'profiles', 'show'));
     }
 
     /**
@@ -233,8 +228,9 @@ class BlockController extends Controller
         switch($block->type) {
             case Block::TYPE_IMAGE:
             case Block::TYPE_VIDEO:
-                if(FileLink::unlink($block->content))
-                    Storage::delete($block->content);
+                if($block->content)
+                    if(FileLink::unlink($block->content))
+                        Storage::delete($block->content);
                 break;
         }
         $block_id = $block->id;
