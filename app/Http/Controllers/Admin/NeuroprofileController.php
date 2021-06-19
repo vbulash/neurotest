@@ -2,6 +2,7 @@
 
     namespace App\Http\Controllers\Admin;
 
+    use App\Events\ToastEvent;
     use App\Http\Controllers\Controller;
     use App\Http\Requests\NeuroprofileRequest;
     use App\Http\Support\CallStack;
@@ -179,19 +180,21 @@
          * Remove the specified resource from storage.
          *
          * @param Request $request
-         * @param int $id
-         * @return RedirectResponse
+         * @param int $neuroprofile
+         * @return bool
          */
-        public function destroy(Request $request, int $id)
+        public function destroy(Request $request, int $neuroprofile)
         {
-            if ($id == 0)
-                $id = $request->delete_id;
+            if ($neuroprofile == 0) {
+                $id = $request->id;
+            } else $id = $neuroprofile;
 
             $profile = Neuroprofile::findOrFail($id);
             $name = $profile->name;
             $profile->delete();
 
-            return CallStack::back('success', "Нейропрофиль &laquo;{$name}&raquo; удален");
+            event(new ToastEvent('success', '', "Нейропрофиль &laquo;{$name}&raquo; удален"));
+            return true;
         }
 
         public function back(?string $key = null, ?string $message = null)

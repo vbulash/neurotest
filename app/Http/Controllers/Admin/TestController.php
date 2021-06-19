@@ -2,6 +2,7 @@
 
     namespace App\Http\Controllers\Admin;
 
+    use App\Events\ToastEvent;
     use App\Http\Requests\StoreTestRequest;
     use App\Http\Requests\UpdateTestRequest;
     use App\Http\Support\CallStack;
@@ -234,17 +235,21 @@
          * Remove the specified resource from storage.
          *
          * @param Request $request
-         * @param int $id
-         * @return RedirectResponse
+         * @param int $test
+         * @return bool
          */
-        public function destroy(Request $request, int $id)
+        public function destroy(Request $request, int $test)
         {
-            if ($id == 0)
-                $id = $request->delete_id;
+            if ($test == 0) {
+                $id = $request->id;
+            } else $id = $test;
+
             $test = Test::findOrFail($id);
             $title = $test->name;
             $test->delete();
-            return redirect()->route('tests.index')->with('success', "Тест \"$title\" удалён");
+
+            event(new ToastEvent('success', '', "Тест \"$title\" удалён"));
+            return true;
         }
 
         public function back(?string $key = null, ?string $message = null)

@@ -180,7 +180,7 @@
                             });
                     });
                 @endphp
-{{--                {!! \Spatie\Menu\Laravel\Menu::main() !!}--}}
+                {{--                {!! \Spatie\Menu\Laravel\Menu::main() !!}--}}
                 <!-- .Spatie menu -->
 
                     <li class="nav-item">
@@ -214,12 +214,12 @@
                                     <p>Клиенты</p>
                                 </a>
                             </li>
-{{--                            <li class="nav-item">--}}
-{{--                                <a href="#" class="nav-link"> --}}{{-- route('contracts.index') --}}
-{{--                                    <i class="nav-icon fas fa-file-signature"></i>--}}
-{{--                                    <p>Контракты</p>--}}
-{{--                                </a>--}}
-{{--                            </li>--}}
+                            {{--                            <li class="nav-item">--}}
+                            {{--                                <a href="#" class="nav-link"> --}}{{-- route('contracts.index') --}}
+                            {{--                                    <i class="nav-icon fas fa-file-signature"></i>--}}
+                            {{--                                    <p>Контракты</p>--}}
+                            {{--                                </a>--}}
+                            {{--                            </li>--}}
                         </ul>
                     </li>
                     <!-- .Клиенты -->
@@ -335,29 +335,6 @@
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-
-        <div class="container-fluid mt-2">
-            <div class="row">
-                <div class="col-12">
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul class="list-unstyled mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{!!  $error !!}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    @if (session()->has('success'))
-                        <div class="alert alert-success mb-0">
-                            {!! session('success') !!}
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-
         @yield('content')
         @yield('modals')
     </div>
@@ -375,6 +352,25 @@
 
 <script src="{{ asset('assets/admin/js/admin.js') }}"></script>
 <script>
+    // Инициализация pusher'а
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": false,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "6000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
     String.prototype.trimRight = function (charlist) {
         if (charlist === undefined)
             charlist = "\s";
@@ -390,6 +386,27 @@
             $(this).parents('.has-treeview').addClass('menu-open');
         }
     });
+
+    // Broadcast
+    var pusher = new Pusher('{{ env('PUSHER_APP_KEY') }}', {
+        cluster: '{{ env('PUSHER_APP_CLUSTER') }}'
+    });
+
+    var channel = pusher.subscribe('neurotest-channel');
+    channel.bind('toast-event', (data) => {
+        toastr[data.type](data.message, data.title);
+    });
+
+    // Ошибки и сообщения
+    @if ($errors->any())
+        @foreach ($errors->all() as $error)
+            toastr['error']("{!! $error !!}");
+        @endforeach
+    @endif
+
+    @if (session()->has('success'))
+        toastr['success']("{!! session('success') !!}");
+    @endif
 </script>
 <!-- Page file / URL scripts -->
 @stack('scripts')

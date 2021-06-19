@@ -11,11 +11,13 @@ class ToastEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public string $type;
     public string $title;
     public string $message;
 
-    public function __construct(string $title, string $message)
+    public function __construct(string $type, string $title, string $message)
     {
+        $this->type = $type;
         $this->title = $title;
         $this->message = $message;
     }

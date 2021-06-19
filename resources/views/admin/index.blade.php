@@ -84,3 +84,11 @@
     </section>
     <!-- /.content -->
 @endsection
+
+@push('scripts.injection')
+    <script>
+        $(function () {
+            //
+        });
+    </script>
+@endpush

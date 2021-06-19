@@ -3,6 +3,8 @@
 
 	namespace App\Http\Support;
 
+    use Illuminate\Support\Facades\Log;
+
     class CallStack
 	{
         public static function back(?string $key = null, ?string $message = null)

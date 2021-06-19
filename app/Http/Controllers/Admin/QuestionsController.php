@@ -42,11 +42,11 @@ class QuestionsController extends Controller
                 $letters = ['A', 'B', 'C', 'D'];
                 foreach ($letters as $letter) {
                     $image = $question->getAttributeValue('image' . $letter);
-                    if($image) $data[] = '/uploads/' . $image;
+                    if ($image) $data[] = '/uploads/' . $image;
                 }
                 return ($data ? json_encode($data) : '');
             })
-            ->addColumn('action', function ($question) use($first, $last) {
+            ->addColumn('action', function ($question) use ($first, $last) {
                 $editRoute = route('questions.edit', ['question' => $question->id]);
                 $showRoute = route('questions.show', ['question' => $question->id]);
                 $actions =
@@ -65,13 +65,13 @@ class QuestionsController extends Controller
                     "<i class=\"fas fa-trash-alt\"></i>\n" .
                     "</a>\n";
 
-                if($question->id != $first)
+                if ($question->id != $first)
                     $actions .=
                         "<a href=\"javascript:void(0)\" class=\"btn btn-info btn-sm float-left mr-1\" " .
                         "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Выше\" onclick=\"clickUp({$question->id})\">\n" .
                         "<i class=\"fas fa-arrow-up\"></i>\n" .
                         "</a>\n";
-                if($question->id != $last)
+                if ($question->id != $last)
                     $actions .=
                         "<a href=\"javascript:void(0)\" class=\"btn btn-info btn-sm float-left\" " .
                         "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Ниже\" onclick=\"clickDown({$question->id})\">\n" .
@@ -121,10 +121,10 @@ class QuestionsController extends Controller
         $data['sort_no'] = $set->questions()->count() + 1;
 
         $letters = ['A', 'B', 'C', 'D'];
-        for($imageNo = 0; $imageNo < $set->quantity; $imageNo++) {
+        for ($imageNo = 0; $imageNo < $set->quantity; $imageNo++) {
             $field = 'image' . $letters[$imageNo];
             $mediaPath = Question::uploadImage($request, $field);
-            if($mediaPath) FileLink::link($mediaPath);
+            if ($mediaPath) FileLink::link($mediaPath);
             $data[$field] = $mediaPath;
         }
 
@@ -171,7 +171,7 @@ class QuestionsController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param  int  $id
+     * @param int $id
      * @return RedirectResponse|Response
      */
     public function update(Request $request, int $id)
@@ -183,11 +183,11 @@ class QuestionsController extends Controller
 
         $data = $request->all();
         $letters = ['A', 'B', 'C', 'D'];
-        for($imageNo = 0; $imageNo < $set->quantity; $imageNo++) {
+        for ($imageNo = 0; $imageNo < $set->quantity; $imageNo++) {
             $field = 'image' . $letters[$imageNo];
-            if($request->has($field)) {
+            if ($request->has($field)) {
                 $mediaPath = Question::uploadImage($request, $field, $qa[$field]);
-                if($mediaPath) FileLink::link($mediaPath);
+                if ($mediaPath) FileLink::link($mediaPath);
                 $data[$field] = $mediaPath;
             }
         }
@@ -205,33 +205,33 @@ class QuestionsController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Request $request
-     * @param int $id
-     * @return RedirectResponse|Response
+     * @param int $question
+     * @return bool
      */
-    public function destroy(Request $request, int $id)
+    public function destroy(Request $request, int $question)
     {
-        if ($id == 0)
-            $id = $request->delete_id;
+        if ($question == 0) {
+            $id = $request->id;
+        } else $id = $question;
         $question = Question::findOrFail($id);
         $sort_no = $question->sort_no;
 
         foreach (['imageA', 'imageB', 'imageC', 'imageD'] as $imageField) {
-            if(!$imageField) continue;
+            if (!$imageField) continue;
 
             $mediaPath = $question->getAttributeValue($imageField);
-            if($mediaPath)
-                if(FileLink::unlink($mediaPath))
+            if ($mediaPath)
+                if (FileLink::unlink($mediaPath))
                     Storage::delete($mediaPath);
         }
         $question->delete();
-
-        $set_id = session('set_id');
-        $set_show = session('set_show');
-        $route = 'sets.' . ($set_show ? 'show' : 'edit');
-        return redirect()->route($route, ['set' => $set_id])->with('success', "Вопрос № {$sort_no} удалён");
+        event(new ToastEvent('success', 'Работа с вопросами тестов', "Вопрос № {$sort_no} удалён"));
+        return true;
     }
 
-    private function move(int $id, bool $up) {
+    private function move(int $id, bool $up)
+    {
+        //event(new ToastEvent('info', 'Работа с вопросами тестов', 'Смена позиции вопроса в списке...'));
         $question = Question::findOrFail($id);
 
         $set = $question->set()->pluck('id')->first();
@@ -250,7 +250,7 @@ class QuestionsController extends Controller
         $target = Question::findOrFail($targetID);
 
         // Обмен sort_no в 2 записях в рамках транзакции
-        DB::transaction(function() use ($current, $target, $currentOrder, $targetOrder) {
+        DB::transaction(function () use ($current, $target, $currentOrder, $targetOrder) {
             $current->update([
                 'sort_no' => $targetOrder
             ]);
@@ -271,7 +271,7 @@ class QuestionsController extends Controller
     {
         $id = $request->id;
         $this->move($id, true);
-        event(new ToastEvent('Работа с вопросами тестов', 'Вопрос перемещен ближе к началу списка'));
+        event(new ToastEvent('success', 'Работа с вопросами тестов', 'Вопрос перемещен ближе к началу списка'));
 
         return true;
     }
@@ -287,7 +287,7 @@ class QuestionsController extends Controller
     {
         $id = $request->id;
         $this->move($id, false);
-        event(new ToastEvent('Работа с вопросами тестов', 'Вопрос перемещен ближе к концу списка'));
+        event(new ToastEvent('success', 'Работа с вопросами тестов', 'Вопрос перемещен ближе к концу списка'));
 
         return true;
     }

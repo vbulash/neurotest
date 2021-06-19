@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\ToastEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FMPTypeRequest;
 use App\Http\Support\CallStack;
@@ -164,19 +165,21 @@ class FMPTypeController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Request $request
-     * @param int $id
-     * @return RedirectResponse
+     * @param int $fmptype
+     * @return bool
      */
-    public function destroy(Request $request, int $id)
+    public function destroy(Request $request, int $fmptype)
     {
-        if ($id == 0)
-            $id = $request->delete_id;
+        if ($fmptype == 0) {
+            $id = $request->id;
+        } else $id = $fmptype;
 
         $fmptype = FMPType::findOrFail($id);
         $name = $fmptype->name;
         $fmptype->delete();
 
-        return CallStack::back('success', "Тип описания ФМП {$name} удален");
+        event(new ToastEvent('success', '', "Тип описания ФМП {$name} удален"));
+        return true;
     }
 
     public function copy(Request $request, int $fmptype)

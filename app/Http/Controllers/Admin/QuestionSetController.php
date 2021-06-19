@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\ToastEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSetRequest;
 use App\Http\Support\CallStack;
@@ -162,13 +163,15 @@ class QuestionSetController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Request $request
-     * @param int $id
-     * @return RedirectResponse|Response
+     * @param int $set
+     * @return bool
      */
-    public function destroy(Request $request, int $id)
+    public function destroy(Request $request, int $set)
     {
-        if ($id == 0)
-            $id = $request->delete_id;
+        if ($set == 0) {
+            $id = $request->id;
+        } else $id = $set;
+
         $set = QuestionSet::findOrFail($id);
         $name = $set->name;
 
@@ -177,7 +180,8 @@ class QuestionSetController extends Controller
             $controller->destroy($request, $question->id);
         $set->delete();
 
-        return redirect()->route('sets.index')->with('success', "Набор вопросов &laquo;{$name}&raquo; удалён");
+        event(new ToastEvent('success', '', "Набор вопросов &laquo;{$name}&raquo; удалён"));
+        return true;
     }
 
     /**

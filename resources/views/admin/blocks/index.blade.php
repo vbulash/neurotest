@@ -29,18 +29,6 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <form
-                                style="display:none"
-                                action="{{ route('blocks.destroy', ['block' => 0]) }}"
-                                method="post" class="float-left">
-                                @csrf
-                                @method('DELETE')
-                                <input type="hidden" name="delete_id" id="delete_id" value="">
-                                <button type="submit" id="delete_btn" name="delete_btn"
-                                        onclick="return confirm('Подтвердите удаление');">&nbsp;
-                                </button>
-                            </form>
-
                             <div class="dropdown">
                                 <button class="btn btn-primary dropdown-toggle mb-3" type="button" id="blocks-create"
                                         data-bs-toggle="dropdown" aria-expanded="false">
@@ -104,12 +92,23 @@
     @push('scripts.injection')
         <script>
             function clickDelete(id) {
-                document.getElementById('delete_id').value = id;
-                document.getElementById('delete_btn').click();
+                if(window.confirm('Удалить блок № ' + id + ' ?')) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: "{{ route('blocks.destroy', ['block' => '0']) }}",
+                        data: {
+                            id: id,
+                        },
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        success: () => {
+                            window.datatable.ajax.reload();
+                        }
+                    });
+                }
             }
 
             $(function () {
-                window.table = $('#blocks_table').DataTable({
+                window.datatable = $('#blocks_table').DataTable({
                     language: {
                         "url": "{{ asset('assets/admin/plugins/datatables/lang/ru/Russian.json') }}"
                     },

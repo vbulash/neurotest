@@ -31,17 +31,6 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <form
-                                style="display:none"
-                                action="{{ route('sets.destroy', ['set' => 0]) }}"
-                                method="post" class="float-left">
-                                @csrf
-                                @method('DELETE')
-                                <input type="hidden" name="delete_id" id="delete_id" value="">
-                                <button type="submit" id="delete_btn" name="delete_btn"
-                                        onclick="return confirm('Подтвердите удаление');">&nbsp;</button>
-                            </form>
-
                             <a href="{{ route('sets.create') }}" class="btn btn-primary mb-3">Добавить набор
                                 вопросов</a>
                             @if ($count)
@@ -91,12 +80,23 @@
     @push('scripts.injection')
         <script>
             function clickDelete(id) {
-                document.getElementById('delete_id').value = id;
-                document.getElementById('delete_btn').click();
+                if(window.confirm('Удалить набор вопросов № ' + id + ' ?')) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: "{{ route('sets.destroy', ['set' => 0]) }}",
+                        data: {
+                            id: id,
+                        },
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        success: () => {
+                            window.datatable.ajax.reload();
+                        }
+                    });
+                }
             }
 
             $(function () {
-                window.table = $('#sets_table').DataTable({
+                window.datatable = $('#sets_table').DataTable({
                     language: {
                         "url": "{{ asset('assets/admin/plugins/datatables/lang/ru/Russian.json') }}"
                     },

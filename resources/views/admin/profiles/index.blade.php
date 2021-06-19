@@ -31,18 +31,6 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <form
-                                style="display:none"
-                                action="{{ route('neuroprofiles.destroy', ['neuroprofile' => 0]) }}"
-                                method="post" class="float-left">
-                                @csrf
-                                @method('DELETE')
-                                <input type="hidden" name="delete_id" id="delete_id" value="">
-                                <button type="submit" id="delete_btn" name="delete_btn"
-                                        onclick="return confirm('Подтвердите удаление');">&nbsp;
-                                </button>
-                            </form>
-
                             <a href="{{ route('neuroprofiles.create') }}" class="btn btn-primary mb-3">Добавить нейропрофиль</a>
                             @if (count($profiles) > 0)
                                 <div class="table-responsive">
@@ -90,12 +78,23 @@
     @push('scripts.injection')
         <script>
             function clickDelete(id) {
-                document.getElementById('delete_id').value = id;
-                document.getElementById('delete_btn').click();
+                if(window.confirm('Удалить нейропрофиль № ' + id + ' ?')) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: "{{ route('neuroprofiles.destroy', ['neuroprofile' => 0]) }}",
+                        data: {
+                            id: id,
+                        },
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        success: () => {
+                            window.datatable.ajax.reload();
+                        }
+                    });
+                }
             }
 
             $(function () {
-                window.table = $('#profiles_table').DataTable({
+                window.datatable = $('#profiles_table').DataTable({
                     language: {
                         "url": "{{ asset('assets/admin/plugins/datatables/lang/ru/Russian.json') }}"
                     },

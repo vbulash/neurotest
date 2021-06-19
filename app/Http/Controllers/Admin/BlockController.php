@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\ToastEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BlockRequest;
 use App\Http\Support\CallStack;
@@ -216,13 +217,14 @@ class BlockController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Request $request
-     * @param int $id
-     * @return RedirectResponse|Response
+     * @param int $block
+     * @return bool
      */
-    public function destroy(Request $request, int $id)
+    public function destroy(Request $request, int $block)
     {
-        if ($id == 0)
-            $id = $request->delete_id;
+        if ($block == 0) {
+            $id = $request->id;
+        } else $id = $block;
 
         $block = Block::findOrFail($id);
         switch($block->type) {
@@ -236,7 +238,8 @@ class BlockController extends Controller
         $block_id = $block->id;
         $block->delete();
 
-        return CallStack::back('success', "Блок описания ФМП № {$block_id} удален");
+        event(new ToastEvent('success', '', "Блок № {$block_id} удалён"));
+        return true;
     }
 
     public function back(?string $key = null, ?string $message = null)

@@ -31,18 +31,6 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <form
-                                style="display:none"
-                                action="{{ route('fmptypes.destroy', ['fmptype' => 0]) }}"
-                                method="post" class="float-left">
-                                @csrf
-                                @method('DELETE')
-                                <input type="hidden" name="delete_id" id="delete_id" value="">
-                                <button type="submit" id="delete_btn" name="delete_btn"
-                                        onclick="return confirm('Подтвердите удаление');">&nbsp;
-                                </button>
-                            </form>
-
                             <a href="{{ route('fmptypes.create') }}" class="btn btn-primary mb-3">Добавить тип</a>
                             @if (count($fmptypes) > 0)
                                 <div class="table-responsive">
@@ -89,12 +77,23 @@
     @push('scripts.injection')
         <script>
             function clickDelete(id) {
-                document.getElementById('delete_id').value = id;
-                document.getElementById('delete_btn').click();
+                if(window.confirm('Удалить тип описания № ' + id + ' ?')) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: "{{ route('fmptypes.destroy', ['fmptype' => '0']) }}",
+                        data: {
+                            id: id,
+                        },
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        success: () => {
+                            window.datatable.ajax.reload();
+                        }
+                    });
+                }
             }
 
             $(function () {
-                window.table = $('#fmptypes_table').DataTable({
+                window.datatable = $('#fmptypes_table').DataTable({
                     language: {
                         "url": "{{ asset('assets/admin/plugins/datatables/lang/ru/Russian.json') }}"
                     },

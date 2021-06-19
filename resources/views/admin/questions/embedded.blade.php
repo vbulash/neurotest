@@ -6,19 +6,6 @@
     </div>
     <!-- /.card-header -->
     <div class="card-body">
-        <!-- Удаление -->
-        <form
-            style="display:none"
-            action="{{ route('questions.destroy', ['question' => 0]) }}"
-            method="post" class="float-left">
-            @csrf
-            @method('DELETE')
-            <input type="hidden" name="delete_id" id="delete_id" value="">
-            <button type="submit" id="delete_btn" name="delete_btn"
-                    onclick="return confirm('Подтвердите удаление');">&nbsp;
-            </button>
-        </form>
-
         <a href="{{ route('questions.create') }}" class="btn btn-primary mb-3">Добавить вопрос</a>
         @if ($questions_count)
             <div class="table-responsive">
@@ -56,8 +43,19 @@
     @push('scripts.injection')
         <script>
             function clickDelete(id) {
-                document.getElementById('delete_id').value = id;
-                document.getElementById('delete_btn').click();
+                if(window.confirm('Удалить вопрос № ' + id + ' ?')) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: "{{ route('questions.destroy', ['question' => '0']) }}",
+                        data: {
+                            id: id,
+                        },
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        success: () => {
+                            window.datatable.ajax.reload();
+                        }
+                    });
+                }
             }
 
             function clickUp(id) {
