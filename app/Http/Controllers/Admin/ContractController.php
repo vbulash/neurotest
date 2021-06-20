@@ -2,6 +2,7 @@
 
     namespace App\Http\Controllers\Admin;
 
+    use App\Events\ToastEvent;
     use App\Http\Controllers\Controller;
     use App\Http\Requests\StoreContractRequest;
     use App\Http\Requests\UpdateContractRequest;
@@ -17,6 +18,7 @@
     use Illuminate\Http\RedirectResponse;
     use Illuminate\Http\Request;
     use Illuminate\Http\Response;
+    use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
     use Illuminate\Support\Facades\Redirect;
     use Yajra\DataTables\DataTables;
@@ -122,17 +124,20 @@
 
             $data['status'] = $status;
             $data['options'] = 0;
-            $contract = Contract::create($data);
 
-            // Сгенерировать license_count свободных лицензий под текущий контракт
-            $licenses = License::factory()->count($contract->license_count)->make([
-                'contract_id' => $contract->id
-            ]);
-            if($licenses) {
-                $licenses->each(function ($item, $key) {
-                    $item->save();
-                });
-            }
+            DB::transaction(function() use($data) {
+                $contract = Contract::create($data);
+
+                // Сгенерировать license_count свободных лицензий под текущий контракт
+                $licenses = License::factory()->count($contract->license_count)->make([
+                    'contract_id' => $contract->id
+                ]);
+                if($licenses) {
+                    $licenses->each(function ($item, $key) {
+                        $item->save();
+                    });
+                }
+            });
 
             return redirect()->route('clients.index')
                 ->with('success', "Контракт &laquo;{$contract->number}&raquo; добавлен и " .
@@ -200,7 +205,7 @@
          *
          * @param UpdateContractRequest $request
          * @param int $id
-         * @return Application|Factory|View|Response
+         * @return RedirectResponse
          */
         public function update(UpdateContractRequest $request, $id)
         {
@@ -217,13 +222,33 @@
             $data['status'] = $status;
 
             $contract = Contract::find($id);
-            $contract->update($data);
+            $baseCount = $contract->license_count;
+            $newCount = $data['license_count'];
+            $diffCount = $newCount - $baseCount;
+
+            if($diffCount > 0) {
+                DB::transaction(function() use ($diffCount, $data, $contract) {
+                    $contract->update($data);
+
+                    // Сгенерировать $diffCount свободных лицензий под текущий контракт
+                    $licenses = License::factory()->count($diffCount)->make([
+                        'contract_id' => $contract->id
+                    ]);
+                    if($licenses) {
+                        $licenses->each(function ($item, $key) {
+                            $item->save();
+                        });
+                    }
+                });
+            } else $contract->update($data);
 
             $today = new DateTime();
 
             $count = Client::all()->count();
-            return view('admin.clients.index', compact('count'))
-                ->with('success', "Изменения контракта &laquo;{$contract->number}&raquo; сохранены");
+            $message = "Изменения контракта &laquo;{$contract->number}&raquo; сохранены";
+            if($diffCount > 0) $message .= " и сгенерированы дополнительные лицензии: {$diffCount}";
+            return redirect()->route('clients.edit', ['client' => $contract->client->id])
+                ->with('success', $message);
         }
 
         /**

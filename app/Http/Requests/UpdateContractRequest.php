@@ -30,7 +30,8 @@ class UpdateContractRequest extends FormRequest
             'start' => 'required|date',
             'end' => 'required|date|after:start',
             'license_count' => [
-                'required', 'numeric',
+                'required',
+                'numeric',
                 new LicenseCount($this)],    // Можно только ДОвыпустить дополнительные лицензии
             'url' => 'required|url'
         ];
