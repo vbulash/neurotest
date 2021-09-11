@@ -35,6 +35,16 @@
                 </div>
             </div>
             <div class="card-body">
+                @php
+                    $rk = new \App\Http\Payment\Robokassa();
+                    $rk->setMail(true);
+                    $rk->setInvoice(140);
+                    $rk->setSum(1);
+                    $rk->setDescription('Оплата полного результата нейротестирования');
+                    //$button = $rk->getFrameButton();
+                    $button = $rk->getHTMLButton();
+                @endphp
+                {!! $button !!}
                 <div class="row">
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <div class="small-box bg-gradient-red">

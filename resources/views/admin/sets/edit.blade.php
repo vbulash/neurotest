@@ -2,6 +2,10 @@
 
 @push('title') - @if($show) Просмотр @else Редактирование @endif набора вопросов &laquo;{{ $set->name }}&raquo;@endpush
 
+@section('body-params')
+    data-editor="DecoupledDocumentEditor" data-collaboration="false"
+@endsection
+
 @section('back')
     <form action="{{ route('sets.back') }}" method="post">
         @csrf
@@ -41,7 +45,8 @@
                         </div>
                         <!-- /.card-header -->
 
-                        <form role="form" method="post" action="{{ route('sets.update', ['set' => $set->id]) }}"
+                        <form role="form" method="post" name="set-edit" id="set-edit"
+                              action="{{ route('sets.update', ['set' => $set->id]) }}"
                               enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
@@ -78,6 +83,20 @@
                                         @endforeach
                                     </select>
                                 </div>
+
+                                <div class="form-group">
+                                    <input type="hidden" id="content" name="content">
+                                    <label for="editor" class="mb-2">Скрипт обработки ключей</label>
+                                    <div class="">
+                                        <div class="row">
+                                            <div class="document-editor__toolbar"></div>
+                                        </div>
+                                        <div class="row row-editor">
+                                            <div class="editor"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
 {{--                                <div class="form-group col-lg-6 col-xs-12" id="contract-div">--}}
 {{--                                    <label for="client_id">Клиент для набора вопросов (имеет смысл только для типа--}}
 {{--                                        &laquo;Исключительный&raquo;)</label>--}}
@@ -118,6 +137,97 @@
     <script>
         $(function () {
             // $('#contract-div').hide();
+        });
+    </script>
+@endpush
+
+@once
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('assets/admin/plugins/ckeditor5/ckeditor.css') }}">
+    @endpush
+
+    @push('scripts')
+        <script src="{{ asset('assets/admin/plugins/ckeditor5/ckeditor.js') }}"></script>
+    @endpush
+@endonce
+
+@push('scripts.injection')
+    <script>
+        DecoupledDocumentEditor
+            .create(document.querySelector('.editor'), {
+                toolbar: {
+                    items: [
+                        'heading',
+                        '|',
+                        'fontSize',
+                        'fontFamily',
+                        '|',
+                        'fontColor',
+                        'fontBackgroundColor',
+                        '|',
+                        'bold',
+                        'italic',
+                        'underline',
+                        'strikethrough',
+                        'subscript',
+                        'superscript',
+                        'highlight',
+                        '|',
+                        'alignment',
+                        '|',
+                        'numberedList',
+                        'bulletedList',
+                        '|',
+                        'outdent',
+                        'indent',
+                        'codeBlock',
+                        '|',
+                        'todoList',
+                        'link',
+                        'blockQuote',
+                        'insertTable',
+                        '|',
+                        'undo',
+                        'redo'
+                    ]
+                },
+                language: 'ru',
+                codeBlock: {
+                    languages: [
+                        {language: 'php', label: 'PHP'}
+                    ]
+                },
+                table: {
+                    contentToolbar: [
+                        'tableColumn',
+                        'tableRow',
+                        'mergeTableCells',
+                        'tableCellProperties',
+                        'tableProperties'
+                    ]
+                },
+                licenseKey: '',
+            })
+            .then(editor => {
+                window.editor = editor;
+
+                document.querySelector('.document-editor__toolbar').appendChild(editor.ui.view.toolbar.element);
+                document.querySelector('.ck-toolbar').classList.add('ck-reset_all');
+
+                editor.setData('{!! str_replace("\r\n", "<br/>", $set->content) !!}');
+                @if($show)
+                    editor.isReadOnly = true;
+                @endif
+            })
+            .catch(error => {
+                console.error('Oops, something went wrong!');
+                console.error('Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:');
+                console.warn('Build id: bfknlbbh0ej1-27rpc1i5joqr');
+                console.error(error);
+            });
+
+        document.getElementById('set-edit').addEventListener('submit', () => {
+            document.getElementById('content').value = editor.getData();
         });
     </script>
 @endpush

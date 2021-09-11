@@ -1,5 +1,14 @@
 @extends('admin.layouts.layout')
 
+@section('back')
+    <form action="{{ route('questions.back') }}" method="post">
+        @csrf
+        <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
+            <i class="fas fa-chevron-left"></i> Назад
+        </button>
+    </form>
+@endsection
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -24,10 +33,10 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-{{--                        <div class="card-header">--}}
-{{--                            <h3 class="card-title">&nbsp;</h3>--}}
-{{--                        </div>--}}
-                        <!-- /.card-header -->
+                    {{--                        <div class="card-header">--}}
+                    {{--                            <h3 class="card-title">&nbsp;</h3>--}}
+                    {{--                        </div>--}}
+                    <!-- /.card-header -->
 
                         <form role="form" method="post" action="{{ route('questions.store') }}"
                               enctype="multipart/form-data">
@@ -38,7 +47,8 @@
                                 <div class="form-group">
                                     <div class="checkbox col-4 mb-2">
                                         <label>
-                                            <input type="checkbox" id="learning" name="learning"> Учебный режим прохождения вопроса
+                                            <input type="checkbox" id="learning" name="learning"> Учебный режим
+                                            прохождения вопроса
                                         </label>
                                     </div>
                                 </div>
@@ -84,16 +94,31 @@
                                                                    class="image-file mb-4 form-control"
                                                                    onchange="readImage(this)">
                                                             <div>
-                                                                <a href="javascript:void(0)" class="preview_anchor" data-toggle="lightbox" data-title="Изображение { $labels[$imageNo] }}">
-                                                                <img id="preview_image{{ $letters[$imageNo] }}"
-                                                                     src="{{ $placeholder }}" alt=""
-                                                                     class="image-preview">
+                                                                <a href="javascript:void(0)" class="preview_anchor"
+                                                                   data-toggle="lightbox"
+                                                                   data-title="Изображение { $labels[$imageNo] }}">
+                                                                    <img id="preview_image{{ $letters[$imageNo] }}"
+                                                                         src="{{ $placeholder }}" alt=""
+                                                                         class="image-preview">
                                                                 </a>
                                                                 <a href="javascript:void(0)"
                                                                    id="clear_image{{ $letters[$imageNo] }}"
                                                                    data-preview="preview_image{{ $letters[$imageNo] }}"
                                                                    class="btn btn-primary mb-3 image-clear">Очистить</a>
                                                             </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="weight{{ $letters[$imageNo] }}">Ключ
+                                                                изображения {{ $labels[$imageNo] }}</label>
+                                                            <select name="value{{ $letters[$imageNo] }}"
+                                                                    id="value{{ $letters[$imageNo] }}"
+                                                                    class="select2 form-control image-weight col-6"
+                                                                    data-placeholder="Выбор ключа изображения {{ $labels[$imageNo] }}">
+                                                                @foreach(App\Models\Question::$values as $value)
+                                                                    <option value="{{ $value }}" @if($loop->first) selected @endif >{!! $value !!}</option>
+                                                                @endforeach
+                                                            </select>
                                                         </div>
                                                     </div>
                                                     @php($imageNo++)

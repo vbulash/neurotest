@@ -2,11 +2,12 @@
 
 @push('title') - Тест &laquo;{{ $test->name }}&raquo;@endpush
 
-@push('testname'){{ $test->name }}@endpush
+@push('testname') Тест &laquo;{{ $test->name }}&raquo;@endpush
 
 @section('content')
     <form method="get" action="{{ route('player.pkey') }}">
         @csrf
+        <input type="hidden" name="sid" value="{{ $sid }}">
         <div class="form-group">
             <label for="pkey">Введите персональный ключ для начала тестирования</label>
             <input type="text" name="pkey" id="pkey"

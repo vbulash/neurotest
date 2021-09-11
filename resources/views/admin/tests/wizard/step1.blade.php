@@ -5,17 +5,6 @@
     <div class="invalid-feedback">Поле &laquo;Наименование теста&raquo; должно быть заполнено</div>
 </div>
 
-<div class="form-group">
-    <label for="kind">Тип теста</label>
-    <select name="kind" id="kind" class="select2 form-control"
-            data-placeholder="Выбор типа теста">
-        @foreach(App\Models\Test::types as $key => $value)
-            <option value="{{ $key }}"
-                    @if($loop->first) selected @endif>{{ $value }}</option>
-        @endforeach
-    </select>
-</div>
-
 <div class="form-group" id="contract-div">
     <label for="contract">Выберите контракт для теста</label>
     <select name="contract" id="contract" class="select2"
@@ -36,4 +25,11 @@
         <option value="{{ \App\Models\Test::AUTH_FULL }}">Полная анкета, максимум информации о респонденте</option>
         <option value="{{ \App\Models\Test::AUTH_PKEY }}">Анкета не применима, запрашивается персональный ключ лицензии</option>
     </select>
+</div>
+
+<div class="checkbox mb-2">
+    <label>
+        <input type="checkbox" id="paid" name="paid">
+        Результат тестирования имеет платную расширенную версию
+    </label>
 </div>

@@ -10,12 +10,12 @@
                 <div class="col-sm-6">
                     <h1>Тесты</h1>
                 </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Blank Page</li>
-                    </ol>
-                </div>
+{{--                <div class="col-sm-6">--}}
+{{--                    <ol class="breadcrumb float-sm-right">--}}
+{{--                        <li class="breadcrumb-item"><a href="#">Home</a></li>--}}
+{{--                        <li class="breadcrumb-item active">Blank Page</li>--}}
+{{--                    </ol>--}}
+{{--                </div>--}}
             </div>
         </div><!-- /.container-fluid -->
     </section>
@@ -42,7 +42,6 @@
                                         <tr>
                                             <th style="width: 30px">#</th>
                                             <th>Наименование</th>
-                                            <th>Статус</th>
                                             <th>Привязка к контракту клиента</th>
                                             <th>Действия</th>
                                         </tr>
@@ -112,22 +111,6 @@
                     columns: [
                         {data: 'id', name: 'id', responsivePriority: 1},
                         {data: 'name', name: 'name', responsivePriority: 1},
-                        {
-                            data: 'type', name: 'type', responsivePriority: 2, render: (data) => {
-                                switch (data) {
-                                    case {{ \App\Models\Test::TYPE_DRAFT }}:
-                                        return 'Черновик';
-                                    case {{ \App\Models\Test::TYPE_ACTIVE }}:
-                                        return 'Активный';
-                                    case {{ \App\Models\Test::TYPE_TEMPLATE }}:
-                                        return 'Шаблон';
-                                    case {{ \App\Models\Test::TYPE_TEST }}:
-                                        return 'Тестовый';
-                                    default:
-                                        return 'Ошибка';
-                                }
-                            }
-                        },
                         {
                             data: 'contract', name: 'contract', responsivePriority: 3, render: (data) => {
                                 return data != null ? data : 'Не применимо';

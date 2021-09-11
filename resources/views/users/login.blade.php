@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AdminLTE 3 | Login Page</title>
+    <title>{{ env('APP_NAME') }} | Страница входа</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
@@ -37,7 +37,6 @@
 
             <form action="{{ route('login') }}" method="post">
                 @csrf
-
                 <div class="input-group mb-3">
                     <input type="email" name="email" class="form-control" placeholder="Электронная почта">
                     <div class="input-group-append">

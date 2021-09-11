@@ -8,6 +8,9 @@
   'use strict'
 
     // Плагины
+    $(".image-weight").select2({
+        minimumResultsForSearch: Infinity
+    });
     $('.select2').select2();
 
     $.fn.datepicker.dates['ru'] = {

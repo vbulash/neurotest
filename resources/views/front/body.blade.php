@@ -2,14 +2,10 @@
 
 @push('title') - Тест &laquo;{{ $test->name }}&raquo;@endpush
 
-@push('testname'){{ $test->name }}@endpush
+@push('testname') Тест &laquo;{{ $test->name }}&raquo;@endpush
 
 @push('step_description')
-    @if($step->learning == 1)
-        Учебный вопрос, осталось секунд:
-    @elseif(intval($step->timeout) > 0)
-        Вопрос теста, осталось секунд:
-    @endif
+    Осталось секунд:
 @endpush
 
 @section('content')
@@ -17,21 +13,22 @@
           enctype="multipart/form-data"
           name="step-form" id="step-form">
         @csrf
-        <h2 class="mt-4 mb-4 text-center">Кликните мышкой на одно из изображений</h2>
+        <input type="hidden" name="sid" value="{{ $sid }}">
+        <h4 class="mt-4 mb-4 text-center">Выберите одно изображение</h4>
         @php
             if(!isset($step)) return;
 
             $countdown = 0;
             $rows = 1;
             $columns = 2;
-            if($step->set->quantity == \App\Models\QuestionSet::IMAGES2) {
+            if($step->qset->quantity == \App\Models\QuestionSet::IMAGES2) {
                 $rows = 1;
                 $columns = 2;
-            } elseif($step->set->quantity == \App\Models\QuestionSet::IMAGES4) {
+            } elseif($step->qset->quantity == \App\Models\QuestionSet::IMAGES4) {
                 $rows = 2;
                 $columns = 2;
             }
-            $grid = 3;
+            $grid = intval(12 / $columns);
             $imageNo = 0;
 
             $letters = ['A', 'B', 'C', 'D'];
@@ -63,10 +60,11 @@
 @push('scripts.injection')
     <script>
         @php($countdown = 0)
-        @if($step->learning == 1)
-        @php($countdown = 10)
-        @elseif(intval($step->timeout) > 0)
+
+        @if(intval($step->timeout) > 0)
         @php($countdown = $step->timeout)
+        @elseif($step->learning == 1)
+        @php($countdown = 10)
         @endif
 
         const form = document.getElementById('step-form');
@@ -122,7 +120,7 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             @if(intval($test->options) & \App\Models\Test::MOUSE_TRACKING)
-            window.moves = setInterval(() => {
+                window.moves = setInterval(() => {
                 let pos = mousePos;
                 if (pos) {
                     let coords = JSON.stringify(pos);
@@ -132,12 +130,16 @@
             @endif
 
             @if($countdown > 0)
-            document.getElementById('step-countdown').innerText = {{ $countdown }};
+            document.querySelectorAll('.step-countdown').forEach((counter) => {
+                counter.innerText = {{ $countdown }};
+            });
             window.counter = {{ $countdown }};
 
             window.timer = setInterval(() => {
-                console.log(window.counter);
-                document.getElementById('step-countdown').innerText = window.counter;
+                //console.log(window.counter);
+                document.querySelectorAll('.step-countdown').forEach((counter) => {
+                    counter.innerText = window.counter;
+                });
                 window.counter--;
                 if (window.counter < 0) {
                     clearInterval(window.timer);

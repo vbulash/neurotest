@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Client;
+use App\Models\Contract;
+use DateTime;
+use Illuminate\Support\Facades\Log;
 
 class MainController extends Controller
 {
@@ -29,6 +32,7 @@ class MainController extends Controller
 //            }
 //        } else $letter .= 'клиентов';
         $data['clients.count'] = $count;
+
         return view('admin.index', compact('data'));
     }
 

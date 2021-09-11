@@ -27,9 +27,10 @@ class INNRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        if(strlen($value) != 12) return false;  // Не 12 символов
         if(!is_numeric($value)) return false;   // Не цифры
-        return true;
+        if(strlen($value) == 10) return true;   // Юридические лица
+        if(strlen($value) == 12) return true;   // Физические лица
+        return false;
     }
 
     /**

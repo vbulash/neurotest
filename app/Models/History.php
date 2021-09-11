@@ -13,7 +13,7 @@ class History extends Model
     protected $table = 'history';
 
     protected $fillable = [
-        'test_id', 'license_id', 'card', 'done'
+        'test_id', 'license_id', 'card', 'done', 'code', 'paid'
     ];
 
     public function test()

@@ -254,6 +254,6 @@
             //     input.addEventListener('change', () => {
             //     });
             // });
-        })();
+        });
     </script>
 @endpush

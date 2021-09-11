@@ -176,7 +176,13 @@
                             	$menu
                                     ->link('/your-first-menu', 'Your First Menu')
                                     ->link('/working-with-items', 'Working With Items')
-                                    ->link('/adding-sub-menus', 'Adding Sub Menus');
+                                    ->link('/adding-sub-menus', 'Adding Sub Menus')
+                                    ->submenu('Описания ФМП', function (Menu $menu) {
+                                        $menu
+                                            ->link('/your-first-menu', 'Типы описаний')
+                                            ->link('/working-with-items', 'Нейропрофили')
+                                            ->link('/adding-sub-menus', 'Блоки описаний');
+                                    });
                             });
                     });
                 @endphp
@@ -290,18 +296,33 @@
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
                                 {{-- TODO: сделать нормальный вызов после отладки --}}
-                                <a href="{{ route('player.play', ['mkey' => 'mkey_60501e2ae282a2.08095650']) }}"
+                                <a href="{{ route('player.play', [
+                                    'mkey' => 'mkey_60501e2ae282a2.08095650*3529061957',
+                                    'test' => 'test_60cf61faa26899.54714870'
+                                ]) }}"
                                    class="nav-link">
                                     <i class="nav-icon fas fa-play-circle"></i>
-                                    <p>Плеер</p>
+                                    <p>Проверочный плеер</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="nav-link"> {{-- route('history.index') --}}
+                                <a href="{{ route('history.index') }}" class="nav-link">
                                     <i class="nav-icon fas fa-file-video"></i>
                                     <p>История прохождения</p>
                                 </a>
                             </li>
+                            {{--                            <li class="nav-item">--}}
+                            {{--                                <a href="{{ route('player.iframe') }}" class="nav-link">--}}
+                            {{--                                    <i class="nav-icon fas fa-window-maximize"></i>--}}
+                            {{--                                    <p>Тест IFrame</p>--}}
+                            {{--                                </a>--}}
+                            {{--                            </li>--}}
+                            {{--                            <li class="nav-item">--}}
+                            {{--                                <a href="{{ route('player.mail', ['history_id' => '27']) }}" class="nav-link">--}}
+                            {{--                                    <i class="nav-icon fas fa-envelope-open"></i>--}}
+                            {{--                                    <p>Тест почты</p>--}}
+                            {{--                                </a>--}}
+                            {{--                            </li>--}}
                         </ul>
                     </li>
                     <!-- .Прохождение тестов -->
@@ -363,7 +384,7 @@
         "onclick": null,
         "showDuration": "300",
         "hideDuration": "1000",
-        "timeOut": "6000",
+        "timeOut": "0",
         "extendedTimeOut": "1000",
         "showEasing": "swing",
         "hideEasing": "linear",
@@ -400,12 +421,27 @@
     // Ошибки и сообщения
     @if ($errors->any())
         @foreach ($errors->all() as $error)
-            toastr['error']("{!! $error !!}");
-        @endforeach
-    @endif
+        toastr['error']("{!! $error !!}");
+    @endforeach
+        @elseif(session()->has('error'))
+        toastr['error']("{!! session('error') !!}");
+    @php
+        session()->forget('error');
+    @endphp
+        @endif
 
-    @if (session()->has('success'))
+        @if (session()->has('success'))
         toastr['success']("{!! session('success') !!}");
+    @php
+        session()->forget('success');
+    @endphp
+        @endif
+
+    @if (session()->has('info'))
+        toastr['success']("{!! session('info') !!}");
+    @php
+        session()->forget('info');
+    @endphp
     @endif
 </script>
 <!-- Page file / URL scripts -->

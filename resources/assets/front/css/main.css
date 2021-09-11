@@ -24,8 +24,21 @@
     cursor: pointer;
 }
 
+nav.navbar {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
 .navbar-brand {
     margin-left: 2rem;
+}
+
+.navbar-brand a {
+    color: white;
+    text-decoration: none;
+}
+
+.navbar-brand i {
+    margin-right: 1rem;
 }
 
 .navbar-text {

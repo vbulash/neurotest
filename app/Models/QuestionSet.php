@@ -12,7 +12,7 @@ class QuestionSet extends Model
     use HasFactory, LogsActivity;
 
     protected $table = 'questionsets';
-    protected $fillable = ['name', 'quantity', 'type', 'client_id', 'options'];
+    protected $fillable = ['name', 'quantity', 'type', 'client_id', 'options', 'content'];
 
     // Количество картинок в вопросе
     public const IMAGES2 = 2;

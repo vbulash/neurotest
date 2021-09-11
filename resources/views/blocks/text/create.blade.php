@@ -64,6 +64,11 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="form-group">
+                                    <label for="free" class="mb-2">Бесплатный текст блока</label>
+                                    <textarea class="form-control" id="free" name="free" rows="5"></textarea>
+                                </div>
                             </div>
                             <!-- /.card-body -->
 

@@ -1,5 +1,14 @@
 @extends('admin.layouts.layout')
 
+@section('back')
+    <form action="{{ route('contracts.back') }}" method="post">
+        @csrf
+        <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
+            <i class="fas fa-chevron-left"></i> Назад
+        </button>
+    </form>
+@endsection
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -79,9 +88,10 @@
                                     <div class="row">
                                         <div class="col-6">
                                             <div class="form-group">
-                                                <label for="mkey">Мастер-ключ</label>
-                                                <input type="text" name="mkey" id="mkey"
-                                                       class="form-control @error('mkey') is-invalid @enderror"
+                                                <input type="hidden" name="mkey" id="mkey" value="{{ $contract->mkey }}">
+                                                <label for="mkey-display">Мастер-ключ</label>
+                                                <input type="text" name="mkey-display" id="mkey-display"
+                                                       class="form-control"
                                                        value="{{ $contract->mkey }}" disabled>
                                             </div>
                                             <div class="form-group">
@@ -127,6 +137,15 @@
                                                class="form-control @error('url') is-invalid @enderror" id="url"
                                                value="{{ $contract->url }}" @if($show) disabled @endif>
                                     </div>
+                                    <div class="form-group">
+                                        <button type="button"
+                                                class="btn btn-outline-primary"
+                                                id="code-button"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#copy-code">
+                                            Код HTML для страницы</button>
+                                        <p id="code-que">Скопировать код HTML можно только после сохранения изменённой записи контракта</p>
+                                    </div>
                                 </div>
                             </div>
                             <!-- /.card-body -->
@@ -148,4 +167,43 @@
         </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
+
+    <!-- Copy HTML -->
+    @include('admin.contracts.code')
+    <!-- /.Copy HTML -->
 @endsection
+
+
+@push('scripts.injection')
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            let que = document.getElementById('code-que');
+            que.style.display ='none';
+        });
+
+        const url = document.getElementById('url');
+        url.addEventListener('input', (event) => {
+            document.getElementById('code-button').disabled = true;
+            let que = document.getElementById('code-que');
+            que.style.display ='block';
+            //
+            let url = event.target;
+            let mkey = document.getElementById('mkey');
+
+            $.post({
+                url: "{{ route('contracts.regenerate') }}",
+                data: {
+                    mkey: mkey.value,
+                    url: url.value,
+                },
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                success: (data) => {
+                    let mkey = document.getElementById('mkey');
+                    mkey.value = data;
+                    mkey = document.getElementById('mkey-display');
+                    mkey.value = data;
+                }
+            });
+        });
+    </script>
+@endpush

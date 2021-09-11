@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Events\ToastEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreQuestionRequest;
+use App\Http\Support\CallStack;
 use App\Models\FileLink;
 use App\Models\Question;
 use App\Models\QuestionSet;
@@ -45,6 +46,19 @@ class QuestionsController extends Controller
                     if ($image) $data[] = '/uploads/' . $image;
                 }
                 return ($data ? json_encode($data) : '');
+            })
+            ->addColumn('key', function ($question) {
+                if($question->learning) return '';  // У учебных вопросов нет ключа
+                $data = [];
+                if($question->qset->quantity == QuestionSet::IMAGES2)
+                    $letters = ['A', 'B'];
+                elseif($question->qset->quantity == QuestionSet::IMAGES4)
+                    $letters = ['A', 'B', 'C', 'D'];
+                foreach ($letters as $letter) {
+                    $value = $question->getAttributeValue('value' . $letter);
+                    $data[] = ($value ?: '--');
+                }
+                return ($data ? implode(' | ', $data) : '');
             })
             ->addColumn('action', function ($question) use ($first, $last) {
                 $editRoute = route('questions.edit', ['question' => $question->id]);
@@ -122,10 +136,18 @@ class QuestionsController extends Controller
 
         $letters = ['A', 'B', 'C', 'D'];
         for ($imageNo = 0; $imageNo < $set->quantity; $imageNo++) {
+            // Картинка
             $field = 'image' . $letters[$imageNo];
             $mediaPath = Question::uploadImage($request, $field);
             if ($mediaPath) FileLink::link($mediaPath);
             $data[$field] = $mediaPath;
+            // Ключ
+            $field = 'value' . $letters[$imageNo];
+            if($request->has($field)) {
+                $value = $request->input($field);
+                if ($value == Question::EMPTY_VALUE) $value = null;
+                $data[$field] = $value;
+            }
         }
 
         $data['learning'] = $request->has('learning');
@@ -184,11 +206,19 @@ class QuestionsController extends Controller
         $data = $request->all();
         $letters = ['A', 'B', 'C', 'D'];
         for ($imageNo = 0; $imageNo < $set->quantity; $imageNo++) {
+            // Картинка
             $field = 'image' . $letters[$imageNo];
             if ($request->has($field)) {
                 $mediaPath = Question::uploadImage($request, $field, $qa[$field]);
                 if ($mediaPath) FileLink::link($mediaPath);
                 $data[$field] = $mediaPath;
+            }
+            // Ключ
+            $field = 'value' . $letters[$imageNo];
+            if($request->has($field)) {
+                $value = $request->input($field);
+                if ($value == Question::EMPTY_VALUE) $value = null;
+                $data[$field] = $value;
             }
         }
 
@@ -234,7 +264,7 @@ class QuestionsController extends Controller
         //event(new ToastEvent('info', 'Работа с вопросами тестов', 'Смена позиции вопроса в списке...'));
         $question = Question::findOrFail($id);
 
-        $set = $question->set()->pluck('id')->first();
+        $set = $question->qset()->pluck('id')->first();
         $questions = Question::all()->where('questionset_id', $set)->sortBy('sort_no')->pluck('sort_no', 'id')->toArray();
 
         $indexes = array_keys($questions);
@@ -300,4 +330,9 @@ class QuestionsController extends Controller
 //        // TODO отработать индивидуальное копирование вопросов (из GUI)
 //        if($massCopy) return $target->id;
 //    }
+
+    public function back(?string $key = null, ?string $message = null)
+    {
+        return CallStack::back($key, $message);
+    }
 }

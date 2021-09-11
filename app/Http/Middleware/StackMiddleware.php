@@ -30,8 +30,8 @@ class StackMiddleware
     public function handle(Request $request, Closure $next)
     {
         $route = Route::currentRouteName();
-        if ($this->allowed(['.index', '.create', '.edit']) &&
-            !$this->allowed(['.index.data', '.store', '.update', '.show', '.back', '.copy', '.destroy']))
+        if ($this->allowed(['.index', '.edit', '.create', '.show']) &&
+            !$this->allowed(['.index.data', '.store', '.update', '.back', '.copy', '.destroy']))
             if (!$request->has('back')) {
                 $context = [
                     'route' => $route,
@@ -51,6 +51,7 @@ class StackMiddleware
                 }
                 session()->put('stack', $stack);
             }
+        Log::debug('Маршрут = ' . $route);
         return $next($request);
     }
 }

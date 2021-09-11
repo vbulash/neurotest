@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
+use App\Http\Support\CallStack;
 use App\Models\Client;
 use App\Models\Role;
 use Exception;
@@ -147,5 +148,10 @@ class ClientController extends Controller
     public function destroy(Client $client)
     {
         //
+    }
+
+    public function back(?string $key = null, ?string $message = null)
+    {
+        return CallStack::back($key, $message);
     }
 }

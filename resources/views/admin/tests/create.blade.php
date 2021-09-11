@@ -41,16 +41,6 @@
                                            class="form-control @error('title') is-invalid @enderror">
                                 </div>
 
-                                <div class="form-group">
-                                    <label>Тип теста</label>
-                                    <select name="kind" id="kind" class="select2 form-control col-lg-6 col-xs-12"
-                                            data-placeholder="Выбор типа теста">
-                                        @foreach(App\Models\Test::types as $key => $value)
-                                            <option value="{{ $key }}"
-                                                    @if($loop->first) selected @endif>{{ $value }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
                                 <div class="form-group" id="contract-div">
                                     <label>Выберите контракт для теста</label>
                                     <select name="contract" id="contract" class="select2 col-lg-6 col-xs-12"
@@ -103,17 +93,7 @@
 @push('scripts.injection')
     <script>
         $(function () {
-            $("#kind").on("change", (event) => {
-                if($('#kind').val() == "{{ \App\Models\Test::TYPE_TEMPLATE }}") {
-                    $('#contract-div').hide();
-                } else {
-                    $('#contract-div').show();
-                }
-            });
             $("#submit").on("click", () => {
-                if($('#kind').val() == "{{ \App\Models\Test::TYPE_TEMPLATE }}") {
-                    // Preprocessor for template before server
-                }
             });
         });
     </script>

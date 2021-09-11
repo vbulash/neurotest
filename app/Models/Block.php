@@ -13,7 +13,7 @@ class Block extends Model
     use HasFactory, LogsActivity;
 
     protected $table = 'blocks';
-    protected $fillable = ['description', 'content', 'type', 'neuroprofile_id'];
+    protected $fillable = ['description', 'content', 'type', 'neuroprofile_id', 'paid', 'free'];
 
     // Типы блоков
     public const TYPE_TEXT = 0;     // Текстовый блок

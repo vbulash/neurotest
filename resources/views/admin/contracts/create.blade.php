@@ -1,5 +1,14 @@
 @extends('admin.layouts.layout')
 
+@section('back')
+    <form action="{{ route('contracts.back') }}" method="post">
+        @csrf
+        <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
+            <i class="fas fa-chevron-left"></i> Назад
+        </button>
+    </form>
+@endsection
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">

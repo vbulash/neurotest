@@ -64,17 +64,6 @@
                 ->make(true);
         }
 
-        public function changeStatus(int $id, string $newType)
-        {
-            $test = Test::findOrFail($id);
-            if ($test->type == $newType) return false;
-            $test->type = $newType;
-            $test->update();
-
-            return redirect()->route('tests.index')
-                ->with('success', "Тип теста &laquo;{$test->name}&raquo; изменен на &laquo:{$newType}&raquo;");
-        }
-
         /**
          * Display a listing of the resource.
          *
@@ -136,14 +125,14 @@
             $content['descriptions']['mail'] = $data['mail_description'];
             $content['descriptions']['client'] = $data['client_description'];
 
-
             $test = Test::create([
                 'name' => $data['title'],
-                'type' => $data['kind'],
                 'options' => $options,
                 'questionset_id' => $data['sets'],
                 'contract_id' => $data['contract'],
-                'content' => json_encode($content)
+                'content' => json_encode($content),
+                'key' => Test::generateKey(),
+                'paid' => isset($data['paid'])
             ]);
             $test->save();
             $message = [];
@@ -217,14 +206,16 @@
             $content['descriptions']['client'] = $data['client_description'];
 
             $test = Test::findOrFail($id);
-            $test->update([
+            $update = [
                 'name' => $data['title'],
-                'type' => $data['kind'],
                 'options' => $options,
                 'questionset_id' => $data['sets'],
                 'contract_id' => $data['contract'],
-                'content' => json_encode($content)
-            ]);
+                'content' => json_encode($content),
+                'paid' => isset($data['paid'])
+            ];
+            if(!$test->key) $update['key'] = Test::generateKey();
+            $test->update($update);
             $message[] = "Изменения теста &laquo;{$data['title']}&raquo; сохранены";
 
             return redirect()->route('tests.index')

@@ -90,10 +90,12 @@
             if($request->has('fmptype_id')) {
                 $fmptypes = FMPType::findOrFail($request->fmptype_id);
                 $embedded = true;
+                $codes = $this->filterNew($request->fmptype_id);
             } else {
                 $fmptypes = FMPType::all();
+                $codes = $this->filterNew($fmptypes->first()->id);
             }
-            return view('admin.profiles.create', compact('fmptypes', 'embedded'));
+            return view('admin.profiles.create', compact('fmptypes', 'embedded', 'codes'));
         }
 
         /**
@@ -104,19 +106,17 @@
          */
         public function store(NeuroprofileRequest $request)
         {
-            $fmptypes = FMPType::find($request->fmptype);
-            $embedded = true;
-            $blocks = [];
             $show = false;
-
             $profile = Neuroprofile::create([
                 'code' => $request->code,
                 'name' => $request->name,
                 'fmptype_id' => $request->fmptype
             ]);
             $profile->save();
+            $neuroprofile = $profile->id;
 
-            return view('admin.profiles.edit', compact('profile', 'fmptypes', 'blocks', 'show', 'embedded'));
+            return redirect()->route('neuroprofiles.edit', compact('neuroprofile', 'show'))
+                ->with('success', "Нейропрофиль &laquo;{$profile->name}&raquo; создан");
         }
 
         /**
@@ -200,5 +200,45 @@
         public function back(?string $key = null, ?string $message = null)
         {
             return CallStack::back($key, $message);
+        }
+
+        public function filterNew(int $fmptype_id)
+        {
+            $allCodes = [
+                'OV' => true,
+                'OI' => true,
+                'OA' => true,
+                'OO' => true,
+                'PA' => true,
+                'PP' => true,
+                'PK' => true,
+                'PR' => true,
+                'CS' => true,
+                'CI' => true,
+                'CO' => true,
+                'CV' => true,
+                'BD' => true,
+                'BH' => true,
+                'BP' => true,
+                'BO' => true
+            ];
+            if($fmptype_id == 0) {
+                return json_encode($allCodes);
+            } else {
+                $profiles = Neuroprofile::all()->where('fmptype_id', $fmptype_id);
+                if($profiles->first()) {
+                    $slot = false;
+                    foreach ($profiles as $profile) {
+                        $allCodes[$profile->code] = false;
+                    }
+                    foreach ($allCodes as $key => $value) {
+                        if($value) {
+                            $slot = true;
+                            break;
+                        }
+                    }
+                    return ($slot ? json_encode($allCodes) : null);
+                } else return json_encode($allCodes);
+            }
         }
     }

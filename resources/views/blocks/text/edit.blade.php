@@ -54,7 +54,7 @@
                             <div class="card-body">
                                 @include('blocks.partials.edit')
 
-                                <div class="form-group">
+                                <div class="form-group mb-2">
                                     <label for="editor" class="mb-2">Полный текст блока</label>
                                     <div class="centered">
                                         <div class="row">
@@ -64,6 +64,11 @@
                                             <div class="editor"></div>
                                         </div>
                                     </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="free" class="mb-2">Бесплатный текст блока</label>
+                                    <textarea class="form-control" id="free" name="free" rows="5">{{ $block->free }}</textarea>
                                 </div>
                             </div>
                             <!-- /.card-body -->
@@ -161,7 +166,7 @@
                 document.querySelector('.document-editor__toolbar').appendChild(editor.ui.view.toolbar.element);
                 document.querySelector('.ck-toolbar').classList.add('ck-reset_all');
 
-                editor.setData('{!! $block->content !!}');
+                editor.setData('{!! str_replace("\r\n", "<br/>", $block->content) !!}');;
                 @if($show)
                     editor.isReadOnly = true;
                 @endif

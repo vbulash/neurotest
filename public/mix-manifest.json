@@ -44,15 +44,18 @@
     "/assets/admin/webfonts/fa-solid-900.ttf": "/assets/admin/webfonts/fa-solid-900.ttf",
     "/assets/admin/webfonts/fa-solid-900.woff": "/assets/admin/webfonts/fa-solid-900.woff",
     "/assets/admin/webfonts/fa-solid-900.woff2": "/assets/admin/webfonts/fa-solid-900.woff2",
+    "/assets/admin/plugins/jquery/jquery.min.map": "/assets/admin/plugins/jquery/jquery.min.map",
     "/assets/admin/css/adminlte.min.css.map": "/assets/admin/css/adminlte.min.css.map",
     "/assets/admin/js/adminlte.min.js.map": "/assets/admin/js/adminlte.min.js.map",
     "/assets/admin/plugins/bootstrap/js/bootstrap.bundle.min.js.map": "/assets/admin/plugins/bootstrap/js/bootstrap.bundle.min.js.map",
+    "/assets/admin/plugins/bootstrap/css/bootstrap.min.css.map": "/assets/admin/plugins/bootstrap/css/bootstrap.min.css.map",
     "/assets/admin/css/bootstrap-datepicker.css.map": "/assets/admin/css/bootstrap-datepicker.css.map",
     "/assets/admin/plugins/datatables/datatables.css": "/assets/admin/plugins/datatables/datatables.css",
     "/assets/admin/plugins/datatables/datatables.js": "/assets/admin/plugins/datatables/datatables.js",
     "/assets/admin/plugins/ckeditor5/ckeditor.js": "/assets/admin/plugins/ckeditor5/ckeditor.js",
     "/assets/admin/plugins/ckeditor5/ckeditor.css": "/assets/admin/plugins/ckeditor5/ckeditor.css",
     "/assets/admin/plugins/lightbox/js/ekko-lightbox.min.js.map": "/assets/admin/plugins/lightbox/js/ekko-lightbox.min.js.map",
+    "/assets/admin/js/toastr.js.map": "/assets/admin/js/toastr.js.map",
     "/assets/front/css/front.css": "/assets/front/css/front.css",
     "/assets/front/js/front.js": "/assets/front/js/front.js",
     "/assets/front/webfonts/fa-brands-400.eot": "/assets/front/webfonts/fa-brands-400.eot",
@@ -70,5 +73,6 @@
     "/assets/front/webfonts/fa-solid-900.ttf": "/assets/front/webfonts/fa-solid-900.ttf",
     "/assets/front/webfonts/fa-solid-900.woff": "/assets/front/webfonts/fa-solid-900.woff",
     "/assets/front/webfonts/fa-solid-900.woff2": "/assets/front/webfonts/fa-solid-900.woff2",
-    "/assets/front/plugins/bootstrap/js/bootstrap.bundle.min.js.map": "/assets/front/plugins/bootstrap/js/bootstrap.bundle.min.js.map"
+    "/assets/front/plugins/bootstrap/js/bootstrap.bundle.min.js.map": "/assets/front/plugins/bootstrap/js/bootstrap.bundle.min.js.map",
+    "/assets/front/css/bootstrap-datepicker.css.map": "/assets/front/css/bootstrap-datepicker.css.map"
 }

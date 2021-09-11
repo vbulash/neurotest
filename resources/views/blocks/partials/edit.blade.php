@@ -8,7 +8,7 @@
             @foreach($profiles as $profile)
                 <option value="{{ $profile->id }}"
                         @if($block->profile)
-                            @if($profile->code == $block->profile->code) selected @endif
+                            @if($profile->id == $block->profile->id) selected @endif
                         @elseif(!$show)
                             @if($loop->first) selected @endif
                         @endif

@@ -34,7 +34,7 @@ class OGRNControlSumRule implements Rule
         $control = substr($value, $baselen - 1, 1);
         //
         $step1 = intval($common) / ($baselen - 2);
-        $step2 = round($step1) * ($baselen - 2);;
+        $step2 = intval($step1) * ($baselen - 2);;
         $step3 = (intval($common) - $step2) % 10;
         $step4 = ($step3 == $control);
 

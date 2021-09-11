@@ -4,6 +4,7 @@
 
     use Illuminate\Database\Eloquent\Factories\HasFactory;
     use Illuminate\Database\Eloquent\Model;
+    use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Auth;
     use phpDocumentor\Reflection\Types\Parent_;
     use Spatie\Activitylog\Traits\LogsActivity;
@@ -44,14 +45,23 @@
             return $this->hasMany(License::class);
         }
 
-        public function test()
+        public function tests()
         {
-            return $this->hasOne(Test::class);
+            return $this->hasMany(Test::class);
         }
 
         // Генератор MKey
-        public static function generateKey()
+        public static function generateKey(string $url): string
         {
-            return uniqid('mkey_', true);
+            $first = uniqid('mkey_', true);
+            $last = sprintf("%u", crc32($url));
+            return $first . '*' . $last;
+        }
+
+        public static function checkUrl(string $mkey, string $url): bool
+        {
+            $parts = explode('*', $mkey);
+            $crc = sprintf("%u", crc32($url));
+            return ($parts[1] == $crc);
         }
     }

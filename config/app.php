@@ -67,7 +67,7 @@
         |
         */
 
-        'timezone' => 'UTC',
+        'timezone' => 'Europe/Moscow',
 
         /*
         |--------------------------------------------------------------------------
@@ -178,7 +178,7 @@
             // App\Providers\BroadcastServiceProvider::class,
             App\Providers\EventServiceProvider::class,
             App\Providers\RouteServiceProvider::class,
-
+            App\Providers\SessionIdProvider::class,
         ],
 
         /*

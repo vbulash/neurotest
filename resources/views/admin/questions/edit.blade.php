@@ -1,5 +1,14 @@
 @extends('admin.layouts.layout')
 
+@section('back')
+    <form action="{{ route('questions.back') }}" method="post">
+        @csrf
+        <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
+            <i class="fas fa-chevron-left"></i> Назад
+        </button>
+    </form>
+@endsection
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -30,7 +39,8 @@
                         </div>
                         <!-- /.card-header -->
 
-                        <form role="form" method="post" action="{{ route('questions.update', ['question' => $question->id]) }}"
+                        <form role="form" method="post"
+                              action="{{ route('questions.update', ['question' => $question->id]) }}"
                               enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
@@ -89,11 +99,11 @@
                                                             <label
                                                                 for="image{{ $letters[$imageNo] }}">Изображение {{ $labels[$imageNo] }}</label>
                                                             @if(!$show)
-                                                            <input type="file" id="image{{ $letters[$imageNo] }}"
-                                                                   name="image{{ $letters[$imageNo] }}"
-                                                                   class="image-file mb-4 form-control"
-                                                                   @if($show) disabled @endif
-                                                                   onchange="readImage(this)">
+                                                                <input type="file" id="image{{ $letters[$imageNo] }}"
+                                                                       name="image{{ $letters[$imageNo] }}"
+                                                                       class="image-file mb-4 form-control"
+                                                                       @if($show) disabled @endif
+                                                                       onchange="readImage(this)">
                                                             @endif
                                                             <div>
                                                                 <img id="preview_image{{ $letters[$imageNo] }}"
@@ -101,6 +111,24 @@
                                                                      alt=""
                                                                      class="image-preview">
                                                             </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="weight{{ $letters[$imageNo] }}">Ключ
+                                                                изображения {{ $labels[$imageNo] }}</label>
+                                                            <select name="value{{ $letters[$imageNo] }}"
+                                                                    id="value{{ $letters[$imageNo] }}"
+                                                                    class="select2 form-control image-weight col-6"
+                                                                    data-placeholder="Выбор ключа изображения {{ $labels[$imageNo] }}"
+                                                                    @if($show) disabled @endif
+                                                            >
+                                                                @foreach(App\Models\Question::$values as $value)
+                                                                    <option value="{{ $value }}"
+                                                                            @if($question->getAttributeValue('value' . $letters[$imageNo]) == $value)
+                                                                            selected
+                                                                        @endif >{!! $value !!}</option>
+                                                                @endforeach
+                                                            </select>
                                                         </div>
                                                     </div>
                                                     @php($imageNo++)

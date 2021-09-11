@@ -11,11 +11,13 @@
             <div class="table-responsive">
                 <table class="table table-bordered table-hover text-nowrap" id="questions_table" style="width: 100%;">
                     <thead>
-                    <th>Номер по порядку</th>
-                    <th>Миниатюры изображений</th>
-                    <th>Режим прохождения</th>
-                    <th>Таймаут, секунд</th>
-                    <th>Действия</th>
+                    <tr>
+                        <th>Номер по порядку</th>
+                        <th>Миниатюры изображений</th>
+                        <th>Режим прохождения</th>
+                        <th>Таймаут, секунд</th>
+                        <th>Ключ</th>
+                        <th>Действия</th>
                     </tr>
                     </thead>
                 </table>
@@ -43,7 +45,7 @@
     @push('scripts.injection')
         <script>
             function clickDelete(id) {
-                if(window.confirm('Удалить вопрос № ' + id + ' ?')) {
+                if (window.confirm('Удалить вопрос № ' + id + ' ?')) {
                     $.ajax({
                         method: 'DELETE',
                         url: "{{ route('questions.destroy', ['question' => '0']) }}",
@@ -94,27 +96,42 @@
                     ajax: '{!! route('questions.index.data') !!}',
                     columns: [
                         {data: 'sort_no', name: 'sort_no', responsivePriority: 1},
-                        {data: 'thumb', name: 'thumb', responsivePriority: 3, sortable: false, render: (data) => {
-                            if(data) {
-                                let thumbs = JSON.parse(data.replace(/&quot;/g,'"'));
-                                let preview = '';
-                                thumbs.forEach((thumb) => {
-                                    preview = preview +
-                                        "<img src=\"" + thumb + "\" alt=\"\" class=\"thumb-row\">\n";
-                                });
-                                return preview;
-                            } else return '';
-                            }},
-                        {data: 'learning', name: 'learning', responsivePriority: 1, render: (data) => {
-                            switch(data) {
-                                case 0:
-                                    return 'Реальный';
-                                case 1:
-                                    return 'Учебный';
+                        {
+                            data: 'thumb', name: 'thumb', responsivePriority: 3, sortable: false, render: (data) => {
+                                if (data) {
+                                    let thumbs = JSON.parse(data.replace(/&quot;/g, '"'));
+                                    let preview = '';
+                                    thumbs.forEach((thumb) => {
+                                        preview = preview +
+                                            "<img src=\"" + thumb + "\" alt=\"\" class=\"thumb-row\">\n";
+                                    });
+                                    return preview;
+                                } else return '';
                             }
-                            }},
+                        },
+                        {
+                            data: 'learning', name: 'learning', responsivePriority: 1, render: (data) => {
+                                switch (data) {
+                                    case 0:
+                                        return 'Реальный';
+                                    case 1:
+                                        return 'Учебный';
+                                }
+                            }
+                        },
                         {data: 'timeout', name: 'timeout', responsivePriority: 2},
-                        {data: 'action', name: 'action', sortable: false, responsivePriority: 1, className: 'no-wrap dt-actions'}
+                        {
+                            data: 'key', name: 'key', responsivePriority: 4, render: (data) => {
+                                return data;
+                            }
+                        },
+                        {
+                            data: 'action',
+                            name: 'action',
+                            sortable: false,
+                            responsivePriority: 1,
+                            className: 'no-wrap dt-actions'
+                        }
                     ]
                 });
             });

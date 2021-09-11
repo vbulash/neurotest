@@ -1,6 +1,6 @@
 @extends('admin.layouts.layout')
 
-@push('title') - Новый тест@endpush
+@push('title') - Редактирование теста &laquo;{{ $test->name }}&raquo;@endpush
 
 @section('back')
     <form action="{{ route('tests.back') }}" method="post">
@@ -35,9 +35,9 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title"></h3>
-                        </div>
+{{--                        <div class="card-header">--}}
+{{--                            <h3 class="card-title"></h3>--}}
+{{--                        </div>--}}
                         <!-- /.card-header -->
 
                         <form role="form" method="post"
@@ -51,22 +51,18 @@
                             @method('PUT')
                             <div class="card-body">
                                 <div class="form-group">
+                                    <label for="key">Ключ теста</label>
+                                    <input type="text" name="key" id="key"
+                                           class="form-control @error('key') is-invalid @enderror"
+                                           value="{{ $test->key }}" disabled>
+                                </div>
+                                <div class="form-group">
                                     <label for="title">Наименование</label>
                                     <input type="text" name="title" id="title"
                                            class="form-control @error('title') is-invalid @enderror"
                                            value="{{ $test->name }}" @if($show) disabled @endif>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="kind">Статус теста</label>
-                                    <select name="kind" id="kind" class="select2 form-control col-lg-6 col-xs-12"
-                                            data-placeholder="Выбор статуса теста" @if($show) disabled @endif>
-                                        @foreach(App\Models\Test::types as $key => $value)
-                                            <option value="{{ $key }}"
-                                                    @if($key == $test->type) selected @endif>{{ $value }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
                                 <div class="form-group mt-4 mb-4" id="contract-div">
                                     <label for="contract">Контракт теста</label>
                                     <select name="contract" id="contract" class="select2 col-lg-6 col-xs-12"
@@ -83,6 +79,7 @@
 {{--                                    <input type="text" id="mkey" name="mkey" class="form-control col-lg-6 col-xs-12" disabled--}}
 {{--                                           value="{{ $test->contract->mkey }}">--}}
                                 </div>
+
                                 <div class="form-group mt-2">
                                     <label for="auth">Анкетирование в начале теста</label>
                                     @php
@@ -100,6 +97,15 @@
                                                 {{ $value }}</option>
                                         @endforeach
                                     </select>
+                                </div>
+
+                                <div class="checkbox mb-2">
+                                    <label>
+                                        <input type="checkbox" id="paid" name="paid"
+                                               @if($test->paid) checked @endif
+                                        >
+                                        Результат тестирования имеет платную расширенную версию
+                                    </label>
                                 </div>
 
                                 @php
@@ -223,6 +229,7 @@
                             if (first) first = false;
                         });
                         $('#sets').html(html);
+                        $('#sets').val('{{ $test->qset->id }}');
                         $('#sets').show();
                     }
                 }
@@ -232,17 +239,7 @@
         $(function () {
             $('#mechanics1').change();
 
-            $("#kind").on("change", (event) => {
-                if ($('#kind').val() == "{{ \App\Models\Test::TYPE_TEMPLATE }}") {
-                    $('#contract-div').hide();
-                } else {
-                    $('#contract-div').show();
-                }
-            });
             $("#submit").on("click", () => {
-                if ($('#kind').val() == "{{ \App\Models\Test::TYPE_TEMPLATE }}") {
-                    // Preprocessor for template before server
-                }
             });
         });
     </script>

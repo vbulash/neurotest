@@ -24,14 +24,16 @@ class StoreSetRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required'
+            'name' => 'required',
+            'content' => 'required'
         ];
     }
 
     public function attributes()
     {
         return [
-            'name'=> 'Наименование набора вопросов'
+            'name'=> 'Наименование набора вопросов',
+            'content' => 'Скрипт обработки ключей вопросов'
         ];
     }
 }

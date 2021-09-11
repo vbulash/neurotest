@@ -13,7 +13,11 @@ class Question extends Model
     use HasFactory, LogsActivity;
 
     protected $table = 'questions';
-    protected $fillable = ['sort_no', 'imageA', 'imageB', 'imageC', 'imageD', 'questionset_id', 'learning', 'timeout'];
+    protected $fillable = ['sort_no', 'imageA', 'imageB', 'imageC', 'imageD', 'valueA', 'valueB', 'valueC', 'valueD', 'questionset_id', 'learning', 'timeout'];
+
+    public const EMPTY_VALUE = '&nbsp;&nbsp;';
+    public static array $values = [self::EMPTY_VALUE, 'A+', 'A-', 'B+', 'B-', 'C+', 'C-', 'D+', 'D-'];
+
     protected static $logAttributes = ['*'];
 
     public function getDescriptionForEvent(string $eventName): string
@@ -21,7 +25,7 @@ class Question extends Model
         return "Событие изменения вопроса теста: {$eventName}";
     }
 
-    public function set()
+    public function qset()
     {
         return $this->belongsTo(QuestionSet::class, 'questionset_id');
     }

@@ -63,17 +63,11 @@
                                     <label for="code">Код нейропрофиля</label>
                                     <select name="code" id="code" class="select2 form-control"
                                             data-placeholder="Выбор кода нейропрофиля">
-                                        @php
-                                            $codes = [
-                                                'OV', 'OI', 'OA', 'OO',
-                                                'PA', 'PP', 'PK', 'PR',
-                                                'CS', 'CI', 'CO', 'CV',
-                                                'BD', 'BH', 'BP', 'BO'
-                                            ];
-                                        @endphp
-                                        @foreach($codes as $code)
-                                            <option value="{{ $code }}"
-                                                    @if($loop->first) selected @endif>{{ $code }}</option>
+                                        @php($codes = json_decode($codes))
+                                        @foreach($codes as $key => $value)
+                                            <option value="{{ $key }}"
+                                                    @if(!$value) disabled="disabled" @endif
+                                            >{{ $key }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -106,7 +100,23 @@
 @push('scripts.injection')
     <script>
         $(function () {
-            //
+            {{--$('#fmptype').on('change', (event) => {--}}
+            {{--    $.post({--}}
+            {{--        url: "{{ route('neuroprofiles.filter') }}",--}}
+            {{--        data: {--}}
+            {{--            fmptype_id: event.target.value,--}}
+            {{--        },--}}
+            {{--        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},--}}
+            {{--        success: (data) => {--}}
+
+            {{--            let code = document.getElementById('code');--}}
+            {{--            let html = '';--}}
+            {{--            data.forEach((option) => {--}}
+            {{--                alert(option);--}}
+            {{--            });--}}
+            {{--        }--}}
+            {{--    });--}}
+            {{--});--}}
         });
     </script>
 @endpush

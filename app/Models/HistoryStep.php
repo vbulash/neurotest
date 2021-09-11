@@ -13,7 +13,7 @@ class HistoryStep extends Model
 
     protected $fillable = [
         'history_id', 'question_id',
-        'channelA', 'channelB', 'channelC', 'channelD',
+        'key',
         'done'];
 
     public function history()

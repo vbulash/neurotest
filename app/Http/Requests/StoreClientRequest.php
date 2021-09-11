@@ -30,12 +30,14 @@
                 'name' => 'required',
                 'inn' => [
                     'bail',
-                    'required|unique:clients,inn',
+                    'required',
+                    'unique:clients,inn',
                     new INNRule($this)
                 ],
                 'ogrn' => [
                     'bail',
-                    'required|unique:clients,ogrn',
+                    'required',
+                    'unique:clients,ogrn',
                     new OGRNRule($this),
                     new OGRNControlSumRule($this)
                 ],
