@@ -111,7 +111,7 @@ class Robokassa
         );
 
         return $out . "\n" .
-            "<input type='submit' class='btn btn-primary mt-5 mb-5' value='Оплатить через Робокассу' onclick=\"{$onclick}\">";
+            "<input type='submit' class='btn btn-primary mt-2 mb-5' value='Оплатить через Робокассу' onclick=\"{$onclick}\">";
     }
 
     public function getPassword(): string

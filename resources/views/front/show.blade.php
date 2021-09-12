@@ -21,8 +21,8 @@
             $rk->setEmail($card->email);
             $rk->setTest(false);
             $rk->setDescription('Оплата полного результата нейротестирования');
-            $button = $rk->getHTMLButton();
-            //$button = $rk->getFrameButton();
+            //$button = $rk->getHTMLButton();
+            $button = $rk->getFrameButton();
         @endphp
         <p>Нажимая кнопку оплаты ниже и выполняя оплату, вы соглашаетесь с условиями <a href="{{ route('player.policy', ['document' => 'oferta']) }}" target="_blank">публичного договора-оферты</a></p>
         {!! $button !!}
