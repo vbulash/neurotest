@@ -46,15 +46,17 @@ class PlayerController extends Controller
             $realUrl = parse_url($request->server('HTTP_REFERER'));
             //Log::debug('server = ' . print_r($request->server(), true));
             // TODO Включить проверку URL
-            //$result = Str::startsWith($realUrl['scheme'] . '://' . $realUrl['host'], $contractUrl['scheme'] . '://' . $contractUrl['host']);
-            $result = true;
+            $result = Str::startsWith($realUrl['scheme'] . '://' . $realUrl['host'], $contractUrl['scheme'] . '://' . $contractUrl['host']);
+//            $result = true;
 //            Log::debug('contractUrl = ' . $contractUrl['scheme'] . '://' . $contractUrl['host'] .
 //                ' | realUrl = ' . $realUrl['scheme'] . '://' . $realUrl['host'] .
 //                ' | compare = ' . $result);
+            $test = Test::all()->where('key', $test_key)->first();
             if(!$result) {
+                session()->put('test', $test);
                 $messages[] = 'Запуск теста с текущей страницы не разрешен';
             } else {
-                $test = Test::all()->where('key', $test_key)->first();
+
                 if (!$test) {
                     //Log::debug(__METHOD__ . ':' . __LINE__);
                     $messages[] = 'Не найден тест с указанным ключом';
