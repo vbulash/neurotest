@@ -111,7 +111,7 @@
                         },
                         {
                             data: 'learning', name: 'learning', responsivePriority: 1, render: (data) => {
-                                switch (data) {
+                                switch (parseInt(data)) {
                                     case 0:
                                         return 'Реальный';
                                     case 1:

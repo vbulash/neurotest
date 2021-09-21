@@ -13,4 +13,9 @@
                 'password' => Str::random($length)
             ];
         }
+
+        public static function digitsLetter(int $count): string
+        {
+            //
+        }
     }

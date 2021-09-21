@@ -51,7 +51,7 @@ class StackMiddleware
                 }
                 session()->put('stack', $stack);
             }
-        Log::debug('Маршрут = ' . $route);
+        //Log::debug('Маршрут = ' . $route);
         return $next($request);
     }
 }

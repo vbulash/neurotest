@@ -67,6 +67,9 @@ mix.copy('resources/assets/admin/plugins/lightbox/js/ekko-lightbox.min.js.map', 
 // Toastr
 mix.copy('resources/assets/admin/plugins/toastr/toastr.js.map', 'public/assets/admin/js/toastr.js.map');
 
+// Chart.js
+mix.copy('resources/assets/admin/plugins/chart.js/chart.min.js', 'public/assets/admin/plugins/chart.js/chart.min.js');
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Front
 mix.styles([

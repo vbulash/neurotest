@@ -121,7 +121,7 @@
                         {data: 'description', name: 'description', responsivePriority: 1},
                         {
                             data: 'type', name: 'type', responsivePriority: 3, render: (data) => {
-                                switch (data) {
+                                switch (parseInt(data)) {
                                     case {{ \App\Models\Block::TYPE_TEXT }}:
                                         return 'Текстовый блок';
                                     case {{ \App\Models\Block::TYPE_IMAGE }}:

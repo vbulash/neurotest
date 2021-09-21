@@ -19,86 +19,129 @@
 
     <!-- Main content -->
     <section class="content">
+    @php
+        //use Illuminate\Support\Facades\Redis;
+        //Redis::set('test', 'Test');
+    @endphp
 
-        <!-- Default box -->
+    <!-- Статистика -->
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Статистика</h3>
+                <h3 class="card-title">Статистика тестирования</h3>
 
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip"
                             title="Свернуть / развернуть">
                         <i class="fas fa-minus"></i></button>
-{{--                    <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip"--}}
-{{--                            title="Remove">--}}
-{{--                        <i class="fas fa-times"></i></button>--}}
+                    {{--                    <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip"--}}
+                    {{--                            title="Remove">--}}
+                    {{--                        <i class="fas fa-times"></i></button>--}}
                 </div>
             </div>
             <div class="card-body">
-                @php
-                    $rk = new \App\Http\Payment\Robokassa();
-                    $rk->setMail(true);
-                    $rk->setInvoice(140);
-                    $rk->setSum(1);
-                    $rk->setDescription('Оплата полного результата нейротестирования');
-                    //$button = $rk->getFrameButton();
-                    $button = $rk->getHTMLButton();
-                @endphp
-                {!! $button !!}
                 <div class="row">
-                    <div class="col-md-3 col-sm-6 col-xs-12">
-                        <div class="small-box bg-gradient-red">
-                            <div class="inner">
-                                <h3>{{ $data['clients.count'] }}</h3>
-                                <p>Клиенты</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-user-plus"></i>
-                            </div>
-                            <a href="{{ route('clients.index') }}" class="small-box-footer">
-                                Больше информации <i class="fas fa-chevron-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <!-- /.col -->
-                    <div class="col-md-3 col-sm-6 col-xs-12">
-                        <div class="info-box bg-green">
-                            <span class="info-box-icon"><i class="fa fa-thumbs-o-up"></i></span>
-
-                            <div class="info-box-content">
-                                <span class="info-box-text">Likes</span>
-                                <span class="info-box-number">41,410</span>
-
-                                <div class="progress">
-                                    <div class="progress-bar" style="width: 70%"></div>
-                                </div>
-                                <span class="progress-description">
-                    70% Increase in 30 Days
-                  </span>
-                            </div>
-                            <!-- /.info-box-content -->
-                        </div>
-                        <!-- /.info-box -->
-                    </div>
-                    <!-- /.col -->
+                    {{-- Платные тесты--}}
+                    @include('admin.widgets.test_paid')
+                    {{-- Тесты всего--}}
+                    @include('admin.widgets.test_total')
                 </div>
             </div>
             <!-- /.card-body -->
-{{--            <div class="card-footer">--}}
-{{--                Footer--}}
-{{--            </div>--}}
-            <!-- /.card-footer-->
+        {{--            <div class="card-footer">--}}
+        {{--                Footer--}}
+        {{--            </div>--}}
+        <!-- /.card-footer-->
         </div>
-        <!-- /.card -->
+        <!-- /.Статистика -->
+
+        <!-- Динамика -->
+        <div class="card col-md-6 col-sm-12">
+            <div class="card-header">
+                <h3 class="card-title">Динамика тестирования</h3>
+
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip"
+                            title="Свернуть / развернуть">
+                        <i class="fas fa-minus"></i></button>
+                    {{--                    <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip"--}}
+                    {{--                            title="Remove">--}}
+                    {{--                        <i class="fas fa-times"></i></button>--}}
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="chart">
+                        <canvas id="stackedBarChart" style="min-height:330px"></canvas>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-body -->
+        {{--            <div class="card-footer">--}}
+        {{--                Footer--}}
+        {{--            </div>--}}
+        <!-- /.card-footer-->
+        </div>
+        <!-- /.Динамика -->
 
     </section>
     <!-- /.content -->
 @endsection
 
+@once
+    @push('scripts')
+        <script src="{{ asset('assets/admin/plugins/chart.js/chart.min.js') }}"></script>
+    @endpush
+@endonce
+
 @push('scripts.injection')
     <script>
-        $(function () {
-            //
+        let areaChartData = {
+            labels: null,
+            datasets: [
+                {
+                    label: 'Тестирований пройдено',
+                    backgroundColor: '#007bff',
+                    data: null
+                },
+                {
+                    label: 'Тестирований оплачено',
+                    backgroundColor: '#28a745',
+                    data: null
+                },
+            ]
+        };
+        areaChartData.labels = [{!! "'" . implode("', '", $data[\App\Http\Controllers\Admin\ReportDataController::HISTORY_DYNAMIC_LABELS]) . "'" !!}];
+        areaChartData.datasets[0].data = [{{ implode(', ', $data[\App\Http\Controllers\Admin\ReportDataController::HISTORY_DYNAMIC_ALL_COUNT]) }}];
+        areaChartData.datasets[1].data = [{{ implode(', ', $data[\App\Http\Controllers\Admin\ReportDataController::HISTORY_DYNAMIC_PAID_COUNT]) }}];
+
+        let areaChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: false,
+                    text: 'Динамика тестирования'
+                },
+                legend: {
+                    position: 'bottom'
+                }
+            },
+            scales: {
+                xAxes: {
+                    ticks: {
+                        autoSkip: false,
+                        maxRotation: 90,
+                        minRotation: 0
+                    }
+                }
+            }
+        };
+
+        let ctx = document.getElementById('stackedBarChart').getContext('2d');
+        let myChart = new Chart(ctx, {
+            type: 'bar',
+            data: areaChartData,
+            options: areaChartOptions
         });
     </script>
 @endpush
