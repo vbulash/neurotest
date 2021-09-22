@@ -12008,5 +12008,6 @@ nav.navbar {
 }
 
 .navbar-text {
+    color: white !important;
     margin-right: 2rem;
 }
