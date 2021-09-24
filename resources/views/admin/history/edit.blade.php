@@ -19,12 +19,12 @@
                 <div class="col-sm-6">
                     <h1>@if($show) Анкета @else Редактирование @endif истории {{ $history->id }}</h1>
                 </div>
-{{--                <div class="col-sm-6">--}}
-{{--                    <ol class="breadcrumb float-sm-right">--}}
-{{--                        <li class="breadcrumb-item"><a href="#">Home</a></li>--}}
-{{--                        <li class="breadcrumb-item active">Blank Page</li>--}}
-{{--                    </ol>--}}
-{{--                </div>--}}
+                {{--                <div class="col-sm-6">--}}
+                {{--                    <ol class="breadcrumb float-sm-right">--}}
+                {{--                        <li class="breadcrumb-item"><a href="#">Home</a></li>--}}
+                {{--                        <li class="breadcrumb-item active">Blank Page</li>--}}
+                {{--                    </ol>--}}
+                {{--                </div>--}}
             </div>
         </div><!-- /.container-fluid -->
     </section>
@@ -79,19 +79,22 @@
                                                 @case("email")
                                                 @case("phone")
                                                 <div class="form-group col-md-6">
-                                                    <label for="{{ $name }}">{{ $title }} @if($required) * @endif</label>
+                                                    <label for="{{ $name }}">{{ $title }} @if($required)
+                                                            * @endif</label>
                                                     <input type="{{ $type }}" name="{{ $name }}" id="{{ $name }}"
                                                            class="form-control mb-2 @error("{{ $name }}") is-invalid @enderror"
                                                            placeholder="{{ $title }}@if($required) * @endif"
                                                            @if($required) required @endif
                                                            @if($value) value="{{ $value }}" @endif
-                                                        @if($show) disabled @endif
+                                                           @if($show) disabled @endif
                                                     >
                                                 </div>
                                                 @break
                                                 @case("date")
-                                                <div class="input-group date col-md-6" data-provide="datepicker" style="width: 50%;">
-                                                    <label for="{{ $name }}">{{ $title }} @if($required) * @endif</label>
+                                                <div class="input-group date col-md-6" data-provide="datepicker"
+                                                     style="width: 50%;">
+                                                    <label for="{{ $name }}">{{ $title }} @if($required)
+                                                            * @endif</label>
                                                     <input type="text" name="{{ $name }}" id="{{ $name }}"
                                                            class="form-control mb-2 @error("{{ $name }}") is-invalid @enderror"
                                                            placeholder="{{ $title }}@if($required) * @endif"
@@ -106,7 +109,8 @@
                                                 @break
                                                 @case("select")
                                                 <div class="form-group col-md-6">
-                                                    <label for="{{ $name }}">{{ $title }} @if($required) * @endif</label>
+                                                    <label for="{{ $name }}">{{ $title }} @if($required)
+                                                            * @endif</label>
                                                     <select name="{{ $name }}" id="{{ $name }}" class="select2"
                                                             @if($required) required @endif
                                                             style="width: 100%;"
@@ -126,11 +130,18 @@
                                     </div>
                                 @endforeach
 
-                                <div class="checkbox mb-2">
+                                <div class="form-group col-md-6">
+                                    <label for="code">Вычисленный код нейропрофиля</label>
+                                    <input type="text" name="code"
+                                           class="form-control @error('code') is-invalid @enderror" id="name"
+                                           value="{{ $history->code }}" disabled>
+                                </div>
+
+                                <div class="form-group checkbox mt-4 mb-2">
                                     <label>
                                         <input type="checkbox" id="paid" name="paid"
                                                @if($history->paid) checked @endif
-                                            @if($show) disabled @endif
+                                               @if($show) disabled @endif
                                         >
                                         Оплата полного результата тестирования выполнена
                                     </label>

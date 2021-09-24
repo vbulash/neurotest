@@ -41,6 +41,7 @@
                                             <th>Имя</th>
                                             <th>Фамилия</th>
                                             <th>Электронная почта</th>
+                                            <th>Код нейропрофиля</th>
                                             <th>Оплата теста</th>
                                             <th>Действия</th>
                                         </tr>
@@ -97,29 +98,41 @@
             }
 
             $(function () {
-                $('#history_table').DataTable({
-                    language: {
+                window.datatable = $('#history_table').DataTable({
+                    "language": {
                         "url": "{{ asset('assets/admin/plugins/datatables/lang/ru/Russian.json') }}"
                     },
-                    processing: true,
-                    serverSide: true,
-                    ajax: '{!! route('history.index.data') !!}',
-                    responsive: true,
-                    pageLength: 50,
-                    columns: [
-                        {data: 'id', name: 'id', responsivePriority: 1},
-                        {data: 'done', name: 'done', responsivePriority: 1},
-                        {data: 'first_name', name: 'first_name', responsivePriority: 1},
-                        {data: 'last_name', name: 'last_name', responsivePriority: 1},
-                        {data: 'email', name: 'email', responsivePriority: 1},
+                    "processing": true,
+                    "serverSide": true,
+                    "ajax": '{!! route('history.index.data') !!}',
+                    "responsive": true,
+                    "pageLength": 50,
+                    "dom": 'Blfrtip',
+                    "buttons": [
                         {
-                            data: 'paid', name: 'paid', responsivePriority: 2, render: (data) => {
-                                return (data == '1' ? 'Оплачен' : 'Не оплачен');
+                            "extend": 'excel',
+                            "text": 'Экспорт в Excel',
+                            "className": 'btn btn-info btn-sm float-left ml-5 mb-2'
+                        }
+                    ],
+                    "columns": [
+                        {"data": 'id', "name": 'id', "responsivePriority": 1},
+                        {"data": 'done', "name": 'done', "responsivePriority": 1},
+                        {"data": 'first_name', "name": 'first_name', "responsivePriority": 1},
+                        {"data": 'last_name', "name": 'last_name', "responsivePriority": 1},
+                        {"data": 'email', "name": 'email', "responsivePriority": 1},
+                        {"data": 'code', "name": 'code', "responsivePriority": 3, "className": 'dt-center'},
+                        {
+                            "data": 'paid', "name": 'paid', "responsivePriority": 2, "render": (data) => {
+                                return (data === '1' ? 'Оплачен' : 'Не оплачен');
                             }
                         },
-                        {data: 'action', name: 'action', sortable: false, responsivePriority: 1, className: 'no-wrap dt-actions'}
+                        {"data": 'action', "name": 'action', "sortable": false, "responsivePriority": 1, "className": 'no-wrap dt-actions'}
                     ]
                 });
+
+                // window.datatable.buttons().container()
+                //     .appendTo( $('.col-sm-6:eq(0)', window.datatable.table().container() ) );
             });
         </script>
     @endpush

@@ -27,6 +27,7 @@ class HistoryController extends Controller
     public function getData(): JsonResponse
     {
         $histories = History::query()
+            ->whereNotNull('done')
             ->orderBy('done', 'desc');
 
         return Datatables::of($histories)
