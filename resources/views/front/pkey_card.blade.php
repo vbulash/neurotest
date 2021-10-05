@@ -14,7 +14,8 @@
                    class="form-control col-lg-4 col-md-4 @error('pkey') is-invalid @enderror mt-2"
             >
         </div>
-        <button type="submit" class="btn btn-primary btn-lg mt-2">Проверить и начать тестирование</button>
+        <button type="submit" class="btn btn-primary btn-lg mt-2" @if(session('branding')) style="{{ session('buttonstyle') }}" @endif>
+            Проверить и начать тестирование</button>
     </form>
 
 @endsection

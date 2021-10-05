@@ -40,7 +40,7 @@ mix.scripts([
 mix.copyDirectory('resources/assets/admin/img', 'public/assets/admin/img');
 mix.copyDirectory('resources/assets/admin/plugins/fontawesome-free/webfonts', 'public/assets/admin/webfonts');
 
-mix.copy('resources/assets/admin/plugins/jquery/jquery.min.map', 'public/assets/admin/plugins/jquery/jquery.min.map');
+mix.copy('resources/assets/admin/plugins/jquery/jquery.min.js.map', 'public/assets/admin/plugins/jquery/jquery.min.js.map');
 mix.copy('resources/assets/admin/css/adminlte.min.css.map', 'public/assets/admin/css/adminlte.min.css.map');
 mix.copy('resources/assets/admin/js/adminlte.min.js.map', 'public/assets/admin/js/adminlte.min.js.map');
 
@@ -69,6 +69,19 @@ mix.copy('resources/assets/admin/plugins/toastr/toastr.js.map', 'public/assets/a
 
 // Chart.js
 mix.copy('resources/assets/admin/plugins/chart.js/chart.min.js', 'public/assets/admin/plugins/chart.js/chart.min.js');
+
+// Parsley
+mix.copy('resources/assets/admin/plugins/Parsley.js-2.9.2/dist/parsley.min.js', 'public/assets/admin/plugins/parsley.js/parsley.min.js');
+mix.copy('resources/assets/admin/plugins/Parsley.js-2.9.2/dist/parsley.min.js.map', 'public/assets/admin/plugins/parsley.js/parsley.min.js.map');
+mix.copy('resources/assets/admin/plugins/Parsley.js-2.9.2/dist/i18n/ru.js', 'public/assets/admin/plugins/parsley.js/i18n/ru.js');
+mix.copy('resources/assets/admin/plugins/Parsley.js-2.9.2/dist/i18n/ru.extra.js', 'public/assets/admin/plugins/parsley.js/i18n/ru.extra.js');
+
+// Pickr
+mix.copy('resources/assets/admin/plugins/pickr/pickr.min.js', 'public/assets/admin/plugins/pickr/pickr.min.js');
+mix.copy('resources/assets/admin/plugins/pickr/pickr.min.js.map', 'public/assets/admin/plugins/pickr/pickr.min.js.map');
+mix.copy('resources/assets/admin/plugins/pickr/classic.min.css', 'public/assets/admin/plugins/pickr/classic.min.css');
+mix.copy('resources/assets/admin/plugins/pickr/monolith.min.css', 'public/assets/admin/plugins/pickr/monolith.min.css');
+mix.copy('resources/assets/admin/plugins/pickr/nano.min.css', 'public/assets/admin/plugins/pickr/nano.min.css');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Front

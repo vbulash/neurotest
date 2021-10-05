@@ -9,6 +9,11 @@
           action="{{ route('player.card', ['sid' => $sid]) }}">
         @csrf
         <input type="hidden" name="sid" value="{{ $sid }}">
+        @if(!$mail)
+            <button type="submit" class="btn btn-primary mb-5" @if(session('branding')) style="{{ session('buttonstyle') }}" @endif>
+                <i class="fas fa-chevron-left"></i> Назад
+            </button>
+        @endif
 
         <div class="document">
             <!-- Текст документа -->

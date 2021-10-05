@@ -14,7 +14,7 @@
             Каждый ответ правильный!<br/>
             <strong>Время на вопрос - 5 секунд.</strong><br/>
             Выберите изображение, которое привлеко Ваше внимание первым!</p>
-        <button type="submit" class="btn btn-primary btn-lg">
+        <button type="submit" class="btn btn-primary btn-lg" @if(session('branding')) style="{{ session('buttonstyle') }}" @endif>
             @if($test->options & \App\Models\Test::AUTH_GUEST)
                 Начать тест
             @elseif($test->options & \App\Models\Test::AUTH_FULL)

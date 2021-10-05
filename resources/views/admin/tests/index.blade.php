@@ -10,12 +10,12 @@
                 <div class="col-sm-6">
                     <h1>Тесты</h1>
                 </div>
-{{--                <div class="col-sm-6">--}}
-{{--                    <ol class="breadcrumb float-sm-right">--}}
-{{--                        <li class="breadcrumb-item"><a href="#">Home</a></li>--}}
-{{--                        <li class="breadcrumb-item active">Blank Page</li>--}}
-{{--                    </ol>--}}
-{{--                </div>--}}
+                {{--                <div class="col-sm-6">--}}
+                {{--                    <ol class="breadcrumb float-sm-right">--}}
+                {{--                        <li class="breadcrumb-item"><a href="#">Home</a></li>--}}
+                {{--                        <li class="breadcrumb-item active">Blank Page</li>--}}
+                {{--                    </ol>--}}
+                {{--                </div>--}}
             </div>
         </div><!-- /.container-fluid -->
     </section>
@@ -37,7 +37,8 @@
                             </button>
                             @if ($count)
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover text-nowrap" id="tests_table" style="width: 100%;">
+                                    <table class="table table-bordered table-hover text-nowrap" id="tests_table"
+                                           style="width: 100%;">
                                         <thead>
                                         <tr>
                                             <th style="width: 30px">#</th>
@@ -72,10 +73,12 @@
     @if ($count)
         @push('styles')
             <link rel="stylesheet" href="{{ asset('assets/admin/plugins/datatables/datatables.css') }}">
+            <link rel="stylesheet" href="{{ asset('assets/admin/plugins/pickr/classic.min.css') }}">
         @endpush
 
         @push('scripts')
             <script src="{{ asset('assets/admin/plugins/datatables/datatables.js') }}"></script>
+            <script src="{{ asset('assets/admin/plugins/pickr/pickr.min.js') }}"></script>
         @endpush
     @endif
 @endonce
@@ -84,7 +87,7 @@
     @push('scripts.injection')
         <script>
             function clickDelete(id) {
-                if(window.confirm('Удалить тест № ' + id + ' ?')) {
+                if (window.confirm('Удалить тест № ' + id + ' ?')) {
                     $.ajax({
                         method: 'DELETE',
                         url: "{{ route('tests.destroy', ['test' => '0']) }}",
@@ -116,7 +119,13 @@
                                 return data != null ? data : 'Не применимо';
                             }
                         },
-                        {data: 'action', name: 'action', sortable: false, responsivePriority: 1, className: 'no-wrap dt-actions'}
+                        {
+                            data: 'action',
+                            name: 'action',
+                            sortable: false,
+                            responsivePriority: 1,
+                            className: 'no-wrap dt-actions'
+                        }
                     ]
                 });
             });

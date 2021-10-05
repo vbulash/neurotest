@@ -5,7 +5,9 @@
         <div class="modal-content">
             <form role="form" method="post" action="{{ route('tests.store') }}"
                   enctype="multipart/form-data"
-                  class="needs-validation" novalidate>
+                  id="wizard"
+                  data-parsley-excluded="input[type=button], input[type=submit], input[type=reset], input[type=hidden], [disabled], :hidden"
+            >
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title" id="tests-create-label">Новый тест</h5>
@@ -13,11 +15,12 @@
                 </div>
                 @php
                     $steps = [
-                        ['name' => 'Основная информация', 'tab' => 'vp-essentials', 'view' => 'admin.tests.wizard.step1', 'role' => 'start'],
+                        ['name' => 'Основная информация', 'tab' => 'vp-essentials', 'view' => 'admin.tests.wizard.step1','role' => 'start'],
                         ['name' => 'Конструктор анкеты', 'tab' => 'vp-respondent', 'view' => 'admin.tests.wizard.step2'],
                         ['name' => 'Механика и набор вопросов', 'tab' => 'vp-mechanics', 'view' => 'admin.tests.wizard.step3'],
                         ['name' => 'Финал теста для респондента', 'tab' => 'vp-final-respondent', 'view' => 'admin.tests.wizard.step4'],
-                        ['name' => 'Финал теста для клиента', 'tab' => 'vp-final-client', 'view' => 'admin.tests.wizard.step5', 'role' => 'finish'],
+                        //['name' => 'Финал теста для клиента', 'tab' => 'vp-final-client', 'view' => 'admin.tests.wizard.step5'],
+                        ['name' => 'Настраиваемый брендинг', 'tab' => 'vp-branding', 'view' => 'admin.tests.wizard.step6', 'role' => 'finish'],
                     ];
                 @endphp
                 <div class="modal-body">
@@ -28,22 +31,22 @@
                                 $stepNo = 0;
                             @endphp
                             @foreach($steps as $step)
-                                <button class="nav-link"
-                                        id="{{ $step['tab'] }}-tab" data-bs-toggle="pill"
-                                        data-bs-target="#{{ $step['tab'] }}" type="button" role="tab"
-                                        @if(!$loop->first)
-                                        disabled
-                                        @endif
-                                        @if(key_exists('role', $step))
-                                        data-role="{{ $step['role'] }}"
-                                        @else
-                                        data-role="body"
-                                        @endif
-                                        data-id="{{ $stepNo }}"
-                                        aria-controls="{{ $step['tab'] }}"
-                                        aria-selected="true">
+                                <a class="nav-link"
+                                   id="{{ $step['tab'] }}-tab" data-bs-toggle="pill"
+                                   data-bs-target="#{{ $step['tab'] }}" type="link" role="tab"
+                                   @if(!$loop->first)
+                                   disabled
+                                   @endif
+                                   @if(key_exists('role', $step))
+                                   data-role="{{ $step['role'] }}"
+                                   @else
+                                   data-role="body"
+                                   @endif
+                                   data-id="{{ $stepNo }}"
+                                   aria-controls="{{ $step['tab'] }}"
+                                   aria-selected="true">
                                     {{ $stepNo + 1 }}. {{ $step['name'] }}
-                                </button>
+                                </a>
                                 @php($stepNo++)
                             @endforeach
                         </div>
@@ -90,46 +93,45 @@
         $(function () {
             'use strict'
 
-            let forms = document.querySelectorAll('.needs-validation');
+            //let forms = document.querySelectorAll('.needs-validation');
             let submitButton = null;
             let activeTab = null;
-            let allTabs = Array.from(document.querySelectorAll('button[data-bs-toggle="pill"]'));
+            let allTabs = Array.from(document.querySelectorAll('a[data-bs-toggle="pill"]'));
 
-            Array.prototype.slice.call(forms)
-                .forEach((form) => {
-                    form.addEventListener('submit', (event) => {
-                        let valid = true;
-                        if ((submitButton.id === 'forward_btn') || (submitButton.id === 'submit_btn')) {
-                            valid = form.checkValidity();
-                            if (!valid) {
-                                event.preventDefault();
-                                event.stopPropagation();
-                            }
-                            form.classList.add('was-validated')
-                        }
+            $('#wizard').on('submit', (event) => {
+                let valid = true;
+                if ((submitButton.id === 'forward_btn') || (submitButton.id === 'submit_btn')) {
+                    // let parsley = $('#wizard').parsley();
+                    // if (!parsley.isValid()) {
+                    //     valid = false;
+                    //     event.preventDefault();
+                    //     event.stopPropagation();
+                    //     console.log(false);
+                    // }
+                    // event.target.classList.add('was-validated');
+                }
 
-                        if ((submitButton.id === 'back_btn') || (submitButton.id === 'forward_btn')) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            if (!valid) return;
+                if ((submitButton.id === 'back_btn') || (submitButton.id === 'forward_btn')) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if (!valid) return;
 
-                            if (submitButton.id === 'forward_btn') {
-                                let stepId = activeTab.dataset.id;
-                                let nextTab = allTabs[parseInt(stepId) + 1];
-                                nextTab.disabled = false;
-                                let tab = new bootstrap.Tab(nextTab);
-                                tab.show();
-                            }
-                            if (submitButton.id === 'back_btn') {
-                                let stepId = activeTab.dataset.id;
-                                let nextTab = allTabs[parseInt(stepId) - 1];
-                                nextTab.disabled = false;
-                                let tab = new bootstrap.Tab(nextTab);
-                                tab.show();
-                            }
-                        }
-                    }, false);
-                });
+                    if (submitButton.id === 'forward_btn') {
+                        let stepId = activeTab.dataset.id;
+                        let nextTab = allTabs[parseInt(stepId) + 1];
+                        nextTab.disabled = false;
+                        let tab = new bootstrap.Tab(nextTab);
+                        tab.show();
+                    }
+                    if (submitButton.id === 'back_btn') {
+                        let stepId = activeTab.dataset.id;
+                        let nextTab = allTabs[parseInt(stepId) - 1];
+                        nextTab.disabled = false;
+                        let tab = new bootstrap.Tab(nextTab);
+                        tab.show();
+                    }
+                }
+            });
 
             let backBtn = document.getElementById('back_btn');
             backBtn.addEventListener('click', (event) => {
@@ -146,8 +148,7 @@
                 submitButton = submitBtn;
             });
 
-            let tabBtns = document.querySelectorAll('button[data-bs-toggle="pill"]')
-            Array.prototype.slice.call(tabBtns)
+            Array.prototype.slice.call(allTabs)
                 .forEach((btn) => {
                     btn.addEventListener('shown.bs.tab', (event) => {
                         activeTab = event.target;
@@ -196,6 +197,9 @@
                                 break;
                             case 'vp-mechanics-tab':
                                 $('#mechanics1').change();
+                                break;
+                            case 'vp-branding':
+                                $('#branding').change();
                                 break;
                             default:
                                 break;
@@ -248,6 +252,110 @@
                         }
                     }
                 });
+            });
+
+            let backgroundColor = '#007bff';
+            let fontColor = '#ffffff';
+
+            let pickrOptions = {
+                el: '',
+                theme: 'classic',
+
+                default: '',
+
+                swatches: [
+                    'rgba(244, 67, 54, 1)',
+                    'rgba(233, 30, 99, 1)',
+                    'rgba(156, 39, 176, 1)',
+                    'rgba(103, 58, 183, 1)',
+                    'rgba(63, 81, 181, 1)',
+                    'rgba(33, 150, 243, 1)',
+                    'rgba(3, 169, 244, 1)',
+                    'rgba(0, 188, 212, 1)',
+                    'rgba(0, 150, 136, 1)',
+                    'rgba(76, 175, 80, 1)',
+                    'rgba(139, 195, 74, 1)',
+                    'rgba(205, 220, 57, 1)',
+                    'rgba(255, 235, 59, 1)',
+                    'rgba(255, 193, 7, 1)'
+                ],
+
+                i18n: {
+                    'btn:save': 'Сохранить',
+                    'btn:cancel': 'Отменить',
+                    'btn:clear': 'Очистить',
+                },
+
+                components: {
+                    preview: true,
+                    opacity: false,
+                    hue: false,
+
+                    interaction: {
+                        hex: true,
+                        rgba: false,
+                        hsla: false,
+                        hsva: false,
+                        cmyk: false,
+                        input: true,
+                        clear: true,
+                        save: true
+                    }
+                }
+            };
+
+            let backPickrOptions = pickrOptions;
+            backPickrOptions.el = '#back-picker';
+            backPickrOptions.default = backgroundColor;
+
+            const backgroundColorPickr = Pickr.create(backPickrOptions);
+
+            backgroundColorPickr
+                .on('save', instance => {
+                    let selectedColor = instance.toHEXA().toString();
+                    $('.custom-color').attr('style', 'color: ' + fontColor + ' !important');
+                    $('#preview_nav').attr('style', 'background-color: ' + selectedColor + ' !important');
+                    $('#preview_button').attr('style',
+                        'background-color: ' + selectedColor + ';' +
+                        'border-color: ' + selectedColor + ';' +
+                        'color: ' + fontColor + ' !important'
+                    );
+
+                    $('#background-input').val(selectedColor);
+                });
+
+            let fontPickrOptions = pickrOptions;
+            fontPickrOptions.el = '#font-picker';
+            fontPickrOptions.default = fontColor;
+
+            const fontColorPickr = Pickr.create(fontPickrOptions);
+            fontColorPickr
+                .on('save', instance => {
+                    let selectedColor = instance.toHEXA().toString();
+                    $('.custom-color').attr('style', 'color: ' + selectedColor + ' !important');
+                    $('#preview_nav').attr('style', 'background-color: ' + backgroundColor + ' !important');
+                    $('#preview_button').attr('style',
+                        'background-color: ' + backgroundColor + ';' +
+                        'border-color: ' + backgroundColor + ';' +
+                        'color: ' + selectedColor + ' !important'
+                    );
+
+                    $('#font-color-input').val(selectedColor);
+                });
+
+            $('#company-name-changer').on('input change', (event) => {
+                $('#company-name-demo').html(event.target.value);
+            });
+
+            $("input[name='branding']").on("change", () => {
+                let custom = document.getElementById('branding');
+                let branding_panel = document.getElementById('branding_panel');
+                if (custom.checked) {
+                    branding_panel.style.display = "block";
+                    $('#company-name-changer').change();
+                } else {
+                    branding_panel.style.display = "none";
+                }
             });
 
             // document.querySelectorAll("input[name='mechanics']").forEach((input) => {

@@ -3,7 +3,6 @@
     namespace App\Http\Controllers\Admin;
 
     use App\Events\ToastEvent;
-    use App\Http\Requests\StoreTestRequest;
     use App\Http\Requests\UpdateTestRequest;
     use App\Http\Support\CallStack;
     use App\Models\Contract;
@@ -90,10 +89,10 @@
         /**
          * Store a newly created resource in storage.
          *
-         * @param StoreTestRequest $request
+         * @param Request $request
          * @return RedirectResponse
          */
-        public function store(StoreTestRequest $request)
+        public function store(Request $request)
         {
             $data = $request->all();
 
@@ -123,7 +122,13 @@
                 };
             $content['descriptions']['show'] = $data['show_description'];
             $content['descriptions']['mail'] = $data['mail_description'];
-            $content['descriptions']['client'] = $data['client_description'];
+            //$content['descriptions']['client'] = $data['client_description'];
+
+            if(isset($data['branding'])) {
+                $content['branding']['background'] = $data['background-input'];
+                $content['branding']['fontcolor'] = $data['font-color-input'];
+                $content['branding']['company-name'] = $data['company-name-changer'];
+            }
 
             $test = Test::create([
                 'name' => $data['title'],
@@ -203,7 +208,13 @@
                 };
             $content['descriptions']['show'] = $data['show_description'];
             $content['descriptions']['mail'] = $data['mail_description'];
-            $content['descriptions']['client'] = $data['client_description'];
+            //$content['descriptions']['client'] = $data['client_description'];
+
+            if(isset($data['branding'])) {
+                $content['branding']['background'] = $data['background-input'];
+                $content['branding']['fontcolor'] = $data['font-color-input'];
+                $content['branding']['company-name'] = $data['company-name-changer'];
+            }
 
             $test = Test::findOrFail($id);
             $update = [

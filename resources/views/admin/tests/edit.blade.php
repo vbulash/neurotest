@@ -35,10 +35,10 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-{{--                        <div class="card-header">--}}
-{{--                            <h3 class="card-title"></h3>--}}
-{{--                        </div>--}}
-                        <!-- /.card-header -->
+                    {{--                        <div class="card-header">--}}
+                    {{--                            <h3 class="card-title"></h3>--}}
+                    {{--                        </div>--}}
+                    <!-- /.card-header -->
 
                         <form role="form" method="post"
                               @if($show)
@@ -75,9 +75,9 @@
                                         @endforeach
                                     </select>
 
-{{--                                    <label for="mkey">Мастер-ключ</label>--}}
-{{--                                    <input type="text" id="mkey" name="mkey" class="form-control col-lg-6 col-xs-12" disabled--}}
-{{--                                           value="{{ $test->contract->mkey }}">--}}
+                                    {{--                                    <label for="mkey">Мастер-ключ</label>--}}
+                                    {{--                                    <input type="text" id="mkey" name="mkey" class="form-control col-lg-6 col-xs-12" disabled--}}
+                                    {{--                                           value="{{ $test->contract->mkey }}">--}}
                                 </div>
 
                                 <div class="form-group mt-2">
@@ -113,7 +113,8 @@
                                         ['name' => 'Конструктор анкеты', 'pane' => 'ac-respondent', 'view' => 'admin.tests.accordion.panel1'],
                                         ['name' => 'Механика и набор вопросов', 'pane' => 'ac-mechanics', 'view' => 'admin.tests.accordion.panel2'],
                                         ['name' => 'Финал теста для респондента', 'pane' => 'ac-final-respondent', 'view' => 'admin.tests.accordion.panel3'],
-                                        ['name' => 'Финал теста для клиента', 'pane' => 'ac-final-client', 'view' => 'admin.tests.accordion.panel4'],
+                                        //['name' => 'Финал теста для клиента', 'pane' => 'ac-final-client', 'view' => 'admin.tests.accordion.panel4'],
+                                        ['name' => 'Настраиваемый брендинг', 'pane' => 'ac-branding', 'view' => 'admin.tests.accordion.panel5'],
                                     ];
                                 @endphp
                                 <label for="accordionTest">Настройки</label>
@@ -168,6 +169,16 @@
     <!-- /.content -->
 @endsection
 
+@once
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('assets/admin/plugins/pickr/classic.min.css') }}">
+    @endpush
+
+    @push('scripts')
+        <script src="{{ asset('assets/admin/plugins/pickr/pickr.min.js') }}"></script>
+    @endpush
+@endonce
+
 @push('scripts.injection')
     <script>
         let accordion = document.getElementById('accordionTest')
@@ -196,6 +207,9 @@
                     break;
                 case 'ac-mechanics-body':
                     $('#mechanics1').change();
+                    break;
+                case 'ac-branding-body':
+                    $('#branding').change();
                     break;
                 default:
                     break;
@@ -234,6 +248,119 @@
                     }
                 }
             });
+        });
+
+
+
+        @if(isset($content['branding']))
+        let backgroundColor = '{{ $content['branding']['background'] }}';
+        let fontColor = '{{ $content['branding']['fontcolor'] }}';
+        @else
+        let backgroundColor = '#007bff';
+        let fontColor = '#ffffff';
+        @endif
+
+        let pickrOptions = {
+            el: '',
+            theme: 'classic',
+
+            default: '',
+
+            swatches: [
+                'rgba(244, 67, 54, 1)',
+                'rgba(233, 30, 99, 1)',
+                'rgba(156, 39, 176, 1)',
+                'rgba(103, 58, 183, 1)',
+                'rgba(63, 81, 181, 1)',
+                'rgba(33, 150, 243, 1)',
+                'rgba(3, 169, 244, 1)',
+                'rgba(0, 188, 212, 1)',
+                'rgba(0, 150, 136, 1)',
+                'rgba(76, 175, 80, 1)',
+                'rgba(139, 195, 74, 1)',
+                'rgba(205, 220, 57, 1)',
+                'rgba(255, 235, 59, 1)',
+                'rgba(255, 193, 7, 1)'
+            ],
+
+            i18n: {
+                'btn:save': 'Сохранить',
+                'btn:cancel': 'Отменить',
+                'btn:clear': 'Очистить',
+            },
+
+            components: {
+                preview: true,
+                opacity: false,
+                hue: false,
+
+                interaction: {
+                    hex: true,
+                    rgba: false,
+                    hsla: false,
+                    hsva: false,
+                    cmyk: false,
+                    input: true,
+                    clear: true,
+                    save: true
+                }
+            }
+        };
+
+        let backPickrOptions = pickrOptions;
+        backPickrOptions.el = '#back-picker';
+        backPickrOptions.default = backgroundColor;
+
+        const backgroundColorPickr = Pickr.create(backPickrOptions);
+
+        backgroundColorPickr
+            .on('save', instance => {
+                let selectedColor = instance.toHEXA().toString();
+                $('.custom-color').attr('style', 'color: ' + fontColor + ' !important');
+                $('#preview_nav').attr('style', 'background-color: ' + selectedColor + ' !important');
+                $('#preview_button').attr('style',
+                    'background-color: ' + selectedColor + ';' +
+                    'border-color: ' + selectedColor + ';' +
+                    'color: ' + fontColor + ' !important'
+                );
+
+                $('#background-input').val(selectedColor);
+            });
+
+        let fontPickrOptions = pickrOptions;
+        fontPickrOptions.el = '#font-picker';
+        fontPickrOptions.default = fontColor;
+
+        const fontColorPickr = Pickr.create(fontPickrOptions);
+        fontColorPickr
+            .on('save', instance => {
+                let selectedColor = instance.toHEXA().toString();
+                $('.custom-color').attr('style', 'color: ' + selectedColor + ' !important');
+                $('#preview_nav').attr('style', 'background-color: ' + backgroundColor + ' !important');
+                $('#preview_button').attr('style',
+                    'background-color: ' + backgroundColor + ';' +
+                    'border-color: ' + backgroundColor + ';' +
+                    'color: ' + selectedColor + ' !important'
+                );
+
+                $('#font-color-input').val(selectedColor);
+            });
+
+        $('#company-name-changer').on('input change', (event) => {
+            $('#company-name-demo').html(event.target.value);
+        });
+
+        $("input[name='branding']").on("change", () => {
+            let custom = document.getElementById('branding');
+            let branding_panel = document.getElementById('branding_panel');
+            if (custom.checked) {
+                branding_panel.style.display = "block";
+                $('#company-name-changer').change();
+                backgroundColorPickr.applyColor(false);
+                fontColorPickr.applyColor(false);
+            } else {
+                branding_panel.style.display = "none";
+            }
         });
 
         $(function () {

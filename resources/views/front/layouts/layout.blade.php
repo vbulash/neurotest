@@ -12,29 +12,49 @@
 </head>
 <body>
 <div class="container-fluid main-header pl-4">
-    <nav class="navbar navbar-dark bg-primary d-none d-lg-flex">
-        <div class="navbar-brand">
+    @php
+        $navstyle = '';
+        $textstyle = '';
+
+        $content = $content = json_decode($test->content, true);
+        $branding = isset($content['branding']);
+        session()->put('branding', $branding);
+
+        if($branding) {
+            $navstyle = sprintf("background-color: %s!important; color: %s !important",
+                $content['branding']['background'],  $content['branding']['fontcolor']);
+            $textstyle = sprintf("color: %s !important", $content['branding']['fontcolor']);
+            $buttonStyle = sprintf("background-color: %s!important; color: %s !important; border-color: %s !important",
+                $content['branding']['background'],  $content['branding']['fontcolor'], $content['branding']['background']);
+
+            session()->put('navstyle', $navstyle);
+            session()->put('textstyle', $textstyle);
+            session()->put('buttonstyle', $buttonStyle);
+        }
+    @endphp
+    <nav class="navbar navbar-dark bg-primary d-none d-lg-flex" @if($branding) style="{{ $navstyle }}" @endif>
+        <div class="navbar-brand" @if($branding) style="{{ $textstyle }}" @endif>
             {{--            <a href="{{ route('admin.index') }}">--}}
             <i class="fas fa-home"></i>
             {{ env('APP_NAME') }}
             {{--            </a>--}}
         </div>
-        <div class="navbar-text">
+        <div class="navbar-text" @if($branding) style="{{ $textstyle }}" @endif>
             <p>@stack('testname')</p>
             <div>
                 @stack('step_description') <span class="step-countdown"></span>
             </div>
         </div>
     </nav>
-    <div class="d-block d-lg-none">
-        <div class="d-block p-1 bg-primary text-white">
+    <div class="d-block d-lg-none" @if($branding) style="{{ $navstyle }}" @endif>
+        <div class="d-block p-1 bg-primary text-white" @if($branding) style="{{ $navstyle }}" @endif>
             <i class="fas fa-home"></i>
             {{ env('APP_NAME') }}
         </div>
-        <div class="d-block p-1 bg-primary text-white">
+        <div class="d-block p-1 bg-primary text-white" @if($branding) style="{{ $navstyle }}" @endif>
             @stack('testname')
         </div>
-        <div class="d-block p-1 bg-primary text-white">
+        <div class="d-block p-1 bg-primary text-white" @if($branding) {{ $navstyle }} @endif>
             @stack('step_description') <span class="step-countdown"></span>
         </div>
     </div>

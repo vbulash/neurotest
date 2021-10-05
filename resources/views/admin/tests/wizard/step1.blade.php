@@ -1,7 +1,7 @@
-<div class="form-group has-validation">
+<div class="form-group">
     <label for="title">Наименование теста</label>
     <input type="text" name="title" id="title"
-           class="form-control @error('title') is-invalid @enderror" required>
+           class="form-control @error('title') is-invalid @enderror" data-parsley-required>
     <div class="invalid-feedback">Поле &laquo;Наименование теста&raquo; должно быть заполнено</div>
 </div>
 

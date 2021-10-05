@@ -11,6 +11,7 @@
     "require": {
         "php": ">=7.4",
         "ext-json": "*",
+        "ext-pdo": "*",
         "doctrine/dbal": "*",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
@@ -24,8 +25,7 @@
         "spatie/laravel-menu": "^3.7",
         "spatie/laravel-permission": "^4.0",
         "spatie/laravel-sluggable": "^2.6",
-        "yajra/laravel-datatables": "^1.5",
-      "ext-pdo": "*"
+        "yajra/laravel-datatables": "^1.5"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

@@ -405,12 +405,13 @@ class PlayerController extends Controller
 
     public function showDocument(Request $request, string $document, bool $mail = false)
     {
+        $test = session('test');
         $docviews = [
             'privacy' => 'front.documents.privacy',
             'personal' => 'front.documents.personal',
             'oferta' => 'front.documents.oferta',
         ];
 
-        return view($docviews[$document], compact('mail'));
+        return view($docviews[$document], compact('mail', 'test'));
     }
 }
