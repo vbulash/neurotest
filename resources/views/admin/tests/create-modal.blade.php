@@ -1,3 +1,7 @@
+@php
+    $placeholder = "https://via.placeholder.com/300x300.png?text=Пусто";
+@endphp
+
 <!-- Modal -->
 <div class="modal fade" id="tests-create" tabindex="-1" aria-labelledby="tests-create-label" aria-hidden="true"
      data-bs-backdrop="static" data-bs-keyboard="false">
@@ -90,6 +94,17 @@
 
 @push('scripts.injection')
     <script>
+        function readImage(input) {
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function (event) {
+                    $('#preview_' + input.id).attr('src', event.target.result);
+                    $('#clear_' + input.id).show()
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
         $(function () {
             'use strict'
 
@@ -322,6 +337,7 @@
                     );
 
                     $('#background-input').val(selectedColor);
+                    backgroundColor = selectedColor;
                 });
 
             let fontPickrOptions = pickrOptions;
@@ -341,10 +357,18 @@
                     );
 
                     $('#font-color-input').val(selectedColor);
+                    fontColor = selectedColor;
                 });
 
             $('#company-name-changer').on('input change', (event) => {
                 $('#company-name-demo').html(event.target.value);
+            });
+
+            $('.image-clear').on("click", event => {
+                let target = event.currentTarget.id;
+                let preview = $('#' + target).data('preview');
+                $('#' + preview).attr('src', "{{ $placeholder }}");
+                $('#' + target).hide();
             });
 
             $("input[name='branding']").on("change", () => {
@@ -352,7 +376,11 @@
                 let branding_panel = document.getElementById('branding_panel');
                 if (custom.checked) {
                     branding_panel.style.display = "block";
+
+                    $('.image-clear').hide();
                     $('#company-name-changer').change();
+                    $('#background-input').val(backgroundColor);
+                    $('#font-color-input').val(fontColor);
                 } else {
                     branding_panel.style.display = "none";
                 }

@@ -16,7 +16,7 @@
         $navstyle = '';
         $textstyle = '';
 
-        $content = $content = json_decode($test->content, true);
+        $content = json_decode($test->content, true);
         $branding = isset($content['branding']);
         session()->put('branding', $branding);
 
@@ -36,7 +36,7 @@
         <div class="navbar-brand" @if($branding) style="{{ $textstyle }}" @endif>
             {{--            <a href="{{ route('admin.index') }}">--}}
             <i class="fas fa-home"></i>
-            {{ env('APP_NAME') }}
+            {{ $branding ? $content['branding']['company-name'] : env('APP_NAME') }}
             {{--            </a>--}}
         </div>
         <div class="navbar-text" @if($branding) style="{{ $textstyle }}" @endif>

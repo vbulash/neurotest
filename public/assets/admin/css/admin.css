@@ -1241,9 +1241,18 @@ sup.required-mark {
     display: none;
 }
 
+.image-file {
+    outline: none;
+}
+
 .image-preview {
     width: 200px;
     height: 200px;
+}
+
+.logo-preview {
+    width: 64px;
+    height: 64px;
 }
 
 .thumb-row {

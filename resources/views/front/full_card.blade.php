@@ -91,7 +91,7 @@
             </label>
         </div>
 
-        <button type="submit" id="start_test" class="btn btn-primary btn-lg mt-2" @if(session('branding')) style="{{ session('buttonstyle') }}" @endif disabled>Начать тестирование</button>
+        <button type="submit" id="start_test" @if(session('branding')) class="btn btn-lg mt-2" style="{{ session('buttonstyle') }}" @else class="btn btn-primary btn-lg mt-2" @endif disabled>Начать тестирование</button>
     </form>
 
 @endsection

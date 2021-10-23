@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class History extends Model
@@ -15,6 +17,17 @@ class History extends Model
     protected $fillable = [
         'test_id', 'license_id', 'card', 'done', 'code', 'paid'
     ];
+
+    public static function uploadLogo(Request $request, string $fileField, string $fileName = null)
+    {
+        if($request->hasFile($fileField)) {
+            if($fileName)
+                if(FileLink::unlink($fileName))
+                    Storage::delete($fileName);
+            return $request->file($fileField)->store("images/logo");
+        }
+        return null;
+    }
 
     public function test()
     {

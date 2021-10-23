@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="NeuroTest Sandbox" uuid="e979600f-cac0-4ba2-9bcc-37863766fea5">
-      <driver-ref>mysql.8</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://spl96.hosting.reg.ru:3306/u0311407_neurotest</jdbc-url>
-      <working-dir>$ProjectFileDir$</working-dir>
-      <driver-properties>
-        <property name="serverTimezone" value="UTC" />
-        <property name="enabledTLSProtocols" value="TLSv1,TLSv1.1,TLSv1.2,TLSv1.3" />
-      </driver-properties>
-    </data-source>
     <data-source source="LOCAL" name="Neurotest Production" uuid="3fbc9060-74f7-4dc6-a82b-708bc3150a6e">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>

@@ -297,7 +297,7 @@
                             <li class="nav-item">
                                 {{-- TODO: сделать нормальный вызов после отладки --}}
                                 <a href="{{ route('player.play', [
-                                    'mkey' => 'mkey_60501e2ae282a2.08095650*3529061957',
+                                    'mkey' => 'mkey_60501e2ae282a2.08095650*2427387986',
                                     'test' => 'test_615bd3dd8e03c8.18164375'
                                 ]) }}"
                                    class="nav-link">

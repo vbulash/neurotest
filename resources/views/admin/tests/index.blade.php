@@ -103,7 +103,7 @@
             }
 
             $(function () {
-                $('#tests_table').DataTable({
+                window.datatable = $('#tests_table').DataTable({
                     language: {
                         "url": "{{ asset('assets/admin/plugins/datatables/lang/ru/Russian.json') }}"
                     },

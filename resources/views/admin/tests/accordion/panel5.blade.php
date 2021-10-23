@@ -4,7 +4,7 @@
 
 <div class="checkbox mb-2">
     <label>
-        <input type="checkbox" id="branding" name="branding" @if($branding) checked @endif>
+        <input type="checkbox" id="branding" name="branding" @if($branding) checked @endif @if($show) disabled @endif>
         Тест имеет самостоятельный брендинг, отличный от встроенного
     </label>
 </div>
@@ -35,6 +35,7 @@
         <input type="text" name="company-name-changer" id="company-name-changer"
                class="form-control @error('company-name-changer') is-invalid @enderror"
                value="{{ $branding ? $content['branding']['company-name'] : env('APP_NAME') }}"
+               @if($show) disabled @endif
                data-parsley-required
         >
         <div class="invalid-feedback">Поле &laquo;Организация / компания&raquo; должно быть заполнено</div>

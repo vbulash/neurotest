@@ -103,6 +103,7 @@
                                     <label>
                                         <input type="checkbox" id="paid" name="paid"
                                                @if($test->paid) checked @endif
+                                               @if($show) disabled @endif
                                         >
                                         Результат тестирования имеет платную расширенную версию
                                     </label>
@@ -266,6 +267,8 @@
 
             default: '',
 
+            @if($show) disabled: true, @endif
+
             swatches: [
                 'rgba(244, 67, 54, 1)',
                 'rgba(233, 30, 99, 1)',
@@ -325,6 +328,7 @@
                 );
 
                 $('#background-input').val(selectedColor);
+                backgroundColor = selectedColor;
             });
 
         let fontPickrOptions = pickrOptions;
@@ -344,6 +348,7 @@
                 );
 
                 $('#font-color-input').val(selectedColor);
+                fontColor = selectedColor;
             });
 
         $('#company-name-changer').on('input change', (event) => {
