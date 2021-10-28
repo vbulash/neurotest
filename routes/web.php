@@ -63,6 +63,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'App\Http\Controllers\Admin', 
     // История
     Route::resource('/history', 'HistoryController');
     Route::get('/history.data', 'HistoryController@getData')->name('history.index.data');
+    Route::get('/history.detail', 'HistoryController@detail')->name('history.detail');
     Route::post('/history.back/{key?}/{message?}', 'HistoryController@back')->name('history.back');
 });
 

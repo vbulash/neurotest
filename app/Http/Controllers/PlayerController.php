@@ -51,7 +51,7 @@ class PlayerController extends Controller
 //            Log::debug('contractUrl = ' . $contractUrl['scheme'] . '://' . $contractUrl['host'] .
 //                ' | realUrl = ' . $realUrl['scheme'] . '://' . $realUrl['host'] .
 //                ' | compare = ' . $result);
-            if(!$result) {
+            if (!$result) {
                 $messages[] = 'Запуск теста с текущей страницы не разрешен';
             } else {
                 $test = Test::all()->where('key', $test_key)->first();
@@ -129,7 +129,7 @@ class PlayerController extends Controller
     {
 //        Log::debug('session in body = ' . print_r(array_keys(session()->all()), true));
         if (!$this->check($request)) {
-            Log::debug('player.body: ' . __METHOD__ . ':' . __LINE__);
+            //Log::debug('player.body: ' . __METHOD__ . ':' . __LINE__);
             return redirect()->route('player.index')->with('error', session('error'));
         }
 
@@ -151,16 +151,16 @@ class PlayerController extends Controller
             }
             if ($jumpNext) {
                 $index++;
-                if ($step->learning != 1) {  // Веса есть только у реальных (не учебных) вопросов
-                    $key = $step->getAttributeValue('value' . $request->answer);
-                    $hs = HistoryStep::create([
-                        'history_id' => $history->id,
-                        'question_id' => $step->id,
-                        'key' => $key,
-                        'done' => date("Y-m-d H:i:s")
-                    ]);
-                    $hs->save();
-                }
+                //if ($step->learning != 1) {  // Веса есть только у реальных (не учебных) вопросов
+                $key = $step->getAttributeValue('value' . $request->answer);
+                $hs = HistoryStep::create([
+                    'history_id' => $history->id,
+                    'question_id' => $step->id,
+                    'key' => $key,
+                    'done' => date("Y-m-d H:i:s")
+                ]);
+                $hs->save();
+                //}
             }
 
             if ($index < count($questions)) {
@@ -231,10 +231,10 @@ class PlayerController extends Controller
         $history = History::findOrFail($history_id);
         $test = $history->test;
         $content = json_decode($test->content);
-        $card = ($history->card ? json_decode($history->card): null);
+        $card = ($history->card ? json_decode($history->card) : null);
         $fmptype_show = $content->descriptions->show;
         $fmptype_mail = $content->descriptions->mail;
-        if(!$fmptype_show && !$fmptype_mail) {
+        if (!$fmptype_show && !$fmptype_mail) {
             session()->put('error', 'Не определен тип описания для результатов тестирования. Обратитесь к администратору');
             return false;
         }
@@ -246,8 +246,8 @@ class PlayerController extends Controller
             ->groupBy('key')
             ->get();
         $data = $result->pluck('value', 'key')->toArray();
-        foreach(['A+', 'A-', 'B+', 'B-', 'C+', 'C-', 'D+', 'D-'] as $letter)
-            if(!isset($data[$letter]))
+        foreach (['A+', 'A-', 'B+', 'B-', 'C+', 'C-', 'D+', 'D-'] as $letter)
+            if (!isset($data[$letter]))
                 $data[$letter] = 0;
 
         $code = htmlspecialchars_decode(strip_tags($history->test->qset->content));
@@ -257,7 +257,7 @@ class PlayerController extends Controller
         // Код нейропрофиля вычислен и сохранен
 
         $result = true;
-        if($fmptype_mail && ($test->options & Test::AUTH_FULL)) {
+        if ($fmptype_mail && ($test->options & Test::AUTH_FULL)) {
             $profile = Neuroprofile::all()
                 ->where('fmptype_id', '=', $fmptype_mail)
                 ->where('code', '=', $profile_code)
@@ -265,11 +265,11 @@ class PlayerController extends Controller
             $profile_id = $profile->id;
             $blocks = Block::all()->where('neuroprofile_id', $profile_id);
 
-            $recipient = (object) [
+            $recipient = (object)[
                 'name' => ($card->last_name ? $card->last_name . ' ' : '') . $card->first_name,
                 'email' => $card->email
             ];
-            $copy = (object) [
+            $copy = (object)[
                 'name' => env('MAIL_FROM_NAME'),
                 'email' => env('MAIL_FROM_ADDRESS')
             ];
@@ -281,11 +281,11 @@ class PlayerController extends Controller
                 session()->put('success', 'Вам отправлено письмо с результатами тестирования');
             } catch (\Exception $exc) {
                 session()->put('error', "Ошибка отправки письма с результатами тестирования:<br/>" .
-                $exc->getMessage());
+                    $exc->getMessage());
             }
         }
 
-        if($fmptype_show) {
+        if ($fmptype_show) {
             $profile = Neuroprofile::all()
                 ->where('fmptype_id', '=', $fmptype_show)
                 ->where('code', '=', $profile_code)
@@ -299,31 +299,32 @@ class PlayerController extends Controller
         return null;
     }
 
-    public function iframe() {
+    public function iframe()
+    {
         return view('front.iframe');
     }
 
     public function paymentResult(Request $request)
     {
 //        Log::debug('Robokassa result = ' . print_r($request->all(), true));
-        if($request->has('InvId')) {
+        if ($request->has('InvId')) {
             //if($request->Shp_Mail != '1') $this->paymentSuccess($request);
 
             $data = $request->all();
             $history_id = $request->InvId;
             $mail = ($request->Shp_Mail == '1');
             $list = false;
-            if($request->has('List')) $list = ($request->List == '1');
+            if ($request->has('List')) $list = ($request->List == '1');
 
             $history = History::findOrFail($history_id);
-            if(!$list) {
+            if (!$list) {
                 $history->paid = true;
                 $history->update();
             }
 
             $test = $history->test;
             $content = json_decode($test->content);
-            $card = ($history->card ? json_decode($history->card): null);
+            $card = ($history->card ? json_decode($history->card) : null);
             $fmptype_mail = $content->descriptions->mail;
 
             // SELECT `key`, COUNT(`key`) as 'value' FROM `historysteps` WHERE history_id = 6 GROUP BY `key` ORDER BY `key`
@@ -333,8 +334,8 @@ class PlayerController extends Controller
                 ->groupBy('key')
                 ->get();
             $data = $result->pluck('value', 'key')->toArray();
-            foreach(['A+', 'A-', 'B+', 'B-', 'C+', 'C-', 'D+', 'D-'] as $letter)
-                if(!isset($data[$letter]))
+            foreach (['A+', 'A-', 'B+', 'B-', 'C+', 'C-', 'D+', 'D-'] as $letter)
+                if (!isset($data[$letter]))
                     $data[$letter] = 0;
 
             $code = htmlspecialchars_decode(strip_tags($history->test->qset->content));
@@ -348,11 +349,11 @@ class PlayerController extends Controller
             $profile_id = $profile->id;
             $blocks = Block::all()->where('neuroprofile_id', $profile_id);
 
-            $recipient = (object) [
+            $recipient = (object)[
                 'name' => ($card->last_name ? $card->last_name . ' ' : '') . $card->first_name,
                 'email' => $card->email
             ];
-            $copy = (object) [
+            $copy = (object)[
                 'name' => env('MAIL_FROM_NAME'),
                 'email' => env('MAIL_FROM_ADDRESS')
             ];

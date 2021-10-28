@@ -32,6 +32,7 @@
                         <!-- /.card-header -->
                         <div class="card-body">
                             @if ($count)
+                                <a href="{{ route('history.detail') }}" class="btn btn-primary mb-3">Экспорт в Excel</a>
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-hover text-nowrap" id="history_table" style="width: 100%;">
                                         <thead>
@@ -107,14 +108,14 @@
                     "ajax": '{!! route('history.index.data') !!}',
                     "responsive": true,
                     "pageLength": 50,
-                    "dom": 'Blfrtip',
-                    "buttons": [
-                        {
-                            "extend": 'excel',
-                            "text": 'Экспорт в Excel',
-                            "className": 'btn btn-info btn-sm float-left ml-5 mb-2'
-                        }
-                    ],
+                    // "dom": 'Blfrtip',
+                    // "buttons": [
+                    //     {
+                    //         "extend": 'excel',
+                    //         "text": 'Экспорт в Excel',
+                    //         "className": 'btn btn-info btn-sm float-left ml-5 mb-2'
+                    //     }
+                    // ],
                     "columns": [
                         {"data": 'id', "name": 'id', "responsivePriority": 1},
                         {"data": 'done', "name": 'done', "responsivePriority": 1},

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\ToastEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Support\CallStack;
 use App\Models\History;
@@ -14,7 +15,11 @@ use Illuminate\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\DB;
+
 
 class HistoryController extends Controller
 {
@@ -62,12 +67,13 @@ class HistoryController extends Controller
                     "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Просмотр\">\n" .
                     "<i class=\"fas fa-eye\"></i>\n" .
                     "</a>\n";
-                if($history->paid)
-                $actions .=
-                    "<a href=\"$mailRoute\" class=\"btn btn-info btn-sm float-left mr-1\" " .
-                    "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Повтор письма\" onclick=\"clickMail({$history->id})\">\n" .
-                    "<i class=\"fas fa-envelope\"></i>\n" .
-                    "</a>\n";
+
+                if ($history->paid)
+                    $actions .=
+                        "<a href=\"$mailRoute\" class=\"btn btn-info btn-sm float-left mr-1\" " .
+                        "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Повтор письма\" onclick=\"clickMail({$history->id})\">\n" .
+                        "<i class=\"fas fa-envelope\"></i>\n" .
+                        "</a>\n";
 
                 return $actions;
             })
@@ -162,6 +168,88 @@ class HistoryController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    private function getNameFromNumber($num)
+    {
+        $numeric = $num % 26;
+        $letter = chr(65 + $numeric);
+        $num2 = intval($num / 26);
+        if ($num2 > 0) {
+            return $this->getNameFromNumber($num2 - 1) . $letter;
+        } else {
+            return $letter;
+        }
+    }
+
+    public function detail()
+    {
+        event(new ToastEvent('info', '', "Формирование детализации тестирования..."));
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $column = $this->getNameFromNumber(0);
+        $row = 1;
+        $sheet->setCellValue('A1', 'ID истории');
+        $sheet->setCellValue('B1', 'Тестирование завершено');
+        $sheet->setCellValue('C1', 'Имя');
+        $sheet->setCellValue('D1', 'Фамилия');
+        $sheet->setCellValue('E1', 'Наименование теста');
+        $sheet->setCellValue('F1', 'Наименование набора вопросов');
+        $sheet->setCellValue('G1', 'Вычисленный код');
+        $sheet->freezePane('A2');
+
+        $sql = <<< EOS
+select
+       h.id as hid,
+       h.done as done,
+       h.card->>'$.first_name' as first_name,
+       h.card->>'$.last_name' as last_name,
+       t.name as tname,
+       qs.name as qsname,
+       h.code as code,
+       IF(q.valueA = hs.key, 1, IF(q.valueB = hs.key, 2, IF(q.valueC = hs.key, 3, IF(q.valueD = hs.key, 4, 0)))) as pressed,
+       hs.`key` as hskey
+from history as h, historysteps as hs, tests as t, questionsets as qs, questions as q
+where hs.history_id = h.id and h.test_id = t.id and qs.id = t.questionset_id and q.id = hs.question_id and h.done is not null and h.code is not null
+order by h.done desc
+EOS;
+        $view = DB::select($sql);
+
+        $row = 1;
+        $prevHid = 0;
+        $column = 7;
+        $maxColumn = 7;
+        foreach ($view as $history) {
+            if($history->hid != $prevHid) { // Новая строка
+                $sheet->setCellValue('A' . ++$row, $history->hid);
+                $sheet->setCellValue('B' . $row, $history->done);   // TODO форматирование даты
+                $sheet->setCellValue('C' . $row, $history->first_name);
+                $sheet->setCellValue('D' . $row, $history->last_name);
+                $sheet->setCellValue('E' . $row, $history->tname);
+                $sheet->setCellValue('F' . $row, $history->qsname);
+                $sheet->setCellValue('G' . $row, $history->code);
+                $column = 7;
+                $prevHid = $history->hid;
+            }
+            if($column > $maxColumn) $maxColumn = $column;
+            $sheet->setCellValue($this->getNameFromNumber($column++) . $row, $history->pressed . ' / ' . $history->hskey);
+        }
+
+        $column = 7;
+        while($column <= $maxColumn) {
+            $sheet->setCellValue($this->getNameFromNumber($column++) . '1', $column - 7);
+        }
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . env('APP_NAME') . ' - Детализация истории.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        event(new ToastEvent('success', '', "Детализация тестирования сформирована"));
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
     }
 
     public function back(?string $key = null, ?string $message = null)
