@@ -10,6 +10,7 @@ use DateTime;
 use Exception;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\Factory;
 use Illuminate\View\View;
 use Illuminate\Http\JsonResponse;
@@ -242,8 +243,9 @@ EOS;
             $sheet->setCellValue($this->getNameFromNumber($column++) . '1', $column - 7);
         }
 
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="' . env('APP_NAME') . ' - Детализация истории.xlsx"');
+        header('Content-Type: application/vnd.ms-excel; charset=utf-8');
+        //Log::debug(urlencode(env('APP_NAME') . ' - Детализация истории.xlsx"'));
+        header('Content-Disposition: attachment;filename="' . env('APP_NAME') . ' - Детализация истории.xlsx' . '"');
         header('Cache-Control: max-age=0');
 
         event(new ToastEvent('success', '', "Детализация тестирования сформирована"));
