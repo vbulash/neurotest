@@ -210,12 +210,13 @@ select
     t.name as tname,
     qs.name as qsname,
     h.code as code,
+    q.learning as qlearning,
     q.sort_no as qsort_no,
     IF(q.valueA = hs.key, 1, IF(q.valueB = hs.key, 2, IF(q.valueC = hs.key, 3, IF(q.valueD = hs.key, 4, 0)))) as pressed,
     hs.`key` as hskey
 from history as h, historysteps as hs, tests as t, questionsets as qs, questions as q
 where hs.history_id = h.id and h.test_id = t.id and qs.id = t.questionset_id and q.id = hs.question_id and h.done is not null and h.code is not null
-order by q.sort_no
+order by h.id, q.sort_no
 EOS;
         $view = DB::select($sql);
 

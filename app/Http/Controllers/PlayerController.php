@@ -248,7 +248,6 @@ FROM
      questions as q
 WHERE
      hs.question_id = q.id and
-     q.learning = 0 and
      hs.history_id = :hid
 GROUP BY hs.`key`
 EOS
