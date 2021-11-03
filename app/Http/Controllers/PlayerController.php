@@ -137,7 +137,7 @@ class PlayerController extends Controller
         $test = session('test');
         $set = $test->qset;
 
-        /*
+        $view = DB::select(<<<EOS
 SELECT
        t.id as tid,
        qs.quantity as qsquantity,
@@ -148,8 +148,8 @@ SELECT
        q.imageA as qimage1,
        q.imageB as qimage2,
        q.imageC as qimage3,
-       q.imageD as qimage4,
        q.valueA as qvalue1,
+       q.imageD as qimage4,
        q.valueB as qvalue2,
        q.valueC as qvalue3,
        q.valueD as qvalue4
@@ -161,14 +161,32 @@ WHERE
     t.id = :tid
 ORDER BY
     qsort_no ASC
-*/
+EOS
+            , ['tid' => $test->getKey()]
+        );
+
+        $steps = [];
+        foreach ($view as $item) {
+            $step = [
+                'id' => $item->tid,
+                'learning' => $item->qlearning,
+                'timeout' => $item->qtimeout
+            ];
+
+            $images = [];
+            for ($iimage = 1; $iimage <= $item->qsquantity; $iimage++)
+                $images[$item->{'qimage' . $iimage}] = $item->{'qvalue' . $iimage};
+            $step['steps'] = $images;
+
+            $steps[] = $step;
+        }
         /*
         $steps = [
             [   // Один вопрос, смена $qid
                 'id' => $qid,
                 'learning' => $qlearning,
                 'timeout' => $qtimeout,
-                [
+                'steps' => [
                     'images/2021-06-15/Tyy4n9zxnHh1jMASfS0bcO40GYBiJGFK3Iacqr3j.png' => 'D+',   // Одна картинка, $qimage1 => $qvalue1
                     'images/2021-06-15/hY6TORtamOyR0p5i1LMNtO8ufZXmW6sFqq7cw2rN.png' => 'D-'
                 ]
@@ -308,7 +326,7 @@ EOS
 
         $data = [];
         foreach ($result as $item)
-            if(isset($item->hskey))
+            if (isset($item->hskey))
                 $data[$item->hskey] = $item->value;
         foreach (['A+', 'A-', 'B+', 'B-', 'C+', 'C-', 'D+', 'D-'] as $letter)
             if (!isset($data[$letter]))
