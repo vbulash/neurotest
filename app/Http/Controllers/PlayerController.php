@@ -154,7 +154,7 @@ class PlayerController extends Controller
                 //if ($step->learning != 1) {  // Веса есть только у реальных (не учебных) вопросов
                 $key = $step->getAttributeValue('value' . $request->answer);
                 $hs = HistoryStep::create([
-                    'history_id' => $history->id,
+                    'history_id' => $history->getKey(),
                     'question_id' => $step->id,
                     'key' => $key,
                     'done' => date("Y-m-d H:i:s")
@@ -173,7 +173,7 @@ class PlayerController extends Controller
                 return redirect()->route('player.precalc',
                     [
                         'test' => $history->test->id,
-                        'history_id' => $history->id
+                        'history_id' => $history->getKey()
                     ]
                 );
             }
@@ -200,7 +200,7 @@ class PlayerController extends Controller
             $license->lock();
 
             $history = History::create([
-                'test_id' => $test->id,
+                'test_id' => $test->getKey(),
                 'license_id' => $license->id,
                 'card' => (session()->has('card') ? json_encode(session('card')) : null),
             ]);
@@ -239,16 +239,26 @@ class PlayerController extends Controller
             return false;
         }
 
-        // SELECT `key`, COUNT(`key`) as 'value' FROM `historysteps` WHERE history_id = 6 GROUP BY `key` ORDER BY `key`
-        $result = DB::table('historysteps')
-            ->select(DB::raw("`key`, COUNT(`key`) as 'value'"))
-            ->where('history_id', '=', $history_id)
-            ->groupBy('key')
-            ->get();
-        $data = $result->pluck('value', 'key')->toArray();
-        foreach (['A+', 'A-', 'B+', 'B-', 'C+', 'C-', 'D+', 'D-'] as $letter)
-            if (!isset($data[$letter]))
-                $data[$letter] = 0;
+        $result = DB::select(<<<EOS
+SELECT
+    hs.`key` as hskey,
+    COUNT(hs.`key`) as `value`
+FROM
+     historysteps as hs,
+     questions as q
+WHERE
+     hs.question_id = q.id and
+     q.learning = 0 and
+     hs.history_id = :hid
+GROUP BY hs.`key`
+EOS
+            , ['hid' => $history_id]
+        );
+
+        $data = [];
+        foreach ($result as $item)
+            if(isset($item->hskey))
+                $data[$item->hskey] = $item->value;
 
         $code = htmlspecialchars_decode(strip_tags($history->test->qset->content));
         $profile_code = eval($code);
