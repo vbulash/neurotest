@@ -259,6 +259,9 @@ EOS
         foreach ($result as $item)
             if(isset($item->hskey))
                 $data[$item->hskey] = $item->value;
+        foreach (['A+', 'A-', 'B+', 'B-', 'C+', 'C-', 'D+', 'D-'] as $letter)
+            if (!isset($data[$letter]))
+                $data[$letter] = 0;
 
         $code = htmlspecialchars_decode(strip_tags($history->test->qset->content));
         $profile_code = eval($code);
