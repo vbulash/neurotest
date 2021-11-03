@@ -100,7 +100,8 @@ class PlayerController extends Controller
             $test = session('test');
 
             if ($test->options & Test::AUTH_GUEST) {
-                return redirect()->route('player.body', ['question' => 0]);
+                //return redirect()->route('player.body', ['question' => 0, 'sid' => session()->getId()]);
+                return redirect()->route('player.body2', ['sid' => session()->getId()]);
             } elseif ($test->options & Test::AUTH_FULL) {
                 $content = json_decode($test->content, true);
                 $card = $content['card'];
@@ -122,7 +123,58 @@ class PlayerController extends Controller
         $data = $request->except('_token');
         session()->put('card', $data);
 
-        return redirect()->route('player.body', ['question' => 0, 'sid' => session()->getId()]);
+        //return redirect()->route('player.body', ['question' => 0, 'sid' => session()->getId()]);
+        return redirect()->route('player.body2', ['sid' => session()->getId()]);
+    }
+
+    public function body2(Request $request)
+    {
+        if (!$this->check($request)) {
+            //Log::debug('player.body2: ' . __METHOD__ . ':' . __LINE__);
+            return redirect()->route('player.index')->with('error', session('error'));
+        }
+
+        $test = session('test');
+        $set = $test->qset;
+
+        /*
+SELECT
+       t.id as tid,
+       qs.quantity as qsquantity,
+       q.id as qid,
+       q.sort_no as qsort_no,
+       q.learning as qlearning,
+       q.timeout as qtimeout,
+       q.imageA as qimage1,
+       q.imageB as qimage2,
+       q.imageC as qimage3,
+       q.imageD as qimage4,
+       q.valueA as qvalue1,
+       q.valueB as qvalue2,
+       q.valueC as qvalue3,
+       q.valueD as qvalue4
+FROM
+    tests AS t, questionsets AS qs, questions as q
+WHERE
+    qs.id = t.questionset_id AND
+    q.questionset_id = qs.id AND
+    t.id = :tid
+ORDER BY
+    qsort_no ASC
+*/
+        /*
+        $steps = [
+            [   // Один вопрос, смена $qid
+                'id' => $qid,
+                'learning' => $qlearning,
+                'timeout' => $qtimeout,
+                [
+                    'images/2021-06-15/Tyy4n9zxnHh1jMASfS0bcO40GYBiJGFK3Iacqr3j.png' => 'D+',   // Одна картинка, $qimage1 => $qvalue1
+                    'images/2021-06-15/hY6TORtamOyR0p5i1LMNtO8ufZXmW6sFqq7cw2rN.png' => 'D-'
+                ]
+            ]
+        ];
+        */
     }
 
     public function body(Request $request, int $question = 0)
