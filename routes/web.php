@@ -101,7 +101,9 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => 'restore.se
 
     // TODO обменять body и body2 после полной отладки
     Route::get('/player.body/{question?}', 'PlayerController@body')->name('player.body');
+    //
     Route::get('/player.body2', 'PlayerController@body2')->name('player.body2');
+    Route::post('/player/body2.store', 'PlayerController@body2_store')->name('player.body2.store');
     //
     Route::get('/player.precalc/{history_id}', 'PlayerController@precalc')->name('player.precalc');
     Route::get('/player.calculate/{history_id}', 'PlayerController@calculate')->name('player.calculate');

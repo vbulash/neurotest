@@ -21,10 +21,10 @@
             $countdown = 0;
             $rows = 1;
             $columns = 2;
-            if($step->qset->quantity == \App\Models\QuestionSet::IMAGES2) {
+            if($step['quantity'] == \App\Models\QuestionSet::IMAGES2) {
                 $rows = 1;
                 $columns = 2;
-            } elseif($step->qset->quantity == \App\Models\QuestionSet::IMAGES4) {
+            } elseif($step['quantity'] == \App\Models\QuestionSet::IMAGES4) {
                 $rows = 2;
                 $columns = 2;
             }

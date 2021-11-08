@@ -55,7 +55,7 @@
             @stack('testname')
         </div>
         <div class="d-block p-1 bg-primary text-white" @if($branding) {{ $navstyle }} @endif>
-            @stack('step_description') <span class="step-countdown"></span>
+            @stack('step_description') <span class="step-countdown" id="step-countdown"></span>
         </div>
     </div>
 
