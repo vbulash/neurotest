@@ -48,7 +48,7 @@ class QuestionsController extends Controller
                 return ($data ? json_encode($data) : '');
             })
             ->addColumn('key', function ($question) {
-                if($question->learning) return '';  // У учебных вопросов нет ключа
+                //if($question->learning) return '';  // У учебных вопросов нет ключа
                 $data = [];
                 if($question->qset->quantity == QuestionSet::IMAGES2)
                     $letters = ['A', 'B'];
