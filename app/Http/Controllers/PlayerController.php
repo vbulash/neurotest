@@ -12,6 +12,9 @@ use App\Models\License;
 use App\Models\Neuroprofile;
 use App\Models\Question;
 use App\Models\Test;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -344,7 +347,7 @@ EOS
         return view('front.precalc', compact('test', 'history_id'));
     }
 
-    public function calculate(int $history_id)
+    public function calculate(int $history_id): View|Factory|bool|Application|null
     {
         $history = History::findOrFail($history_id);
         $test = $history->test;
@@ -376,7 +379,7 @@ EOS
         foreach ($result as $item)
             if (isset($item->hskey))
                 $data[$item->hskey] = $item->value;
-        foreach (['A+', 'A-', 'B+', 'B-', 'C+', 'C-', 'D+', 'D-'] as $letter)
+        foreach (['A+', 'A-', 'B+', 'B-', 'C+', 'C-', 'D+', 'D-', 'E+', 'E-'] as $letter)
             if (!isset($data[$letter]))
                 $data[$letter] = 0;
 
