@@ -16,7 +16,7 @@ class Question extends Model
     protected $fillable = ['sort_no', 'imageA', 'imageB', 'imageC', 'imageD', 'valueA', 'valueB', 'valueC', 'valueD', 'questionset_id', 'learning', 'timeout'];
 
     public const EMPTY_VALUE = '&nbsp;&nbsp;';
-    public static array $values = [self::EMPTY_VALUE, 'A+', 'A-', 'B+', 'B-', 'C+', 'C-', 'D+', 'D-'];
+    public static array $values = [self::EMPTY_VALUE, 'A+', 'A-', 'B+', 'B-', 'C+', 'C-', 'D+', 'D-', 'E+', 'E-'];
 
     protected static $logAttributes = ['*'];
 

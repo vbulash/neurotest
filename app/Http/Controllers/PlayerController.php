@@ -12,12 +12,14 @@ use App\Models\License;
 use App\Models\Neuroprofile;
 use App\Models\Question;
 use App\Models\Test;
-use App\Models\User;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
 class PlayerController extends Controller
@@ -137,7 +139,7 @@ class PlayerController extends Controller
         $test = session('test');
         $set = $test->qset;
 
-        /*
+        $view = DB::select(<<<EOS
 SELECT
        t.id as tid,
        qs.quantity as qsquantity,
@@ -148,8 +150,8 @@ SELECT
        q.imageA as qimage1,
        q.imageB as qimage2,
        q.imageC as qimage3,
-       q.imageD as qimage4,
        q.valueA as qvalue1,
+       q.imageD as qimage4,
        q.valueB as qvalue2,
        q.valueC as qvalue3,
        q.valueD as qvalue4
@@ -160,21 +162,89 @@ WHERE
     q.questionset_id = qs.id AND
     t.id = :tid
 ORDER BY
-    qsort_no ASC
-*/
-        /*
-        $steps = [
-            [   // Один вопрос, смена $qid
-                'id' => $qid,
-                'learning' => $qlearning,
-                'timeout' => $qtimeout,
-                [
-                    'images/2021-06-15/Tyy4n9zxnHh1jMASfS0bcO40GYBiJGFK3Iacqr3j.png' => 'D+',   // Одна картинка, $qimage1 => $qvalue1
-                    'images/2021-06-15/hY6TORtamOyR0p5i1LMNtO8ufZXmW6sFqq7cw2rN.png' => 'D-'
-                ]
+    qsort_no
+EOS
+            , ['tid' => $test->getKey()]
+        );
+
+        $stack = [];
+        $steps = [];
+        foreach ($view as $item) {
+            $stack[] = $item->qid;
+            $step = [
+                'id' => $item->qid,
+                'sort_no' => $item->qsort_no,
+                'learning' => $item->qlearning,
+                'timeout' => $item->qtimeout,
+                'quantity' => $item->qsquantity
+            ];
+
+            $images = [];
+            for ($iimage = 1; $iimage <= $item->qsquantity; $iimage++)
+                $images[$item->{'qimage' . $iimage}] = $item->{'qvalue' . $iimage};
+            $step['images'] = $images;
+
+            $steps[] = $step;
+        }
+
+        // Блокировка лицензии для прохождения теста
+        $license = $test->contract->licenses->where('status', License::FREE)->first();
+        if ($license) {
+            session()->put('pkey', $license->pkey);
+        } else {
+            session()->put('error', 'Свободные лицензии закончились, обратитесь в Persona');
+            //Log::debug(__METHOD__ . ':' . __LINE__);
+            return redirect()->route('admin.index');
+        }
+        $license->lock();
+
+        return view('front.body2', compact('test', 'steps', 'stack'));
+    }
+
+    public function body2_store(Request $request): RedirectResponse
+    {
+        $test = session('test');
+        $data = $request->all();
+
+        // Фиксация лицензии по завершению тестирования
+        $license = License::all()->where('pkey', session('pkey'))->first();
+        $license->done();
+
+        // Зафиксировать историю теста и индивидуальные результаты прохождения вопросов в рамках транзакции
+        DB::transaction(function () use ($data, $license, $test) {
+            $history = History::create([
+                'test_id' => $test->getKey(),
+                'license_id' => $license->id,
+                'card' => (session()->has('card') ? json_encode(session('card')) : null),
+            ]);
+            $history->save();
+            session()->put('hid', $history->id);
+
+            foreach ($data as $answer => $value) {
+                if (!Str::startsWith($answer, 'answer-')) continue;
+                $parts = explode('-', $answer);
+                $key = $parts[1];
+                // $key => $value
+                $hs = HistoryStep::create([
+                    'history_id' => $history->getKey(),
+                    'question_id' => $key,
+                    'key' => $value,
+                    'done' => date("Y-m-d H:i:s")
+                ]);
+                $hs->save();
+            }
+
+            $history->update(['done' => date("Y-m-d H:i:s")]);
+        });
+
+        $hid = session('hid');
+        session()->forget('hid');
+        return redirect()->route('player.precalc',
+            [
+                'test' => $test->getKey(),
+                'history_id' => $hid
             ]
-        ];
-        */
+        );
     }
 
     public function body(Request $request, int $question = 0)
@@ -278,7 +348,7 @@ ORDER BY
         return view('front.precalc', compact('test', 'history_id'));
     }
 
-    public function calculate(int $history_id)
+    public function calculate(int $history_id): View|Factory|bool|Application|null
     {
         $history = History::findOrFail($history_id);
         $test = $history->test;
@@ -308,9 +378,9 @@ EOS
 
         $data = [];
         foreach ($result as $item)
-            if(isset($item->hskey))
+            if (isset($item->hskey))
                 $data[$item->hskey] = $item->value;
-        foreach (['A+', 'A-', 'B+', 'B-', 'C+', 'C-', 'D+', 'D-'] as $letter)
+        foreach (['A+', 'A-', 'B+', 'B-', 'C+', 'C-', 'D+', 'D-', 'E+', 'E-'] as $letter)
             if (!isset($data[$letter]))
                 $data[$letter] = 0;
 
@@ -441,6 +511,7 @@ EOS
                 redirect()->route('history.index')->with($kind, session($kind)) :
                 'OK' . $request->InvId);
         }
+        return false;
     }
 
     public function paymentSuccess(Request $request)
