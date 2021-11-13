@@ -168,7 +168,7 @@
             Yajra\Datatables\DatatablesServiceProvider::class,
             Spatie\Permission\PermissionServiceProvider::class,
             Spatie\Menu\Laravel\MenuServiceProvider::class,
-            Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+            //Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 
             /*
              * Application Service Providers...

@@ -15,6 +15,7 @@ use App\Models\Test;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -193,14 +194,14 @@ EOS
         } else {
             session()->put('error', 'Свободные лицензии закончились, обратитесь в Persona');
             //Log::debug(__METHOD__ . ':' . __LINE__);
-            return redirect()->route('player.index');
+            return redirect()->route('admin.index');
         }
         $license->lock();
 
         return view('front.body2', compact('test', 'steps', 'stack'));
     }
 
-    public function body2_store(Request $request)
+    public function body2_store(Request $request): RedirectResponse
     {
         $test = session('test');
         $data = $request->all();

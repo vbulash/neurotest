@@ -72,7 +72,7 @@
          *
          * @return Application|Factory|View|Response
          */
-        public function index()
+        public function index(): View|Factory|Response|Application
         {
             $profiles = Neuroprofile::all();
             return view('admin.profiles.index', compact('profiles'));
@@ -84,7 +84,7 @@
          * @param Request $request
          * @return Application|Factory|View|Response
          */
-        public function create(Request $request)
+        public function create(Request $request): Factory|View|Response|Application
         {
             $embedded = false;
             if($request->has('fmptype_id')) {
@@ -104,7 +104,7 @@
          * @param Request $request
          * @return Application|Factory|View|RedirectResponse|Response
          */
-        public function store(NeuroprofileRequest $request)
+        public function store(NeuroprofileRequest $request): View|Factory|Response|RedirectResponse|Application
         {
             $show = false;
             $profile = Neuroprofile::create([
@@ -126,7 +126,7 @@
          * @param int $id
          * @return RedirectResponse|Response
          */
-        public function show(Request $request, int $id)
+        public function show(Request $request, int $id): Response|RedirectResponse
         {
             $show = true;
             $neuroprofile = $id;
@@ -140,7 +140,7 @@
          * @param int $id
          * @return Application|Factory|View|Response
          */
-        public function edit(Request $request, int $id)
+        public function edit(Request $request, int $id): View|Factory|Response|Application
         {
             $profile = Neuroprofile::findOrFail($id);
             $embedded = false;
@@ -165,7 +165,7 @@
          * @param int $id
          * @return RedirectResponse|Response
          */
-        public function update(NeuroprofileRequest $request, $id)
+        public function update(NeuroprofileRequest $request, $id): Response|RedirectResponse
         {
             $profile = Neuroprofile::findOrFail($id);
             $profile->update([
@@ -183,7 +183,7 @@
          * @param int $neuroprofile
          * @return bool
          */
-        public function destroy(Request $request, int $neuroprofile)
+        public function destroy(Request $request, int $neuroprofile): bool
         {
             if ($neuroprofile == 0) {
                 $id = $request->id;
@@ -197,12 +197,12 @@
             return true;
         }
 
-        public function back(?string $key = null, ?string $message = null)
+        public function back(?string $key = null, ?string $message = null): ?RedirectResponse
         {
             return CallStack::back($key, $message);
         }
 
-        public function filterNew(int $fmptype_id)
+        public function filterNew(int $fmptype_id): bool|string|null
         {
             $allCodes = [
                 'OV' => true,
