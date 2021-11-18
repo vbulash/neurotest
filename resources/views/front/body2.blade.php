@@ -148,6 +148,7 @@
 
         // Подготовка отображения вопроса
         function prepareQuestion() {
+            window.pressed = false;
             let element = questions.get();
             // if(questions.pointer > 0) {
             let firstTab = document.querySelector('#nav-tab-' + element.id);
@@ -197,8 +198,13 @@
         // Нажатие на картинку вопроса
         document.querySelectorAll(".step-image").forEach((pic) => {
             pic.addEventListener('click', event => {
+                // Предотвращение повторных нажатий
+                if(window.pressed) return;
+                window.pressed = true;
+
                 // Зафиксировать результат нажатия
                 let image = event.target;
+
                 let qid = image.dataset.id;
                 // TODO постепенно перейти с использования ключа на использование номера картинки
                 document.getElementById('answer-' + qid).value = image.dataset.key;
