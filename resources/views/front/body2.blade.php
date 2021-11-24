@@ -149,6 +149,7 @@
         // Подготовка отображения вопроса
         function prepareQuestion() {
             window.pressed = false;
+            //console.log('window.pressed = ' + window.pressed.toString());
             let element = questions.get();
             // if(questions.pointer > 0) {
             let firstTab = document.querySelector('#nav-tab-' + element.id);
@@ -198,6 +199,7 @@
         // Нажатие на картинку вопроса
         document.querySelectorAll(".step-image").forEach((pic) => {
             pic.addEventListener('click', event => {
+                //console.log('window.pressed = ' + window.pressed.toString());
                 // Предотвращение повторных нажатий
                 if(window.pressed) return;
                 window.pressed = true;
@@ -218,7 +220,7 @@
                 } else {
                     document.getElementById('play-form').submit();
                 }
-            });
+            }, false);
         });
 
         // Отображение вопроса
@@ -226,11 +228,11 @@
             tab.addEventListener('shown.bs.tab', (event) => {
                 let activeTab = event.target;
                 startTimers();
-            });
+            }, false);
         });
 
         document.addEventListener("DOMContentLoaded", () => {
             prepareQuestion();
-        });
+        }, false);
     </script>
 @endpush

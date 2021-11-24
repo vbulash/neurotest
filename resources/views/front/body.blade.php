@@ -81,7 +81,7 @@
                 let image = event.target;
                 document.getElementById('answer').value = image.dataset.id
                 form.submit();
-            });
+            }, false);
         });
 
         @if(intval($test->options) & \App\Models\Test::MOUSE_TRACKING)
@@ -115,7 +115,7 @@
                 x: X,
                 y: Y
             };
-        });
+        }, false);
         @endif
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -147,6 +147,6 @@
                 }
             }, 1000);
             @endif
-        });
+        }, false);
     </script>
 @endpush

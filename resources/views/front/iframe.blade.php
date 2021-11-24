@@ -1,14 +1,14 @@
 @extends('front.layouts.layout')
 
-@push('title') - Тестрование IFrame @endpush
+@push('title') - Тестирование IFrame @endpush
 
 @section('content')
     <h1 class="mb-5">Проверка IFrame</h1>
     <!-- IFrame -->
     <iframe
-        src="https://psycho.bulash.ru/player.play/mkey_60c45f1aeaece2.64555759*1160066438/test_610554455c4906.82439038"
+        src="http://psycho.bulash.ru/player.play/mkey_60501e2ae282a2.08095650*2427387986/test_60cf61faa26899.54714870"
         width="1000px"
-        height="600px"
+        height="700px"
         allow="fullscreen">
     </iframe>
     <!-- /.IFrame -->
@@ -18,6 +18,6 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             //
-        });
+        }, false);
     </script>
 @endpush

@@ -228,6 +228,6 @@
 
         document.getElementById('set-edit').addEventListener('submit', () => {
             document.getElementById('content').value = editor.getData();
-        });
+        }, false);
     </script>
 @endpush

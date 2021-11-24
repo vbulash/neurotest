@@ -23,6 +23,6 @@
         document.addEventListener("DOMContentLoaded", () => {
             const form = document.getElementById('calc-form');
             form.submit();
-        });
+        }, false);
     </script>
 @endpush

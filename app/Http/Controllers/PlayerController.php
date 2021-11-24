@@ -26,6 +26,8 @@ class PlayerController extends Controller
 {
     public function check(Request $request, string $mkey = null, string $test_key = null): bool
     {
+        Log::debug('mkey = ' . $mkey);
+        Log::debug('test_key = ' . $test_key);
         if (!$mkey) {
             if (!session()->has('mkey')) {
                 Log::debug('Внутренняя ошибка: потерян мастер-ключ');
@@ -71,6 +73,7 @@ class PlayerController extends Controller
             } else {
                 session()->put('test', $test);
                 session()->put('mkey', $mkey);
+                Log::debug('test and mkey saved');
                 return true;
             }
         }

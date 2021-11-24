@@ -179,7 +179,7 @@
         document.addEventListener("DOMContentLoaded", () => {
             let que = document.getElementById('code-que');
             que.style.display ='none';
-        });
+        }, false);
 
         const url = document.getElementById('url');
         url.addEventListener('input', (event) => {
@@ -204,6 +204,6 @@
                     mkey.value = data;
                 }
             });
-        });
+        }, false);
     </script>
 @endpush

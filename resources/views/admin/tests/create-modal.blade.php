@@ -151,17 +151,17 @@
             let backBtn = document.getElementById('back_btn');
             backBtn.addEventListener('click', (event) => {
                 submitButton = backBtn;
-            });
+            }, false);
 
             let forwardBtn = document.getElementById('forward_btn');
             forwardBtn.addEventListener('click', (event) => {
                 submitButton = forwardBtn;
-            });
+            }, false);
 
             let submitBtn = document.getElementById('submit_btn');
             submitBtn.addEventListener('click', (event) => {
                 submitButton = submitBtn;
-            });
+            }, false);
 
             Array.prototype.slice.call(allTabs)
                 .forEach((btn) => {
@@ -234,7 +234,7 @@
                     .forEach((element) => {
                         wizardContentHeight = element.clientHeight - 100;
                     });
-            })
+            }, false);
 
             $("input[name='mechanics']").on("change", () => {
                 let options =

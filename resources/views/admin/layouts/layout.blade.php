@@ -306,17 +306,18 @@
                                 </a>
                             </li>
                             <li class="nav-item">
+                                <a href="{{ route('player.iframe') }}" class="nav-link">
+                                    <i class="nav-icon fas fa-window-maximize"></i>
+                                    <p>Тест IFrame</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a href="{{ route('history.index') }}" class="nav-link">
                                     <i class="nav-icon fas fa-file-video"></i>
                                     <p>История прохождения</p>
                                 </a>
                             </li>
-                            {{--                            <li class="nav-item">--}}
-                            {{--                                <a href="{{ route('player.iframe') }}" class="nav-link">--}}
-                            {{--                                    <i class="nav-icon fas fa-window-maximize"></i>--}}
-                            {{--                                    <p>Тест IFrame</p>--}}
-                            {{--                                </a>--}}
-                            {{--                            </li>--}}
+
                             {{--                            <li class="nav-item">--}}
                             {{--                                <a href="{{ route('player.mail', ['history_id' => '27']) }}" class="nav-link">--}}
                             {{--                                    <i class="nav-icon fas fa-envelope-open"></i>--}}
@@ -437,7 +438,7 @@
     @endphp
         @endif
 
-    @if (session()->has('info'))
+        @if (session()->has('info'))
         toastr['success']("{!! session('info') !!}");
     @php
         session()->forget('info');

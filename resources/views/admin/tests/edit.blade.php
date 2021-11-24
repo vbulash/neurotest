@@ -215,7 +215,7 @@
                 default:
                     break;
             }
-        });
+        }, false);
 
         $("input[name='mechanics']").on("change", () => {
             let options =

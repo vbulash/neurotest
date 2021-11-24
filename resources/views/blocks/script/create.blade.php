@@ -174,6 +174,6 @@
 
         document.getElementById('blocks-create').addEventListener('submit', event => {
             document.getElementById('content').value = editor.getData();
-        });
+        }, false);
     </script>
 @endpush

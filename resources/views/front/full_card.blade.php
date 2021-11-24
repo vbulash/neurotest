@@ -98,7 +98,7 @@
 
 @push('scripts.injection')
     <script>
-        document.querySelectorAll(".policy").forEach((doc) => {
+        document.querySelectorAll(".policy").forEach(doc => {
             doc.addEventListener('change', event => {
                 let privacy = document.getElementById('policy_privacy');
                 let personal = document.getElementById('policy_personal');
@@ -107,11 +107,10 @@
 
                 let submit = document.getElementById('start_test');
                 submit.disabled = !allowed;
-            });
+            }, false);
         });
 
-        //document.addEventListener("DOMContentLoaded", () => {
-            //
-        //});
+        document.addEventListener("DOMContentLoaded", () => {
+        }, false);
     </script>
 @endpush
