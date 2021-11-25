@@ -181,7 +181,7 @@
                 'password' => $request->password,
             ])) {
                 session()->flash('success', 'Вы вошли в систему');
-                return redirect()->route('admin.index');
+                return redirect()->route('admin.index', ['sid' => session()->getId()]);
             } else {
                 session()->flash('error', 'Электронная почта / пароль неверны; вход в систему невозможен');
                 return redirect()->route('login');

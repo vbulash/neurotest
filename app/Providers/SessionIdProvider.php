@@ -25,6 +25,6 @@ class SessionIdProvider extends ServiceProvider
      */
     public function boot()
     {
-        View::composer('front.*', SessionIdComposer::class);
+        View::composer('*', SessionIdComposer::class);
     }
 }

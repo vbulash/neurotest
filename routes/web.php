@@ -68,7 +68,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'App\Http\Controllers\Admin', 
 });
 
 // Безопасность
-Route::group(['namespace' => 'App\Http\Controllers\Admin', 'middleware' => 'auth'], function () {
+Route::group(['namespace' => 'App\Http\Controllers\Admin', 'middleware' => 'admin'], function () {
     // Пользователи
     Route::resource('/users', 'UserController');
     Route::get('/users.data', 'UserController@getData')->name('users.index.data');
@@ -83,7 +83,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Admin', 'middleware' => 'gues
     Route::post('/login', 'UserController@login')->name('login');
 });
 
-Route::group(['namespace' => 'App\Http\Controllers\Admin', 'middleware' => 'auth'], function () {
+Route::group(['namespace' => 'App\Http\Controllers\Admin', 'middleware' => 'admin'], function () {
     Route::get('/logout', 'UserController@logout')->name('logout');
 });
 

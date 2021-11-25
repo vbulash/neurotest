@@ -17,10 +17,17 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+        // Вернуться на сессию логина
+        if($request->has('sid')) {
+            if(session()->getId() != $request->sid) {
+                session()->setId($request->sid);
+                session()->start();
+            }
+        }
         if(Auth::check()) {
             return $next($request);
         } else {
-            return redirect()->route('login.create');
+            return redirect()->route('login.create', ['sid' => session()->getId()]);
         }
     }
 }

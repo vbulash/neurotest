@@ -18,13 +18,10 @@ class RestoreSessionMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-//        Log::debug('session ID = ' . session()->getId() . ' at route = ' . Route::currentRouteName());
         if($request->has('sid')) {
             if($request->sid != session()->getId()) {
                 session()->setId($request->sid);
                 session()->start();
-//                Log::debug('session restored');
-//                Log::debug('session = ' . print_r(array_keys(session()->all()), true));
             }
         }
         return $next($request);
