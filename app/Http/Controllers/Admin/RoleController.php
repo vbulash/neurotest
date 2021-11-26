@@ -26,7 +26,7 @@ class RoleController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-    public function getData()
+    public function getData(): JsonResponse
     {
         return Datatables::of(Role::query()->orderBy('name'))
             ->addColumn('permissions', function($role) {
@@ -52,8 +52,12 @@ class RoleController extends Controller
                 if($role->name == ROLE::SUPERADMIN) {
                     return '';
                 }
-                $editRoute = route('roles.edit', ['role' => $role->id]);
-                $showRoute = route('roles.show', ['role' => $role->id]);
+                $params = [
+                    'role' => $role->id,
+                    'sid' => session()->getId()
+                ];
+                $editRoute = route('roles.edit', $params);
+                $showRoute = route('roles.show', $params);
                 $action = '';
                 $logged = Auth::user();
                 if(true)
@@ -116,7 +120,9 @@ class RoleController extends Controller
         $role->syncPermissions($permissions);
         $role->save();
 
-        return redirect()->route('roles.index')->with('success', "Роль \"{$role->name}\" добавлена");
+        return redirect()->route('roles.index', [
+            'sid' => ($request->has('sid') ? $request->sid : session()->getId())
+        ])->with('success', "Роль \"{$role->name}\" добавлена");
     }
 
     /**
@@ -168,7 +174,9 @@ class RoleController extends Controller
 
         $role->syncPermissions($permissions);
 
-        return redirect()->route('roles.index')->with('success', "Изменения роли \"{$role->name}\" сохранены");
+        return redirect()->route('roles.index', [
+            'sid' => ($request->has('sid') ? $request->sid : session()->getId())
+        ])->with('success', "Изменения роли \"{$role->name}\" сохранены");
     }
 
     /**

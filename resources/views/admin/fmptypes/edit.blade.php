@@ -154,7 +154,7 @@
                     },
                     processing: true,
                     serverSide: true,
-                    ajax: '{!! route('neuroprofiles.index.data', ['fmptype_id' => $fmptype->id]) !!}',
+                    ajax: '{!! route('neuroprofiles.index.data', ['fmptype_id' => $fmptype->id, 'sid' => $sid]) !!}',
                     responsive: true,
                     columns: [
                         {data: 'id', name: 'id', responsivePriority: 1},

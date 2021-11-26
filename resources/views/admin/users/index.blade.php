@@ -30,7 +30,7 @@
                         <!-- /.card-header -->
                         <div class="card-body">
                             @can('users.create')
-                                <a href="{{ route('users.create') }}" class="btn btn-primary mb-3">Добавить
+                                <a href="{{ route('users.create', ['sid' => $sid]) }}" class="btn btn-primary mb-3">Добавить
                                     пользователя</a>
                             @endcan
                             @if (count($users))
@@ -87,7 +87,7 @@
                     },
                     processing: true,
                     serverSide: true,
-                    ajax: '{!! route('users.index.data') !!}',
+                    ajax: '{!! route('users.index.data', ['sid' => $sid]) !!}',
                     responsive: true,
                     columns: [
                         {data: 'id', name: 'id', responsivePriority: 1},

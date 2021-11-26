@@ -109,7 +109,7 @@
                     },
                     processing: true,
                     serverSide: true,
-                    ajax: '{!! route('tests.index.data') !!}',
+                    ajax: '{!! route('tests.index.data', ['sid' => $sid]) !!}',
                     responsive: true,
                     columns: [
                         {data: 'id', name: 'id', responsivePriority: 1},

@@ -61,8 +61,12 @@ class QuestionsController extends Controller
                 return ($data ? implode(' | ', $data) : '');
             })
             ->addColumn('action', function ($question) use ($first, $last) {
-                $editRoute = route('questions.edit', ['question' => $question->id]);
-                $showRoute = route('questions.show', ['question' => $question->id]);
+                $params = [
+                    'question' => $question->id,
+                    'sid' => session()->getId()
+                ];
+                $editRoute = route('questions.edit', $params);
+                $showRoute = route('questions.show', $params);
                 $actions =
                     "<a href=\"{$editRoute}\" class=\"btn btn-info btn-sm float-left mr-1\" " .
                     "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Редактирование\">\n" .
@@ -157,7 +161,10 @@ class QuestionsController extends Controller
 
         $set_show = session('set_show');
         $route = 'sets.' . ($set_show ? 'show' : 'edit');
-        return redirect()->route($route, ['set' => $set_id])->with('success', "Вопрос № {$data['sort_no']} добавлен");
+        return redirect()->route($route, [
+            'set' => $set_id,
+            'sid' => ($request->has('sid') ? $request->sid : session()->getId())
+        ])->with('success', "Вопрос № {$data['sort_no']} добавлен");
     }
 
     /**
@@ -228,7 +235,10 @@ class QuestionsController extends Controller
 
         $set_show = session('set_show');
         $route = 'sets.' . ($set_show ? 'show' : 'edit');
-        return redirect()->route($route, ['set' => $set_id])->with('success', "Изменения вопроса № {$question->sort_no} сохранены");
+        return redirect()->route($route, [
+            'set' => $set_id,
+            'sid' => ($request->has('sid') ? $request->sid : session()->getId())
+        ])->with('success', "Изменения вопроса № {$question->sort_no} сохранены");
     }
 
     /**

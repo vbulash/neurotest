@@ -84,7 +84,7 @@
                     },
                     processing: true,
                     serverSide: true,
-                    ajax: '{!! route('roles.index.data') !!}',
+                    ajax: '{!! route('roles.index.data', ['sid' => $sid]) !!}',
                     responsive: true,
                     columns: [
                         {data: 'id', name: 'id', responsivePriority: 1},

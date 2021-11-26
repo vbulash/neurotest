@@ -105,7 +105,7 @@
                     },
                     "processing": true,
                     "serverSide": true,
-                    "ajax": '{!! route('history.index.data') !!}',
+                    "ajax": '{!! route('history.index.data', ['sid' => $sid]) !!}',
                     "responsive": true,
                     "pageLength": 50,
                     // "dom": 'Blfrtip',

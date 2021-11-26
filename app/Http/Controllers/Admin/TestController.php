@@ -38,8 +38,12 @@
                     return $number;
                 })
                 ->addColumn('action', function ($test) {
-                    $editRoute = route('tests.edit', ['test' => $test->id]);
-                    $showRoute = route('tests.show', ['test' => $test->id]);
+                    $params = [
+                        'test' => $test->id,
+                        'sid' => session()->getId()
+                    ];
+                    $editRoute = route('tests.edit', $params);
+                    $showRoute = route('tests.show', $params);
 
                     $actions = '';
                     $actions .=
@@ -143,7 +147,9 @@
             $message = [];
             $message[] = "Тест &laquo;{$test->name}&raquo; создан";
 
-            return redirect()->route('tests.index')->with('success', implode("<br/>", $message));
+            return redirect()->route('tests.index', [
+                'sid' => ($request->has('sid') ? $request->sid : session()->getId())
+            ])->with('success', implode("<br/>", $message));
         }
 
         /**
@@ -229,7 +235,9 @@
             $test->update($update);
             $message[] = "Изменения теста &laquo;{$data['title']}&raquo; сохранены";
 
-            return redirect()->route('tests.index')
+            return redirect()->route('tests.index', [
+                'sid' => ($request->has('sid') ? $request->sid : session()->getId())
+            ])
                 ->with('success', implode("<br/>", $message));
         }
 

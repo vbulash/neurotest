@@ -48,7 +48,7 @@ class BlockController extends Controller
                 }
             })
             ->addColumn('action', function ($block) use($profile_id) {
-                $params = ['block' => $block->id];
+                $params = ['block' => $block->id, 'sid' => session()->getId()];
                 if($profile_id != 0) $params['profile_id'] = $profile_id;
 
                 $editRoute = route('blocks.edit', $params);
@@ -156,7 +156,8 @@ class BlockController extends Controller
     {
         $block = $id;
         $show = true;
-        return redirect()->route('blocks.edit', compact('block', 'show'));
+        $sid = ($request->has('sid') ? $request->sid : session()->getId());
+        return redirect()->route('blocks.edit', compact('block', 'show', 'sid'));
     }
 
     /**

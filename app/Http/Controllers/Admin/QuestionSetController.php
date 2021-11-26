@@ -41,9 +41,13 @@ class QuestionSetController extends Controller
                 return $set->questions()->count();
             })
             ->addColumn('action', function ($set) {
-                $editRoute = route('sets.edit', ['set' => $set->id]);
-                $showRoute = route('sets.show', ['set' => $set->id]);
-                $copyRoute = route('sets.copy', ['set' => $set->id]);
+                $params = [
+                    'set' => $set->id,
+                    'sid' => session()->getId()
+                ];
+                $editRoute = route('sets.edit', $params);
+                $showRoute = route('sets.show', $params);
+                $copyRoute = route('sets.copy', $params);
                 $actions =
                     "<a href=\"{$editRoute}\" class=\"btn btn-info btn-sm float-left mr-1\" " .
                     "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Редактирование\">\n" .
@@ -155,7 +159,8 @@ class QuestionSetController extends Controller
         $set = QuestionSet::findOrFail($id);
         $set->update($data);
 
-        return redirect()->route('sets.index')
+        return redirect()->route('sets.index',
+            ['sid' => ($request->has('sid') ? $request->sid : session()->getId())])
             ->with('success', "Изменения набора вопросов &laquo;{$question->name}&raquo; сохранены");
     }
 
@@ -227,7 +232,9 @@ class QuestionSetController extends Controller
             $question->copyToSet($target->id);
         }
 
-        return redirect()->route('sets.edit', ['set' => $target->id])
-            ->with('success', "Набор вопросов &laquo;{$source->name}&raquo; скопирован");
+        return redirect()->route('sets.edit', [
+            'set' => $target->id,
+            'sid' => ($request->has('sid') ? $request->sid : session()->getId())
+        ])->with('success', "Набор вопросов &laquo;{$source->name}&raquo; скопирован");
     }
 }

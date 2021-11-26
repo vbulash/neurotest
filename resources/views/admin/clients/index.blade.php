@@ -83,7 +83,7 @@
                     },
                     processing: true,
                     serverSide: true,
-                    ajax: '{!! route('clients.index.data') !!}',
+                    ajax: '{!! route('clients.index.data', ['sid' => $sid]) !!}',
                     responsive: true,
                     columns: [
                         {data: 'id', name: 'id', responsivePriority: 1},

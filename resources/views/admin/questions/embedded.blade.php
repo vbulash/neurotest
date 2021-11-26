@@ -93,7 +93,7 @@
                     },
                     processing: true,
                     serverSide: true,
-                    ajax: '{!! route('questions.index.data') !!}',
+                    ajax: '{!! route('questions.index.data', ['sid' => $sid]) !!}',
                     columns: [
                         {data: 'sort_no', name: 'sort_no', responsivePriority: 1},
                         {

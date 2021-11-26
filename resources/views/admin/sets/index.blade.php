@@ -102,7 +102,7 @@
                     },
                     processing: true,
                     serverSide: true,
-                    ajax: '{!! route('sets.index.data') !!}',
+                    ajax: '{!! route('sets.index.data', ['sid' => $sid]) !!}',
                     responsive: true,
                     columns: [
                         {data: 'id', name: 'id', responsivePriority: 1},

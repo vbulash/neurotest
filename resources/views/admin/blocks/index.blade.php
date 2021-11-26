@@ -114,7 +114,7 @@
                     },
                     processing: true,
                     serverSide: true,
-                    ajax: '{!! route('blocks.index.data') !!}',
+                    ajax: '{!! route('blocks.index.data', ['sid' => $sid]) !!}',
                     responsive: true,
                     columns: [
                         {data: 'id', name: 'id', responsivePriority: 1},

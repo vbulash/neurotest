@@ -188,7 +188,7 @@
                     },
                     processing: true,
                     serverSide: true,
-                    ajax: '{!! route('contracts.index.data', ['client' => $client->id]) !!}',
+                    ajax: '{!! route('contracts.index.data', ['client' => $client->id, 'sid' => $sid]) !!}',
                     responsive: true,
                     columns: [
                         {data: 'number', name: 'number', responsivePriority: 1},

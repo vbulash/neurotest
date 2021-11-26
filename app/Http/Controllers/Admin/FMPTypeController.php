@@ -37,9 +37,13 @@ class FMPTypeController extends Controller
 
         return Datatables::of($fmptypes)
             ->addColumn('action', function ($fmptype) {
-                $editRoute = route('fmptypes.edit', ['fmptype' => $fmptype->id]);
-                $showRoute = route('fmptypes.show', ['fmptype' => $fmptype->id]);
-                $copyRoute = route('fmptypes.copy', ['fmptype' => $fmptype->id]);
+                $params = [
+                    'fmptype' => $fmptype->id,
+                    'sid' => session()->getId()
+                ];
+                $editRoute = route('fmptypes.edit', $params);
+                $showRoute = route('fmptypes.show', $params);
+                $copyRoute = route('fmptypes.copy', $params);
                 $actions =
                     "<a href=\"{$editRoute}\" class=\"btn btn-info btn-sm float-left mr-1\" " .
                     "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Редактирование\">\n" .
@@ -123,7 +127,8 @@ class FMPTypeController extends Controller
     {
         $show = true;
         $fmptype = $id;
-        return redirect()->route('fmptypes.edit', compact('fmptype', 'show'));
+        $sid = ($request->has('sid') ? $request->sid : session()->getId());
+        return redirect()->route('fmptypes.edit', compact('fmptype', 'show', 'sid'));
     }
 
     /**
@@ -203,7 +208,11 @@ class FMPTypeController extends Controller
             }
         }
 
-        return redirect()->route('fmptypes.edit', ['fmptype' => $target->id])
+        return redirect()->route('fmptypes.edit',
+            [
+                'fmptype' => $target->id,
+                'sid' => ($request->has('sid') ? $request->sid : session()->getId())
+            ])
             ->with('success', "Тип описания &laquo;{$source->name}&raquo; скопирован");
     }
 

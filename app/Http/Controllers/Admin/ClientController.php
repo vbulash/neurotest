@@ -38,7 +38,7 @@ class ClientController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-    public function getData()
+    public function getData(): JsonResponse
     {
         $clients = Client::all();
 
@@ -54,8 +54,8 @@ class ClientController extends Controller
                 }
             })
             ->addColumn('action', function ($client) {
-                $editRoute = route('clients.edit', ['client' => $client->id]);
-                $showRoute = route('clients.show', ['client' => $client->id]);
+                $editRoute = route('clients.edit', ['client' => $client->id, 'sid' => session()->getId()]);
+                $showRoute = route('clients.show', ['client' => $client->id, 'sid' => session()->getId()]);
                 return
                     "<a href=\"{$editRoute}\" class=\"btn btn-info btn-sm float-left mr-1\" " .
                     "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Редактирование\">\n" .
@@ -92,7 +92,7 @@ class ClientController extends Controller
     {
         $name = $request->name;
         Client::create($request->all());
-        return redirect()->route('clients.index')->with('success', "Клиент \"{$name}\" добавлен");
+        return redirect()->route('clients.index', ['sid' => ($request->has('sid') ? $request->$sid : session()->getId())])->with('success', "Клиент \"{$name}\" добавлен");
     }
 
     /**
@@ -136,7 +136,7 @@ class ClientController extends Controller
         $name = $request->name;
         $client = Client::find($id);
         $client->update($request->all());
-        return redirect()->route('clients.index')->with('success', "Изменения клиента \"{$name}\" сохранены");
+        return redirect()->route('clients.index', ['sid' => ($request->has('sid') ? $request->$sid : session()->getId())])->with('success', "Изменения клиента \"{$name}\" сохранены");
     }
 
     /**

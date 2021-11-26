@@ -194,7 +194,7 @@
                     },
                     processing: true,
                     serverSide: true,
-                    ajax: '{!! route('blocks.index.data', ['profile_id' => $profile->id]) !!}',
+                    ajax: '{!! route('blocks.index.data', ['profile_id' => $profile->id, 'sid' => $sid]) !!}',
                     responsive: true,
                     columns: [
                         {data: 'id', name: 'id', responsivePriority: 1},

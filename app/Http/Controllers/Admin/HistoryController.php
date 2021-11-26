@@ -54,9 +54,18 @@ class HistoryController extends Controller
                 return $card->email;
             })
             ->editColumn('action', function ($history) {
-                $editRoute = route('history.edit', ['history' => $history->id]);
-                $showRoute = route('history.show', ['history' => $history->id]);
-                $mailRoute = route('payment.result', ['InvId' => $history->id, 'List' => true]);
+                $params = [
+                    'history' => $history->id,
+                    'sid' => session()->getId()
+                ];
+                $editRoute = route('history.edit', $params);
+                $showRoute = route('history.show', $params);
+                $params = [
+                    'InvId' => $history->id,
+                    'List' => true,
+                    'sid' => session()->getId()
+                ];
+                $mailRoute = route('payment.result', $params);
 
                 $actions =
                     "<a href=\"{$editRoute}\" class=\"btn btn-info btn-sm float-left mr-1\" " .
@@ -157,7 +166,8 @@ class HistoryController extends Controller
         ]);
 
         session()->put('success', "Запись истории прохождения тестов $history->id обновлена");
-        return redirect()->route('history.index');
+        return redirect()->route('history.index',
+            ['sid' => ($request->has('sid') ? $request->sid : session()->getId())]);
     }
 
     /**

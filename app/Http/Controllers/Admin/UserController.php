@@ -27,7 +27,7 @@
          * @return JsonResponse
          * @throws Exception
          */
-        public function getData()
+        public function getData(): JsonResponse
         {
             return Datatables::of(User::all())
                 ->editColumn('roles', function($user) {
@@ -39,8 +39,12 @@
                     return $clients ?: ['Все клиенты'];
                 })
                 ->addColumn('action', function ($user) {
-                    $editRoute = route('users.edit', ['user' => $user->id]);
-                    $showRoute = route('users.show', ['user' => $user->id]);
+                    $params = [
+                        'user' => $user->id,
+                        'sid' => session()->getId()
+                    ];
+                    $editRoute = route('users.edit', $params);
+                    $showRoute = route('users.show', $params);
                     $action = '';
                     $logged = Auth::user();
                     if ($logged->hasPermissionTo('users.edit'))
@@ -90,7 +94,8 @@
             }
 
             session()->flash('success', "Пользователь \"{$user->name}\" зарегистрирован");
-            return redirect()->route('users.index');
+            return redirect()->route('users.index',
+                ['sid' => ($request->has('sid') ? $request->sid : session()->getId())]);
         }
 
         /**
@@ -161,7 +166,8 @@
                     "Письмо пользователю &laquo;{$original}&raquo; отправлено");
             }
 
-            return redirect()->route('users.index');
+            return redirect()->route('users.index',
+                ['sid' => ($request->has('sid') ? $request->sid : session()->getId())]);
         }
 
         public function loginForm()
@@ -181,7 +187,8 @@
                 'password' => $request->password,
             ])) {
                 session()->flash('success', 'Вы вошли в систему');
-                return redirect()->route('admin.index', ['sid' => session()->getId()]);
+                return redirect()->route('admin.index',
+                    ['sid' => ($request->has('sid') ? $request->sid : session()->getId())]);
             } else {
                 session()->flash('error', 'Электронная почта / пароль неверны; вход в систему невозможен');
                 return redirect()->route('login');

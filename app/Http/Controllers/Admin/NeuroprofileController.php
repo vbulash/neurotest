@@ -41,7 +41,10 @@
                     return $profile->fmptype->name;
                 })
                 ->addColumn('action', function ($profile) use ($fmptype_id) {
-                    $params = ['neuroprofile' => $profile->id];
+                    $params = [
+                        'neuroprofile' => $profile->id,
+                        'sid' => ($request->has('sid') ? $request->sid : session()->getId())
+                    ];
                     if ($fmptype_id != 0) $params['fmptype'] = $fmptype_id;
 
                     $editRoute = route('neuroprofiles.edit', $params);
@@ -114,8 +117,9 @@
             ]);
             $profile->save();
             $neuroprofile = $profile->id;
+            $sid = ($request->has('sid') ? $request->sid : session()->getId());
 
-            return redirect()->route('neuroprofiles.edit', compact('neuroprofile', 'show'))
+            return redirect()->route('neuroprofiles.edit', compact('neuroprofile', 'show', 'sid'))
                 ->with('success', "Нейропрофиль &laquo;{$profile->name}&raquo; создан");
         }
 
@@ -130,7 +134,8 @@
         {
             $show = true;
             $neuroprofile = $id;
-            return redirect()->route('neuroprofiles.edit', compact('neuroprofile', 'show'));
+            $sid = ($request->has('sid') ? $request->sid : session()->getId());
+            return redirect()->route('neuroprofiles.edit', compact('neuroprofile', 'show', 'sid'));
         }
 
         /**

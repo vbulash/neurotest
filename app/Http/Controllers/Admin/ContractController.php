@@ -62,8 +62,12 @@ class ContractController extends Controller
                 return '';
             })
             ->editColumn('action', function ($contract) {
-                $editRoute = route('contracts.edit', ['contract' => $contract->id]);
-                $showRoute = route('contracts.show', ['contract' => $contract->id]);
+                $params = [
+                    'contract' => $contract->id,
+                    'sid' => ($request->has('sid') ? $request->sid : session()->getId())
+                ];
+                $editRoute = route('contracts.edit', $params);
+                $showRoute = route('contracts.show', $params);
                 return
                     "<a href=\"{$editRoute}\" class=\"btn btn-info btn-sm float-left mr-1\" " .
                     "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Редактирование\">\n" .
@@ -146,7 +150,7 @@ class ContractController extends Controller
         session()->put('success', sprintf("Контракт &laquo;%s&raquo; добавлен и " .
             "сгенерированы лицензии контракта: %d",
             session('contract.number'), session('contract.license_count')));
-        return redirect()->route('clients.index');
+        return redirect()->route('clients.index', ['sid' => ($request->has('sid') ? $request->$sid : session()->getId())]);
     }
 
     /**
@@ -252,8 +256,10 @@ class ContractController extends Controller
         $count = Client::all()->count();
         $message = "Изменения контракта &laquo;{$contract->number}&raquo; сохранены";
         if ($diffCount > 0) $message .= " и сгенерированы дополнительные лицензии: {$diffCount}";
-        return redirect()->route('clients.edit', ['client' => $contract->client->id])
-            ->with('success', $message);
+        return redirect()->route('clients.edit', [
+            'client' => $contract->client->id,
+            'sid' => ($request->has('sid') ? $request->sid : session()->getId())
+        ])->with('success', $message);
     }
 
     /**

@@ -190,7 +190,7 @@
                 <!-- .Spatie menu -->
 
                     <li class="nav-item">
-                        <a href="{{ route('admin.index') }}" class="nav-link">
+                        <a href="{{ route('admin.index', ['sid' => session()->getId()]) }}" class="nav-link">
                             <i class="nav-icon fas fa-home"></i>
                             <p>Главная</p>
                         </a>
@@ -198,7 +198,7 @@
 
                     <!-- Сотрудники -->
                     <li class="nav-item">
-                        <a href="{{ route('users.index') }}" class="nav-link">
+                        <a href="{{ route('users.index', ['sid' => session()->getId()]) }}" class="nav-link">
                             <i class="nav-icon fas fa-id-card"></i>
                             <p>Пользователи</p>
                         </a>
@@ -215,7 +215,7 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('clients.index') }}" class="nav-link">
+                                <a href="{{ route('clients.index', ['sid' => session()->getId()]) }}" class="nav-link">
                                     <i class="nav-icon fas fa-building"></i>
                                     <p>Клиенты</p>
                                 </a>
@@ -240,7 +240,7 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('sets.index') }}" class="nav-link">
+                                <a href="{{ route('sets.index', ['sid' => session()->getId()]) }}" class="nav-link">
                                     <i class="nav-icon fas fa-question-circle"></i>
                                     <p>Наборы вопросов</p>
                                 </a>
@@ -255,19 +255,19 @@
                             </a>
                             <ul class="nav-item has-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('fmptypes.index') }}" class="nav-link">
+                                    <a href="{{ route('fmptypes.index', ['sid' => session()->getId()]) }}" class="nav-link">
                                         <i class="nav-icon fas fa-file-alt"></i>
                                         <p>Типы описаний</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('neuroprofiles.index') }}" class="nav-link">
+                                    <a href="{{ route('neuroprofiles.index', ['sid' => session()->getId()]) }}" class="nav-link">
                                         <i class="nav-icon fas fa-file-alt"></i>
                                         <p>Нейропрофили</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('blocks.index') }}" class="nav-link">
+                                    <a href="{{ route('blocks.index', ['sid' => session()->getId()]) }}" class="nav-link">
                                         <i class="nav-icon fas fa-file-alt"></i>
                                         <p>Блоки описаний</p>
                                     </a>
@@ -276,7 +276,7 @@
                             <!-- .Описания ФМП -->
 
                             <li class="nav-item">
-                                <a href="{{ route('tests.index') }}" class="nav-link">
+                                <a href="{{ route('tests.index', ['sid' => session()->getId()]) }}" class="nav-link">
                                     <i class="nav-icon fas fa-drafting-compass"></i>
                                     <p>Тесты</p>
                                 </a>
@@ -298,7 +298,8 @@
                                 {{-- TODO: сделать нормальный вызов после отладки --}}
                                 <a href="{{ route('player.play', [
                                     'mkey' => 'mkey_60501e2ae282a2.08095650*2427387986',
-                                    'test' => 'test_60cf61faa26899.54714870'
+                                    'test' => 'test_60cf61faa26899.54714870',
+                                    'sid' => session()->getId()
                                 ]) }}"
                                    class="nav-link">
                                     <i class="nav-icon fas fa-play-circle"></i>
@@ -306,13 +307,13 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('player.iframe') }}" class="nav-link">
+                                <a href="{{ route('player.iframe', ['sid' => session()->getId()]) }}" class="nav-link">
                                     <i class="nav-icon fas fa-window-maximize"></i>
                                     <p>Тест IFrame</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('history.index') }}" class="nav-link">
+                                <a href="{{ route('history.index', ['sid' => session()->getId()]) }}" class="nav-link">
                                     <i class="nav-icon fas fa-file-video"></i>
                                     <p>История прохождения</p>
                                 </a>
@@ -338,7 +339,7 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('roles.index') }}"
+                                <a href="{{ route('roles.index', ['sid' => session()->getId()]) }}"
                                    class="nav-link">
                                     <i class="nav-icon fas fa-mask"></i>
                                     <p>Роли</p>

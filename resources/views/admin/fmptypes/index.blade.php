@@ -99,7 +99,7 @@
                     },
                     processing: true,
                     serverSide: true,
-                    ajax: '{!! route('fmptypes.index.data') !!}',
+                    ajax: '{!! route('fmptypes.index.data', ['sid' => $sid]) !!}',
                     responsive: true,
                     columns: [
                         {data: 'id', name: 'id', responsivePriority: 1},
