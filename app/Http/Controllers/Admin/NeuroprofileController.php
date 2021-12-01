@@ -43,7 +43,7 @@
                 ->addColumn('action', function ($profile) use ($fmptype_id) {
                     $params = [
                         'neuroprofile' => $profile->id,
-                        'sid' => ($request->has('sid') ? $request->sid : session()->getId())
+                        'sid' => session()->getId()
                     ];
                     if ($fmptype_id != 0) $params['fmptype'] = $fmptype_id;
 

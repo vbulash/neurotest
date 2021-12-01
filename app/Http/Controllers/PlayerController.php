@@ -120,7 +120,7 @@ class PlayerController extends Controller
     public function store_pkey(PKeyRequest $request)
     {
         session()->put('pkey', $request->pkey);
-        return redirect()->route('player.body', ['question' => 0, 'sid' => session()->getId()]);
+        return redirect()->route('player.body2', ['question' => 0, 'sid' => session()->getId()]);
     }
 
     public function store_full_card(Request $request)

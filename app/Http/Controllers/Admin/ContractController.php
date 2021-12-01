@@ -64,7 +64,7 @@ class ContractController extends Controller
             ->editColumn('action', function ($contract) {
                 $params = [
                     'contract' => $contract->id,
-                    'sid' => ($request->has('sid') ? $request->sid : session()->getId())
+                    'sid' => session()->getId()
                 ];
                 $editRoute = route('contracts.edit', $params);
                 $showRoute = route('contracts.show', $params);
