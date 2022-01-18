@@ -4,15 +4,15 @@
 namespace App\Http\Payment;
 
 
+use App\Models\Test;
+use Illuminate\Support\Facades\Log;
+
 class Robokassa
 {
-    public array $password = [
-        'test' => 'iYs52ET8b1rLXn5bkqbf',
-        'real' => 'lU3L6rhyEYUTuwnB345H'
-    ];
-    private bool $test = false;
+    private string $merchant = 'personahuman';
+    public string $password = 'lU3L6rhyEYUTuwnB345H';
     private int $invoice;
-    private int $sum;
+    private int $sum = 500;
     private string $description;
     private bool $mail = false;
     private ?string $email = null;
@@ -52,7 +52,7 @@ class Robokassa
     public function getHTMLButton(): string
     {
         $src = 'https://auth.robokassa.ru/Merchant/PaymentForm/FormSS.js?';
-        $merchant = 'personahuman';
+        $merchant = $this->getMerchant();
         $src .= 'MerchantLogin=' . $merchant;
         $src .= '&Shp_Mail=' . ($this->isMail() ? '1' : '0');
         $src .= '&Culture=ru';
@@ -60,7 +60,7 @@ class Robokassa
         $src .= '&OutSum=' . $this->getSum();
         $src .= '&InvoiceID=' . $this->getInvoice();
         $src .= '&EMail=' . $this->getEmail();
-        $src .= '&IsTest=' . ($this->isTest() ? '1' : '0');
+        $src .= '&IsTest=0';
         $src .= '&Description=' . $this->getDescription();
         $src .= '&SignatureValue=' . md5(sprintf("%s:%s:%s:%s:Shp_Mail=%d",
                 $merchant, $this->getSum(), $this->getInvoice(), $this->getPassword(), ($this->isMail() ? 1 : 0)));
@@ -68,17 +68,29 @@ class Robokassa
         return "<script type='text/javascript' src='{$src}'></script>";
     }
 
+    public function __construct(Test $test)
+    {
+        if(!isset($test->content)) return;
+        $content = json_decode($test->content, true);
+        if(!isset($content['robokassa'])) return;
+        $robokassa = $content['robokassa'];
+
+        $this->setMerchant($robokassa['merchant']);
+        $this->setPassword($robokassa['password']);
+        $this->setSum($robokassa['sum']);
+    }
+
     public function getHTMLLink(): string
     {
         $src = 'https://auth.robokassa.ru/Merchant/Index.aspx?';
-        $merchant = 'personahuman';
+        $merchant = $this->getMerchant();
         $src .= 'MerchantLogin=' . $merchant;
         $src .= '&Shp_Mail=' . ($this->isMail() ? '1' : '0');
         $src .= '&Culture=ru';
         $src .= '&Encoding=utf-8';
         $src .= '&OutSum=' . $this->getSum();
         $src .= '&InvoiceID=' . $this->getInvoice();
-        $src .= '&IsTest=' . ($this->isTest() ? '1' : '0');
+        $src .= '&IsTest=0';
         $src .= '&EMail=' . $this->getEmail();
         $src .= '&Description=' . $this->getDescription();
         $src .= '&SignatureValue=' . md5(sprintf("%s:%s:%s:%s:Shp_Mail=%d",
@@ -91,7 +103,7 @@ class Robokassa
     {
         $src = "https://auth.robokassa.ru/Merchant/bundle/robokassa_iframe.js";
         $out = "<script type='text/javascript' src='{$src}'></script>";
-        $merchant = 'personahuman';
+        $merchant = $this->getMerchant();
         $onclick = sprintf(
             "Robokassa.StartPayment({\n" .
             "MerchantLogin: '%s',\n" .
@@ -105,7 +117,7 @@ class Robokassa
             "Encoding: 'utf-8',\n" .
             "SignatureValue: '%s'\n" .
             "})",
-            $merchant, $this->isMail() ? 1 : 0, $this->getSum(), $this->getInvoice(), $this->getEmail(), $this->getDescription(), $this->isTest(),
+            $merchant, $this->isMail() ? 1 : 0, $this->getSum(), $this->getInvoice(), $this->getEmail(), $this->getDescription(), 0,
             md5(sprintf("%s:%s:%s:%s:Shp_Mail=%d",
                 $merchant, $this->getSum(), $this->getInvoice(), $this->getPassword(), $this->isMail() ? 1 : 0))
         );
@@ -116,23 +128,7 @@ class Robokassa
 
     public function getPassword(): string
     {
-        return $this->password[$this->isTest() ? 'test' : 'real'];
-    }
-
-    /**
-     * @return bool
-     */
-    public function isTest(): bool
-    {
-        return $this->test;
-    }
-
-    /**
-     * @param bool $test
-     */
-    public function setTest(bool $test): void
-    {
-        $this->test = $test;
+        return $this->password;
     }
 
     /**
@@ -162,9 +158,9 @@ class Robokassa
     /**
      * @param int $sum
      */
-    public function setSum(int $sum): void
+    public function setSum(int $sum = 0): void
     {
-        $this->sum = $sum;
+        if($sum != 0) $this->sum = $sum;
     }
 
     /**
@@ -181,5 +177,29 @@ class Robokassa
     public function setDescription(string $description): void
     {
         $this->description = urlencode($description);
+    }
+
+    /**
+     * @return string
+     */
+    public function getMerchant(): string
+    {
+        return $this->merchant;
+    }
+
+    /**
+     * @param string $merchant
+     */
+    public function setMerchant(string $merchant): void
+    {
+        $this->merchant = $merchant;
+    }
+
+    /**
+     * @param string $password
+     */
+    public function setPassword(string $password): void
+    {
+        $this->password = $password;
     }
 }

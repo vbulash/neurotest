@@ -8,12 +8,6 @@
                 <div class="col-sm-6">
                     <h1>Блоки описаний</h1>
                 </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Blank Page</li>
-                    </ol>
-                </div>
             </div>
         </div><!-- /.container-fluid -->
     </section>
@@ -36,13 +30,13 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="blocks-create">
                                     <li><a class="dropdown-item"
-                                           href="{{ route('blocks.create', ['type' => \App\Models\Block::TYPE_TEXT]) }}">Текстовый
+                                           href="{{ route('blocks.create', ['type' => \App\Models\Block::TYPE_TEXT, 'sid' => $sid]) }}">Текстовый
                                             блок</a></li>
                                     <li><a class="dropdown-item"
-                                           href="{{ route('blocks.create', ['type' => \App\Models\Block::TYPE_IMAGE]) }}">Блок
+                                           href="{{ route('blocks.create', ['type' => \App\Models\Block::TYPE_IMAGE, 'sid' => $sid]) }}">Блок
                                             с изображением</a></li>
                                     <li><a class="dropdown-item"
-                                           href="{{ route('blocks.create', ['type' => \App\Models\Block::TYPE_VIDEO]) }}">Блок
+                                           href="{{ route('blocks.create', ['type' => \App\Models\Block::TYPE_VIDEO, 'sid' => $sid]) }}">Блок
                                             с видео</a></li>
                                 </ul>
                             </div>
@@ -95,7 +89,7 @@
                 if(window.confirm('Удалить блок № ' + id + ' ?')) {
                     $.ajax({
                         method: 'DELETE',
-                        url: "{{ route('blocks.destroy', ['block' => '0']) }}",
+                        url: "{{ route('blocks.destroy', ['block' => '0', 'sid' => $sid]) }}",
                         data: {
                             id: id,
                         },

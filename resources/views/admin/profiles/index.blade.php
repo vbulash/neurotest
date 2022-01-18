@@ -31,7 +31,7 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <a href="{{ route('neuroprofiles.create') }}" class="btn btn-primary mb-3">Добавить нейропрофиль</a>
+                            <a href="{{ route('neuroprofiles.create', ['sid' => $sid]) }}" class="btn btn-primary mb-3">Добавить нейропрофиль</a>
                             @if (count($profiles) > 0)
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-hover text-nowrap" id="profiles_table" style="width: 100%;">
@@ -81,7 +81,7 @@
                 if(window.confirm('Удалить нейропрофиль № ' + id + ' ?')) {
                     $.ajax({
                         method: 'DELETE',
-                        url: "{{ route('neuroprofiles.destroy', ['neuroprofile' => 0]) }}",
+                        url: "{{ route('neuroprofiles.destroy', ['neuroprofile' => 0, 'sid' => $sid]) }}",
                         data: {
                             id: id,
                         },

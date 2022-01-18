@@ -29,7 +29,7 @@
                         </div>
                         <!-- /.card-header -->
 
-                        <form role="form" method="post" action="{{ route('users.store') }}"
+                        <form role="form" method="post" action="{{ route('users.store', ['sid' => $sid]) }}"
                               enctype="multipart/form-data">
                             @csrf
                             <div class="card-body">

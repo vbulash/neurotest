@@ -7,7 +7,7 @@
         <div class="icon">
             <i class="fas fa-drafting-compass"></i>
         </div>
-        <a href="{{ route('history.index') }}" class="small-box-footer">
+        <a href="{{ route('history.index', ['sid' => $sid]) }}" class="small-box-footer">
             Больше информации <i class="fas fa-chevron-right"></i>
         </a>
     </div>

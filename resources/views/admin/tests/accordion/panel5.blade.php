@@ -1,5 +1,7 @@
 @php
     $branding = isset($content['branding']);
+    $placeholder = "https://via.placeholder.com/300x300.png?text=Пусто";
+    $logo = isset($content['branding']['company-logo']);
 @endphp
 
 <div class="checkbox mb-2">
@@ -11,6 +13,29 @@
 
 <div class="form-group" id="branding_panel" style="display: none">
     <div class="form-group">
+        <div class="col-lg-3 col-xs-12">
+            <label
+                for="image">Логотип</label>
+            @if(!$show)
+                <input type="file" id="logo-image" name="logo-image"
+                       accept="image/*"
+                       class="image-file mb-4 form-control"
+                       onchange="readImage(this)">
+            @endif
+            <div>
+                <img id="preview_image"
+                     src="{{ ($branding && $logo) ? '/uploads/' . $content['branding']['company-logo'] : $placeholder }}" alt=""
+                     class="image-preview">
+                @if(!$show)
+                    <a href="javascript:void(0)"
+                       id="clear_image"
+                       data-preview="preview_image"
+                       class="btn btn-primary mb-3 image-clear"
+                       style="display:none;"
+                    >Очистить</a>
+                @endif
+            </div>
+        </div>
         <div class="input-group col-md-6 pl-0">
             <label for="background" class="form-control pl-0" style="border: none">Первичный цвет:</label>
             <div class="input-group-append">
@@ -36,7 +61,6 @@
                class="form-control @error('company-name-changer') is-invalid @enderror"
                value="{{ $branding ? $content['branding']['company-name'] : env('APP_NAME') }}"
                @if($show) disabled @endif
-               data-parsley-required
         >
         <div class="invalid-feedback">Поле &laquo;Организация / компания&raquo; должно быть заполнено</div>
     </div>
@@ -61,3 +85,29 @@
         </button>
     </div>
 </div>
+
+@push('scripts.injection')
+    <script>
+        function readImage(input) {
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function (event) {
+                    $('#preview_image').attr('src', event.target.result);
+                    $('#preview_image').show();
+                    // $('#clear_image').show();
+                    //$('#content').val(event.target.result);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $(function () {
+            $('#clear_image').on("click", (event) => {
+                $('#image').attr('src', '');
+                $('#preview_image').attr('src', '');
+                $('#preview_image').hide();
+                // $('#clear_image').hide();
+            });
+        });
+    </script>
+@endpush

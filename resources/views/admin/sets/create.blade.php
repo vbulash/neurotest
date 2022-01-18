@@ -7,7 +7,7 @@
 @endsection
 
 @section('back')
-    <form action="{{ route('sets.back') }}" method="post">
+    <form action="{{ route('sets.back', ['sid' => $sid]) }}" method="post">
         @csrf
         <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
             <i class="fas fa-chevron-left"></i> Назад
@@ -22,13 +22,6 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1>Новый набор вопросов</h1>
-                </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Blank Page</li>
-                    </ol>
-                </div>
             </div>
         </div><!-- /.container-fluid -->
     </section>
@@ -47,7 +40,7 @@
                         <!-- /.card-header -->
 
                         <form role="form" method="post" name="set-create" id="set-create"
-                              action="{{ route('sets.store') }}"
+                              action="{{ route('sets.store', ['sid' => $sid]) }}"
                               enctype="multipart/form-data">
                             @csrf
                             <div class="card-body">

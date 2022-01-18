@@ -11995,7 +11995,8 @@ nav.navbar {
     padding-bottom: 1rem;
 }
 .navbar-brand {
-    margin-left: 2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
 }
 
 .navbar-brand a {
@@ -12009,5 +12010,6 @@ nav.navbar {
 
 .navbar-text {
     color: white !important;
-    margin-right: 2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
 }

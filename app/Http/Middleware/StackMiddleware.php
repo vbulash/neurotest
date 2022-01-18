@@ -35,7 +35,8 @@ class StackMiddleware
             if (!$request->has('back')) {
                 $context = [
                     'route' => $route,
-                    'params' => Route::current()->parameters()
+                    'params' => Route::current()->parameters(),
+                    'sid' => session()->getId()
                 ];
                 $stack = session('stack');
                 if($stack) {

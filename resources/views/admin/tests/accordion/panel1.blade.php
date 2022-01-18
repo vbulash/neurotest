@@ -6,8 +6,7 @@
                 <div class="checkbox mb-2">
                     <label>
                         <input type="checkbox" id="ident_{{ $control['name'] }}" name="ident_{{ $control['name'] }}"
-                               @if($show || $control['required']) disabled @endif
-                               @if($control['required']) checked @endif
+                               @if($show) disabled @endif
                                @if(array_key_exists($control['name'], $content['card'])) checked @endif
                         >
                         {{ $control['label'] }}

@@ -88,7 +88,7 @@ class PlayerController extends Controller
     {
         if (!$this->check($request, $mkey, $test)) {
             Log::debug('player.play: ' . __METHOD__ . ':' . __LINE__);
-            return redirect()->route('player.index')->with('error', session('error'));
+            return redirect()->route('player.index', ['sid' => session()->getId()])->with('error', session('error'));
         } else {
             $test = session('test');
             return view('front.intro', compact('test'));
@@ -99,7 +99,7 @@ class PlayerController extends Controller
     {
         if (!$this->check($request)) {
             Log::debug('player.card: ' . __METHOD__ . ':' . __LINE__);
-            return redirect()->route('player.index')->with('error', session('error'));
+            return redirect()->route('player.index', ['sid' => session()->getId()])->with('error', session('error'));
         } else {
             session()->forget('pkey');
             $test = session('test');
@@ -136,7 +136,7 @@ class PlayerController extends Controller
     {
         if (!$this->check($request)) {
             //Log::debug('player.body2: ' . __METHOD__ . ':' . __LINE__);
-            return redirect()->route('player.index')->with('error', session('error'));
+            return redirect()->route('player.index', ['sid' => session()->getId()])->with('error', session('error'));
         }
 
         $test = session('test');
@@ -217,11 +217,11 @@ EOS
         DB::transaction(function () use ($data, $license, $test) {
             $history = History::create([
                 'test_id' => $test->getKey(),
-                'license_id' => $license->id,
+                'license_id' => $license->getKey(),
                 'card' => (session()->has('card') ? json_encode(session('card')) : null),
             ]);
             $history->save();
-            session()->put('hid', $history->id);
+            session()->put('hid', $history->getKey());
 
             foreach ($data as $answer => $value) {
                 if (!Str::startsWith($answer, 'answer-')) continue;
@@ -245,7 +245,8 @@ EOS
         return redirect()->route('player.precalc',
             [
                 'test' => $test->getKey(),
-                'history_id' => $hid
+                'history_id' => $hid,
+                'sid' => session()->getId()
             ]
         );
     }
@@ -280,7 +281,7 @@ EOS
                 $key = $step->getAttributeValue('value' . $request->answer);
                 $hs = HistoryStep::create([
                     'history_id' => $history->getKey(),
-                    'question_id' => $step->id,
+                    'question_id' => $step->getKey(),
                     'key' => $key,
                     'done' => date("Y-m-d H:i:s")
                 ]);
@@ -297,7 +298,7 @@ EOS
 
                 return redirect()->route('player.precalc',
                     [
-                        'test' => $history->test->id,
+                        'test' => $history->test->getKey(),
                         'history_id' => $history->getKey()
                     ]
                 );
@@ -326,7 +327,7 @@ EOS
 
             $history = History::create([
                 'test_id' => $test->getKey(),
-                'license_id' => $license->id,
+                'license_id' => $license->getKey(),
                 'card' => (session()->has('card') ? json_encode(session('card')) : null),
             ]);
             $history->save();
@@ -357,12 +358,18 @@ EOS
         $test = $history->test;
         $content = json_decode($test->content);
         $card = ($history->card ? json_decode($history->card) : null);
-        $fmptype_show = $content->descriptions->show;
-        $fmptype_mail = $content->descriptions->mail;
-        if (!$fmptype_show && !$fmptype_mail) {
-            session()->put('error', 'Не определен тип описания для результатов тестирования. Обратитесь к администратору');
-            return false;
+
+        if($card) {
+            $fmptype_show = $content->descriptions->show;
+            $fmptype_mail = $content->descriptions->mail;
+        } else {
+            $fmptype_mail = false;
+            $fmptype_show = $content->descriptions->show;
         }
+//        if (!$fmptype_show && !$fmptype_mail) {
+//            session()->put('error', 'Не определен тип описания для результатов тестирования. Обратитесь к администратору');
+//            return false;
+//        }
 
         $result = DB::select(<<<EOS
 SELECT
@@ -399,11 +406,12 @@ EOS
                 ->where('fmptype_id', '=', $fmptype_mail)
                 ->where('code', '=', $profile_code)
                 ->first();
-            $profile_id = $profile->id;
+            $profile_id = $profile->getKey();
+            $profile_name = $profile->name;
             $blocks = Block::all()->where('neuroprofile_id', $profile_id);
 
             $recipient = (object)[
-                'name' => ($card->last_name ? $card->last_name . ' ' : '') . $card->first_name,
+                'name' => (property_exists($card, 'last_name') ? $card->last_name . ' ' : '') . (property_exists($card, 'first_name') ? $card->first_name . ' ' : ''),
                 'email' => $card->email
             ];
             $copy = (object)[
@@ -414,7 +422,7 @@ EOS
             try {
                 Mail::to($recipient)
                     ->cc($copy)
-                    ->send(new TestResult($test, $blocks, $profile_code, $card, $history));
+                    ->send(new TestResult($test, $blocks, $profile_code, $profile_name, $card, $history));
                 session()->put('success', 'Вам отправлено письмо с результатами тестирования');
             } catch (\Exception $exc) {
                 session()->put('error', "Ошибка отправки письма с результатами тестирования:<br/>" .
@@ -427,11 +435,16 @@ EOS
                 ->where('fmptype_id', '=', $fmptype_show)
                 ->where('code', '=', $profile_code)
                 ->first();
-            $profile_id = $profile->id;
+            $profile_id = $profile->getKey();
+            $profile_name = $profile->name;
             $blocks = Block::all()->where('neuroprofile_id', $profile_id);
 
-            return view('front.show', compact('card', 'test', 'blocks', 'profile_code', 'history'));
+            return view('front.show', compact('card', 'test', 'blocks', 'profile_code', 'profile_name', 'history'));
         }
+
+//        if ($test->options & Test::AUTH_GUEST) {
+//            return view('front.finish', compact('test'));
+//        }
 
         return null;
     }
@@ -483,11 +496,12 @@ EOS
                 ->where('fmptype_id', '=', $fmptype_mail)
                 ->where('code', '=', $profile_code)
                 ->first();
-            $profile_id = $profile->id;
+            $profile_id = $profile->getKey();
+            $profile_name = $profile->name;
             $blocks = Block::all()->where('neuroprofile_id', $profile_id);
 
             $recipient = (object)[
-                'name' => ($card->last_name ? $card->last_name . ' ' : '') . $card->first_name,
+                'name' => (property_exists($card, 'last_name') ? $card->last_name . ' ' : '') . (property_exists($card, 'first_name') ? $card->first_name . ' ' : ''),
                 'email' => $card->email
             ];
             $copy = (object)[
@@ -498,7 +512,7 @@ EOS
             try {
                 Mail::to($recipient)
                     ->cc($copy)
-                    ->send(new TestResult($test, $blocks, $profile_code, $card, $history));
+                    ->send(new TestResult($test, $blocks, $profile_code, $profile_name, $card, $history));
                 $kind = 'success';
                 session()->put($kind,
                     $list ?
@@ -511,7 +525,7 @@ EOS
             }
 
             return ($list ?
-                redirect()->route('history.index')->with($kind, session($kind)) :
+                redirect()->route('history.index', ['sid' => session()->getId()])->with($kind, session($kind)) :
                 'OK' . $request->InvId);
         }
         return false;

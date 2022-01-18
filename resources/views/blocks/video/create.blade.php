@@ -3,7 +3,7 @@
 @push('title') - Новый блок описания ФМП@endpush
 
 @section('back')
-    <form action="{{ route('blocks.back') }}" method="post">
+    <form action="{{ route('blocks.back', ['sid' => $sid]) }}" method="post">
         @csrf
         <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
             <i class="fas fa-chevron-left"></i> Назад
@@ -40,7 +40,7 @@
                         </div>
                         <!-- /.card-header -->
 
-                        <form role="form" method="post" action="{{ route('blocks.store') }}"
+                        <form role="form" method="post" action="{{ route('blocks.store', ['sid' => $sid]) }}"
                               enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" id="kind" name="kind" value="{{ \App\Models\Block::TYPE_VIDEO }}">

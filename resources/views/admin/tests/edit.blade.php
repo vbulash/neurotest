@@ -3,7 +3,7 @@
 @push('title') - Редактирование теста &laquo;{{ $test->name }}&raquo;@endpush
 
 @section('back')
-    <form action="{{ route('tests.back') }}" method="post">
+    <form action="{{ route('tests.back', ['sid' => $sid]) }}" method="post">
         @csrf
         <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
             <i class="fas fa-chevron-left"></i> Назад
@@ -44,7 +44,7 @@
                               @if($show)
                               action=""
                               @else
-                              action="{{ route('tests.update', ['test' => $test->id]) }}"
+                              action="{{ route('tests.update', ['test' => $test->id, 'sid' => $sid]) }}"
                               @endif
                               enctype="multipart/form-data">
                             @csrf
@@ -116,6 +116,7 @@
                                         ['name' => 'Финал теста для респондента', 'pane' => 'ac-final-respondent', 'view' => 'admin.tests.accordion.panel3'],
                                         //['name' => 'Финал теста для клиента', 'pane' => 'ac-final-client', 'view' => 'admin.tests.accordion.panel4'],
                                         ['name' => 'Настраиваемый брендинг', 'pane' => 'ac-branding', 'view' => 'admin.tests.accordion.panel5'],
+                                         ['name' => 'Настраиваемая оплата', 'pane' => 'ac-robokassa', 'view' => 'admin.tests.accordion.panel6'],
                                     ];
                                 @endphp
                                 <label for="accordionTest">Настройки</label>
@@ -182,6 +183,17 @@
 
 @push('scripts.injection')
     <script>
+        function readImage(input) {
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function (event) {
+                    $('#preview_' + input.id).attr('src', event.target.result);
+                    $('#clear_' + input.id).show()
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
         let accordion = document.getElementById('accordionTest')
         accordion.addEventListener('shown.bs.collapse', (event) => {
             let activePanel = event.target.id;
@@ -212,6 +224,9 @@
                 case 'ac-branding-body':
                     $('#branding').change();
                     break;
+                case 'ac-robokassa-body':
+                    $('#robokassa').change();
+                    break;
                 default:
                     break;
             }
@@ -225,7 +240,7 @@
             {{--(document.getElementById('aux_mechanics2').checked ? {{ \App\Models\Test::MOUSE_TRACKING }} : 0) |--}}
             {{--(document.getElementById('aux_mechanics3').checked ? {{ \App\Models\Test::EQUIPMENT_MONITOR }} : 0);--}}
             $.post({
-                url: "{{ route('sets.filterbytest') }}",
+                url: "{{ route('sets.filterbytest', ['sid' => $sid]) }}",
                 data: {
                     options: options.toString(),
                 },
@@ -365,6 +380,16 @@
                 fontColorPickr.applyColor(false);
             } else {
                 branding_panel.style.display = "none";
+            }
+        });
+
+        $("input[name='robokassa']").on("change", () => {
+            let custom = document.getElementById('robokassa');
+            let branding_panel = document.getElementById('robokassa_panel');
+            if (custom.checked) {
+                robokassa_panel.style.display = "block";
+            } else {
+                robokassa_panel.style.display = "none";
             }
         });
 

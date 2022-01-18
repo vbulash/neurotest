@@ -3,7 +3,7 @@
 @push('title') - @if($show) Просмотр @else Редактирование @endif нейропрофиля &laquo;{{ $profile->name }}&raquo;@endpush
 
 @section('back')
-    <form action="{{ route('neuroprofiles.back') }}" method="post">
+    <form action="{{ route('neuroprofiles.back', ['sid' => $sid]) }}" method="post">
         @csrf
         <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
             <i class="fas fa-chevron-left"></i> Назад
@@ -31,7 +31,7 @@
                 <div class="col-12">
                     <div class="card">
                         <form role="form" method="post"
-                              action="{{ route('neuroprofiles.update', ['neuroprofile' => $profile->id]) }}"
+                              action="{{ route('neuroprofiles.update', ['neuroprofile' => $profile->id, 'sid' => $sid]) }}"
                               enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
@@ -113,15 +113,15 @@
                                 <ul class="dropdown-menu" aria-labelledby="blocks-create">
                                     <li><a class="dropdown-item"
                                            href="{{ route('blocks.create',
-                                                ['type' => \App\Models\Block::TYPE_TEXT, 'profile_id' => $profile->id, 'embedded' => true]) }}">Текстовый
+                                                ['type' => \App\Models\Block::TYPE_TEXT, 'profile_id' => $profile->id, 'embedded' => true, 'sid' => $sid]) }}">Текстовый
                                             блок</a></li>
                                     <li><a class="dropdown-item"
                                            href="{{ route('blocks.create',
-                                                ['type' => \App\Models\Block::TYPE_IMAGE, 'profile_id' => $profile->id, 'embedded' => true]) }}">Блок
+                                                ['type' => \App\Models\Block::TYPE_IMAGE, 'profile_id' => $profile->id, 'embedded' => true, 'sid' => $sid]) }}">Блок
                                             с изображением</a></li>
                                     <li><a class="dropdown-item"
                                            href="{{ route('blocks.create',
-                                                ['type' => \App\Models\Block::TYPE_VIDEO, 'profile_id' => $profile->id, 'embedded' => true]) }}">Блок
+                                                ['type' => \App\Models\Block::TYPE_VIDEO, 'profile_id' => $profile->id, 'embedded' => true, 'sid' => $sid]) }}">Блок
                                             с видео</a></li>
                                 </ul>
                             </div>
@@ -175,7 +175,7 @@
                 if(window.confirm('Удалить блок № ' + id + ' ?')) {
                     $.ajax({
                         method: 'DELETE',
-                        url: "{{ route('blocks.destroy', ['block' => '0']) }}",
+                        url: "{{ route('blocks.destroy', ['block' => '0', 'sid' => $sid]) }}",
                         data: {
                             id: id,
                         },

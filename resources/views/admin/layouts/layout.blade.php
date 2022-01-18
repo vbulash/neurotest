@@ -255,19 +255,22 @@
                             </a>
                             <ul class="nav-item has-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('fmptypes.index', ['sid' => session()->getId()]) }}" class="nav-link">
+                                    <a href="{{ route('fmptypes.index', ['sid' => session()->getId()]) }}"
+                                       class="nav-link">
                                         <i class="nav-icon fas fa-file-alt"></i>
                                         <p>Типы описаний</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('neuroprofiles.index', ['sid' => session()->getId()]) }}" class="nav-link">
+                                    <a href="{{ route('neuroprofiles.index', ['sid' => session()->getId()]) }}"
+                                       class="nav-link">
                                         <i class="nav-icon fas fa-file-alt"></i>
                                         <p>Нейропрофили</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('blocks.index', ['sid' => session()->getId()]) }}" class="nav-link">
+                                    <a href="{{ route('blocks.index', ['sid' => session()->getId()]) }}"
+                                       class="nav-link">
                                         <i class="nav-icon fas fa-file-alt"></i>
                                         <p>Блоки описаний</p>
                                     </a>
@@ -298,8 +301,7 @@
                                 {{-- TODO: сделать нормальный вызов после отладки --}}
                                 <a href="{{ route('player.play', [
                                     'mkey' => 'mkey_60501e2ae282a2.08095650*2427387986',
-                                    'test' => 'test_60cf61faa26899.54714870',
-                                    'sid' => session()->getId()
+                                    'test' => 'test_60cf61faa26899.54714870'
                                 ]) }}"
                                    class="nav-link">
                                     <i class="nav-icon fas fa-play-circle"></i>

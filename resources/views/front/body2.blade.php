@@ -160,7 +160,7 @@
 
         function startTimers() {
             let element = questions.get();
-            if(element.timeout === '0') return;
+            if(element.timeout === 0) return;
 
             let form = document.getElementById('play-form');
 
@@ -199,9 +199,12 @@
         // Нажатие на картинку вопроса
         document.querySelectorAll(".step-image").forEach((pic) => {
             pic.addEventListener('click', event => {
-                //console.log('window.pressed = ' + window.pressed.toString());
                 // Предотвращение повторных нажатий
-                if(window.pressed) return;
+                if(window.pressed) {
+                    event.stopPropagation();
+                    event.stopImmediatePropagation();
+                    return;
+                }
                 window.pressed = true;
 
                 // Зафиксировать результат нажатия

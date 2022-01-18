@@ -24,7 +24,7 @@
                     $value = $element['value'];
                     $required = $element['required'];
 
-                    $actual = ($required | key_exists($name, $test_content));
+                    $actual = key_exists($name, $test_content);
                 @endphp
                 @if(!$actual)
                     @continue

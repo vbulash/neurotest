@@ -1,7 +1,7 @@
 @extends('admin.layouts.layout')
 
 @section('back')
-    <form action="{{ route('contracts.back') }}" method="post">
+    <form action="{{ route('contracts.back', ['sid' => $sid]) }}" method="post">
         @csrf
         <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
             <i class="fas fa-chevron-left"></i> Назад
@@ -43,7 +43,7 @@
                               @if($show)
                               action=""
                               @else
-                              action="{{ route('contracts.update', ['contract' => $contract->id]) }}"
+                              action="{{ route('contracts.update', ['contract' => $contract->id, 'sid' => $sid]) }}"
                               @endif
                               enctype="multipart/form-data">
                             @csrf
@@ -191,7 +191,7 @@
             let mkey = document.getElementById('mkey');
 
             $.post({
-                url: "{{ route('contracts.regenerate') }}",
+                url: "{{ route('contracts.regenerate', ['sid' => $sid]) }}",
                 data: {
                     mkey: mkey.value,
                     url: url.value,

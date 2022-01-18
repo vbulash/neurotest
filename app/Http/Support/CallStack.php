@@ -20,6 +20,7 @@
             $route = $context['route'];
             $params = $context['params'];
             $params['back'] = true;
+            $params['sid'] = $context['sid'];
 
             session()->put('stack', $stack);
 

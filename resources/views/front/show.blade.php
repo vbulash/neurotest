@@ -14,12 +14,10 @@
             Оплатите полный результат тестирования и получите его по электронной почте.<br/>
         </h5>
         @php
-            $rk = new \App\Http\Payment\Robokassa();
+            $rk = new \App\Http\Payment\Robokassa($test);
             $rk->setMail(false);
             $rk->setInvoice($history->id);
-            $rk->setSum(500);
             $rk->setEmail($card->email);
-            $rk->setTest(false);
             $rk->setDescription('Оплата полного результата нейротестирования');
             //$button = $rk->getHTMLButton();
             $button = $rk->getFrameButton();
@@ -28,7 +26,19 @@
         {!! $button !!}
     @endif
 
-    <h1>Результат тестирования</h1>
+    <h1>
+        @if($test->paid)
+            @if($history->paid == '1')
+                Полный результат вашего тестирования:
+            @else
+                Краткий результат вашего тестирования:
+            @endif
+        @else
+            Результат вашего тестирования:
+        @endif
+    </h1>
+    <h4>Наименование нейропрофиля: {{ $profile_name }}</h4>
+
     @forelse($blocks  as $block)
         <h2>{{ $block->description }}</h2>
         @if($test->paid)

@@ -31,7 +31,7 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <a href="{{ route('clients.create') }}" class="btn btn-primary mb-3">Добавить клиента</a>
+                            <a href="{{ route('clients.create', ['sid' => $sid]) }}" class="btn btn-primary mb-3">Добавить клиента</a>
                             @if ($count)
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-hover text-nowrap" id="clients_table" style="width: 100%;">

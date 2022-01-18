@@ -134,6 +134,12 @@
                 $content['branding']['company-name'] = $data['company-name-changer'];
             }
 
+            if(isset($data['robokassa'])) {
+                $content['robokassa']['merchant'] = $data['robokassa-merchant'];
+                $content['robokassa']['password'] = $data['robokassa-password'];
+                $content['robokassa']['sum'] = $data['robokassa-sum'];
+            }
+
             $test = Test::create([
                 'name' => $data['title'],
                 'options' => $options,
@@ -220,6 +226,12 @@
                 $content['branding']['background'] = $data['background-input'];
                 $content['branding']['fontcolor'] = $data['font-color-input'];
                 $content['branding']['company-name'] = $data['company-name-changer'];
+            }
+
+            if(isset($data['robokassa'])) {
+                $content['robokassa']['merchant'] = $data['robokassa-merchant'];
+                $content['robokassa']['password'] = $data['robokassa-password'];
+                $content['robokassa']['sum'] = $data['robokassa-sum'];
             }
 
             $test = Test::findOrFail($id);

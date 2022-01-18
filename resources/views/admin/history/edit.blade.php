@@ -3,7 +3,7 @@
 @push('title') - @if($show) Анкета @else Редактирование @endif истории {{ $history->id }}@endpush
 
 @section('back')
-    <form action="{{ route('history.back') }}" method="post">
+    <form action="{{ route('history.back', ['sid' => $sid]) }}" method="post">
         @csrf
         <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
             <i class="fas fa-chevron-left"></i> Назад
@@ -44,7 +44,7 @@
                               @if($show)
                               action=""
                               @else
-                              action="{{ route('history.update', ['history' => $history->id]) }}"
+                              action="{{ route('history.update', ['history' => $history->id, 'sid' => $sid]) }}"
                               @endif
                               enctype="multipart/form-data">
                             @csrf

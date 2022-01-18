@@ -32,7 +32,7 @@
             session()->put('buttonstyle', $buttonStyle);
         }
     @endphp
-    <nav class="navbar navbar-dark bg-primary d-none d-lg-flex" @if($branding) style="{{ $navstyle }}" @endif>
+    <nav class="navbar navbar-dark bg-primary d-lg-flex" @if($branding) style="{{ $navstyle }}" @endif>
         <div class="navbar-brand" @if($branding) style="{{ $textstyle }}" @endif>
             {{--            <a href="{{ route('admin.index') }}">--}}
             <i class="fas fa-home"></i>
@@ -46,18 +46,6 @@
             </div>
         </div>
     </nav>
-    <div class="d-block d-lg-none" @if($branding) style="{{ $navstyle }}" @endif>
-        <div class="d-block p-1 bg-primary text-white" @if($branding) style="{{ $navstyle }}" @endif>
-            <i class="fas fa-home"></i>
-            {{ env('APP_NAME') }}
-        </div>
-        <div class="d-block p-1 bg-primary text-white" @if($branding) style="{{ $navstyle }}" @endif>
-            @stack('testname')
-        </div>
-        <div class="d-block p-1 bg-primary text-white" @if($branding) {{ $navstyle }} @endif>
-            @stack('step_description') <span class="step-countdown" id="step-countdown"></span>
-        </div>
-    </div>
 
     {{--    <div class="container-fluid mt-2">--}}
     {{-- Область отображения сообщений --}}

@@ -1,7 +1,7 @@
 @extends('admin.layouts.layout')
 
 @section('back')
-    <form action="{{ route('questions.back') }}" method="post">
+    <form action="{{ route('questions.back', ['sid' => $sid]) }}" method="post">
         @csrf
         <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
             <i class="fas fa-chevron-left"></i> Назад
@@ -40,7 +40,7 @@
                         <!-- /.card-header -->
 
                         <form role="form" method="post"
-                              action="{{ route('questions.update', ['question' => $question->id]) }}"
+                              action="{{ route('questions.update', ['question' => $question->id, 'sid' => $sid]) }}"
                               enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
