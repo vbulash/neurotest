@@ -47,3 +47,7 @@ nav.navbar {
     padding-left: 2rem;
     padding-right: 2rem;
 }
+
+#toast-container > div {
+    opacity: 1;
+}

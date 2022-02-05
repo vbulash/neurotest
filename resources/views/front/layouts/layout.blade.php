@@ -49,24 +49,7 @@
 
     {{--    <div class="container-fluid mt-2">--}}
     {{-- Область отображения сообщений --}}
-    <div class="row mt-2" style="margin-left: 0px; margin-right: 0px;">
-        <div class="col-12">
-            @if (session()->has('error'))
-                <div class="alert alert-danger">
-                    {!! session('error') !!}
-                </div>
-                @php(session()->forget('error'))
-            @endif
-
-            @if (session()->has('success'))
-                <div class="alert alert-success mb-0">
-                    {!! session('success') !!}
-                </div>
-                @php(session()->forget('success'))
-            @endif
-        </div>
-        {{--        </div>--}}
-
+    <div class="row mt-2" style="margin-left: 0; margin-right: 0;">
         {{-- Область тестирования --}}
         <div class="container">
             <div class="row module-wrapper">
@@ -79,6 +62,62 @@
 </div>
 
 <script src="{{ asset('assets/front/js/front.js') }}"></script>
+<script>
+    // Инициализация pusher'а
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": false,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "0",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+    // Broadcast
+    let pusher = new Pusher('{{ env('PUSHER_APP_KEY') }}', {
+        cluster: '{{ env('PUSHER_APP_CLUSTER') }}'
+    });
+
+    let channel = pusher.subscribe('neurotest-channel-{!! $sid !!}');
+    channel.bind('toast-event', (data) => {
+        toastr[data.type](data.message, data.title);
+    });
+
+    // Ошибки и сообщения
+    @if ($errors->any())
+        @foreach ($errors->all() as $error)
+        toastr['error']("{!! $error !!}");
+    @endforeach
+        @elseif(session()->has('error'))
+        toastr['error']("{!! session('error') !!}");
+    @php
+        session()->forget('error');
+    @endphp
+        @endif
+
+        @if (session()->has('success'))
+        toastr['success']("{!! session('success') !!}");
+    @php
+        session()->forget('success');
+    @endphp
+        @endif
+
+        @if (session()->has('info'))
+        toastr['success']("{!! session('info') !!}");
+    @php
+        session()->forget('info');
+    @endphp
+    @endif
+</script>
 <!-- Page file / URL scripts -->
 @stack('scripts')
 <!-- Page manual scripts -->

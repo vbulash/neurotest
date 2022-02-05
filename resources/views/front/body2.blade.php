@@ -160,7 +160,9 @@
 
         function startTimers() {
             let element = questions.get();
-            if(element.timeout === 0) return;
+            // TODO Убрать после отладки
+            //element.timeout = 0;
+            if(element.timeout === '0') return;
 
             let form = document.getElementById('play-form');
 
@@ -205,6 +207,7 @@
                     event.stopImmediatePropagation();
                     return;
                 }
+                //debugger;
                 window.pressed = true;
 
                 // Зафиксировать результат нажатия

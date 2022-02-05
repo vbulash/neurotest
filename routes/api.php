@@ -22,4 +22,6 @@
         Route::get('/payment.result', 'PlayerController@paymentResult')->name('payment.result');
         Route::get('/payment.success', 'PlayerController@paymentSuccess')->name('payment.success');
         Route::get('/payment.fail', 'PlayerController@paymentFail')->name('payment.fail');
+        // Окружение
+        Route::get('/get.phpinfo', 'HelperController@getPhpInfo')->name('api.get.phpinfo');
     });

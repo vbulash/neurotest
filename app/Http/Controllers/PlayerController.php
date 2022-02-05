@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ToastEvent;
 use App\Http\Requests\PKeyRequest;
 use App\Mail\TestResult;
 use App\Models\Block;
@@ -206,6 +207,8 @@ EOS
 
     public function body2_store(Request $request): RedirectResponse
     {
+        event(new ToastEvent('info', '', "Анализ результатов тестирования..."));
+
         $test = session('test');
         $data = $request->all();
 
@@ -358,41 +361,18 @@ EOS
         $test = $history->test;
         $content = json_decode($test->content);
         $card = ($history->card ? json_decode($history->card) : null);
-
-        if($card) {
-            $fmptype_show = $content->descriptions->show;
-            $fmptype_mail = $content->descriptions->mail;
-        } else {
-            $fmptype_mail = false;
-            $fmptype_show = $content->descriptions->show;
+        $fmptype_show = $content->descriptions->show;
+        $fmptype_mail = $content->descriptions->mail;
+        if (!$fmptype_show && !$fmptype_mail) {
+            session()->put('error', 'Не определен тип описания для результатов тестирования. Обратитесь к администратору');
+            return false;
         }
-//        if (!$fmptype_show && !$fmptype_mail) {
-//            session()->put('error', 'Не определен тип описания для результатов тестирования. Обратитесь к администратору');
-//            return false;
-//        }
 
-        $result = DB::select(<<<EOS
-SELECT
-    hs.`key` as hskey,
-    COUNT(hs.`key`) as `value`
-FROM
-     historysteps as hs,
-     questions as q
-WHERE
-     hs.question_id = q.id and
-     hs.history_id = :hid
-GROUP BY hs.`key`
-EOS
-            , ['hid' => $history_id]
-        );
+        // Не переименовывать переменную - может использоваться в коде набора вопросов в eval()
+        $result = HistoryStep::where('history_id', $history_id)->pluck('key')->toArray();
 
-        $data = [];
-        foreach ($result as $item)
-            if (isset($item->hskey))
-                $data[$item->hskey] = $item->value;
-        foreach (['A+', 'A-', 'B+', 'B-', 'C+', 'C-', 'D+', 'D-', 'E+', 'E-'] as $letter)
-            if (!isset($data[$letter]))
-                $data[$letter] = 0;
+        // Бельграно 1
+        // .Бельграно 1
 
         $code = htmlspecialchars_decode(strip_tags($history->test->qset->content));
         $profile_code = eval($code);
@@ -402,6 +382,7 @@ EOS
 
         $result = true;
         if ($fmptype_mail && ($test->options & Test::AUTH_FULL)) {
+            event(new ToastEvent('info', '', "Отправка письма с результатами тестирования..."));
             $profile = Neuroprofile::all()
                 ->where('fmptype_id', '=', $fmptype_mail)
                 ->where('code', '=', $profile_code)
@@ -431,6 +412,7 @@ EOS
         }
 
         if ($fmptype_show) {
+            event(new ToastEvent('info', '', "Генерация экранных результатов тестирования..."));
             $profile = Neuroprofile::all()
                 ->where('fmptype_id', '=', $fmptype_show)
                 ->where('code', '=', $profile_code)
@@ -441,10 +423,6 @@ EOS
 
             return view('front.show', compact('card', 'test', 'blocks', 'profile_code', 'profile_name', 'history'));
         }
-
-//        if ($test->options & Test::AUTH_GUEST) {
-//            return view('front.finish', compact('test'));
-//        }
 
         return null;
     }
@@ -497,7 +475,6 @@ EOS
                 ->where('code', '=', $profile_code)
                 ->first();
             $profile_id = $profile->getKey();
-            $profile_name = $profile->name;
             $blocks = Block::all()->where('neuroprofile_id', $profile_id);
 
             $recipient = (object)[

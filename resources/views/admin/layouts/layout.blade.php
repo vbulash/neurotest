@@ -301,7 +301,7 @@
                                 {{-- TODO: сделать нормальный вызов после отладки --}}
                                 <a href="{{ route('player.play', [
                                     'mkey' => 'mkey_60501e2ae282a2.08095650*2427387986',
-                                    'test' => 'test_60cf61faa26899.54714870'
+                                    'test' => 'test_61f23b72273cd0.14631572'
                                 ]) }}"
                                    class="nav-link">
                                     <i class="nav-icon fas fa-play-circle"></i>
@@ -417,7 +417,7 @@
         cluster: '{{ env('PUSHER_APP_CLUSTER') }}'
     });
 
-    var channel = pusher.subscribe('neurotest-channel');
+    var channel = pusher.subscribe('neurotest-channel-{!! $sid !!}');
     channel.bind('toast-event', (data) => {
         toastr[data.type](data.message, data.title);
     });
