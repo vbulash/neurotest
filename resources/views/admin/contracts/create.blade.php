@@ -1,7 +1,7 @@
 @extends('admin.layouts.layout')
 
 @section('back')
-    <form action="{{ route('contracts.back') }}" method="post">
+    <form action="{{ route('contracts.back', ['sid' => $sid]) }}" method="post">
         @csrf
         <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
             <i class="fas fa-chevron-left"></i> Назад
@@ -43,7 +43,7 @@
                         </div>
                         <!-- /.card-header -->
 
-                        <form role="form" method="post" action="{{ route('contracts.store') }}"
+                        <form role="form" method="post" action="{{ route('contracts.store', ['sid' => $sid]) }}"
                               enctype="multipart/form-data">
                             @csrf
                             <div class="card-body">

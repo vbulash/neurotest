@@ -3,7 +3,7 @@
 @push('title') - Новый нейропрофиль@endpush
 
 @section('back')
-    <form action="{{ route('neuroprofiles.back') }}" method="post">
+    <form action="{{ route('neuroprofiles.back', ['sid' => $sid]) }}" method="post">
         @csrf
         <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
             <i class="fas fa-chevron-left"></i> Назад
@@ -29,7 +29,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <form role="form" method="post" action="{{ route('neuroprofiles.store') }}"
+                        <form role="form" method="post" action="{{ route('neuroprofiles.store', ['sid' => $sid]) }}"
                               enctype="multipart/form-data">
                             @csrf
                             <div class="card-header">

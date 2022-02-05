@@ -17,6 +17,7 @@ class TestResult extends Mailable
     public Test $test;
     public Collection $blocks;
     public string $profile_code;
+    public string $profile_name;
     private object $history_card;
     public array $card;
     public History $history;
@@ -26,11 +27,12 @@ class TestResult extends Mailable
      *
      * @return void
      */
-    public function __construct(Test $test, Collection $blocks, string $profile_code, object $history_card, History $history)
+    public function __construct(Test $test, Collection $blocks, string $profile_code, string $profile_name, object $history_card, History $history)
     {
         $this->test = $test;
         $this->blocks = $blocks;
         $this->profile_code = $profile_code;
+        $this->profile_name = $profile_name;
         $this->history_card = $history_card;
         $this->history = $history;
     }

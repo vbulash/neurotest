@@ -8,12 +8,6 @@
                 <div class="col-sm-6">
                     <h1>Новая роль</h1>
                 </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Blank Page</li>
-                    </ol>
-                </div>
             </div>
         </div><!-- /.container-fluid -->
     </section>
@@ -29,7 +23,7 @@
                         </div>
                         <!-- /.card-header -->
 
-                        <form role="form" method="post" action="{{ route('roles.store') }}"
+                        <form role="form" method="post" action="{{ route('roles.store', ['sid' => $sid]) }}"
                               enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="guard_name" id="guard_name" value="web">

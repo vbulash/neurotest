@@ -90,7 +90,7 @@
                 if (window.confirm('Удалить тест № ' + id + ' ?')) {
                     $.ajax({
                         method: 'DELETE',
-                        url: "{{ route('tests.destroy', ['test' => '0']) }}",
+                        url: "{{ route('tests.destroy', ['test' => '0', 'sid' => $sid]) }}",
                         data: {
                             id: id,
                         },

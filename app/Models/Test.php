@@ -79,7 +79,7 @@
                 ],
                 [
                     "actual" => true,
-                    "required" => false,
+                    "required" => true,
                     "name" => "phone",
                     "label" => "Телефон",
                     "type" => "phone",

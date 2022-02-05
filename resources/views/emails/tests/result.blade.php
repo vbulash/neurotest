@@ -5,36 +5,41 @@
             Ссылка оплаты:
         </h3>
         @php
-            $rk = new \App\Http\Payment\Robokassa();
+            $rk = new \App\Http\Payment\Robokassa($test);
             $rk->setMail(true);
             $rk->setInvoice($history->id);
-            $rk->setSum(500);
             $rk->setEmail($card['Электронная почта']);
-            $rk->setTest(false);
             $rk->setDescription('Оплата полного результата нейротестирования');
             $button = $rk->getHTMLLink();
         @endphp
-        <p>Нажимая ссылку оплаты ниже и выполняя оплату, вы соглашаетесь с условиями <a href="{{ route('player.policy', ['document' => 'oferta', 'mail' => false]) }}">публичного договора-оферты</a></p>
+        <p>Нажимая ссылку оплаты ниже и выполняя оплату, вы соглашаетесь с условиями <a
+                href="{{ route('player.policy', ['document' => 'oferta', 'mail' => false]) }}">публичного
+                договора-оферты</a></p>
         {!! $button !!}
     @endif
 @endif
 
-@php
-    switch ($card['Пол']) {
-        case 'М':
-            $greeting = 'Уважаемый';
-            break;
-        case 'Ж':
-            $greeting = 'Уважаемая';
-            break;
-        default:
-            $greeting = '';
-    }
-@endphp
-<h1>{{ $greeting }} {{ $card['Имя'] . ' ' . $card['Фамилия'] }}</h1>
-<p>Вы прошли тестирование по тесту &laquo;{{ $test->name }}&raquo; @if($history->paid == '1') и оплатили получение
-    полных
-    результатов тестирования @endif</p>
+@if(isset($card['Пол']) || isset($card['Имя']) || isset($card['Фамилия']))
+    @php
+        if(!isset($card['Пол'])) $card['Пол'] = '';
+        if(!isset($card['Имя'])) $card['Имя'] = '';
+        if(!isset($card['Фамилия'])) $card['Фамилия'] = '';
+
+        switch ($card['Пол']) {
+            case 'М':
+                $greeting = 'Уважаемый';
+                break;
+            case 'Ж':
+                $greeting = 'Уважаемая';
+                break;
+            default:
+                $greeting = '';
+        }
+    @endphp
+    <h1>{{ $greeting }} {{ $card['Имя'] . ' ' . $card['Фамилия'] }}</h1>
+    <p>Вы прошли тестирование по тесту &laquo;{{ $test->name }}&raquo; @if($history->paid == '1') и оплатили получение
+        полных результатов тестирования @endif</p>
+@endif
 
 @if($test->options & \App\Models\Test::AUTH_FULL)
     <h1>Перед прохождением теста вы ввели анкетные данные:</h1>
@@ -57,6 +62,7 @@
         Результат вашего тестирования:
     @endif
 </h1>
+<h4>Наименование нейропрофиля: {{ $profile_name }}</h4>
 
 @foreach($blocks  as $block)
     <h2>{{ $block->description }}</h2>
@@ -68,7 +74,7 @@
                 @if($block->free)
                     {{ $block->free }}
                 @else
-{{--                    Содержание краткого / бесплатного блока...--}}
+                    {{--                    Содержание краткого / бесплатного блока...--}}
                     Информация доступна в полной версии
                 @endif
             </div>

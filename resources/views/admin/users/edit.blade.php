@@ -33,7 +33,7 @@
                         </div>
                         <!-- /.card-header -->
 
-                        <form role="form" method="post" action="{{ route('users.update', ['user' => $user->id]) }}"
+                        <form role="form" method="post" action="{{ route('users.update', ['user' => $user->id, 'sid' => $sid]) }}"
                               enctype="multipart/form-data">
                             @csrf
                             @method('PUT')

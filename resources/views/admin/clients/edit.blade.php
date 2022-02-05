@@ -1,7 +1,7 @@
 @extends('admin.layouts.layout')
 
 @section('back')
-    <form action="{{ route('clients.back') }}" method="post">
+    <form action="{{ route('clients.back', ['sid' => $sid]) }}" method="post">
         @csrf
         <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
             <i class="fas fa-chevron-left"></i> Назад
@@ -44,7 +44,7 @@
                               @if($show)
                               action=""
                               @else
-                              action="{{ route('clients.update', ['client' => $client->id]) }}"
+                              action="{{ route('clients.update', ['client' => $client->id, 'sid' => $sid]) }}"
                               @endif
                               enctype="multipart/form-data">
                             @csrf
@@ -133,7 +133,7 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <a href="{{ route('client.contracts.create', ['client' => $client->id]) }}"
+                            <a href="{{ route('client.contracts.create', ['client' => $client->id, 'sid' => $sid]) }}"
                                class="btn btn-primary mb-3">Добавить контракт</a>
                             @if ($count)
                                 <div class="table-responsive">

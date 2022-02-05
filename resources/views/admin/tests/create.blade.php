@@ -10,12 +10,6 @@
                 <div class="col-sm-6">
                     <h1>Новый тест</h1>
                 </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Blank Page</li>
-                    </ol>
-                </div>
             </div>
         </div><!-- /.container-fluid -->
     </section>
@@ -31,7 +25,7 @@
                         </div>
                         <!-- /.card-header -->
 
-                        <form role="form" method="post" action="{{ route('tests.store') }}"
+                        <form role="form" method="post" action="{{ route('tests.store', ['sid' => $sid]) }}"
                               enctype="multipart/form-data">
                             @csrf
                             <div class="card-body">

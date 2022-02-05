@@ -32,7 +32,7 @@
                         <!-- /.card-header -->
                         <div class="card-body">
                             @if ($count)
-                                <a href="{{ route('history.detail') }}" class="btn btn-primary mb-3">Экспорт в Excel</a>
+                                <a href="{{ route('history.detail', ['sid' => $sid]) }}" class="btn btn-primary mb-3">Экспорт в Excel</a>
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-hover text-nowrap" id="history_table" style="width: 100%;">
                                         <thead>
@@ -84,7 +84,7 @@
                 if(window.confirm('Повторить письмо с полными результатами тестирования ?')) {
                     $.ajax({
                         method: 'GET',
-                        url: "{{ route('payment.success') }}",
+                        url: "{{ route('payment.success', ['sid' => $sid]) }}",
                         data: {
                             InvId: id,
                             Shp_Mail: '0',

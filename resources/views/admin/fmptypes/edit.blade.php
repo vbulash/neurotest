@@ -3,7 +3,7 @@
 @push('title') - @if($show) Просмотр @else Редактирование @endif типа описания@endpush
 
 @section('back')
-    <form action="{{ route('fmptypes.back') }}" method="post">
+    <form action="{{ route('fmptypes.back', ['sid' => $sid]) }}" method="post">
         @csrf
         <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
             <i class="fas fa-chevron-left"></i> Назад
@@ -36,7 +36,7 @@
                         <!-- /.card-header -->
 
                         <form role="form" method="post"
-                              action="{{ route('fmptypes.update', ['fmptype' => $fmptype->id]) }}"
+                              action="{{ route('fmptypes.update', ['fmptype' => $fmptype->id, 'sid' => $sid]) }}"
                               enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
@@ -84,7 +84,7 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <a href="{{ route('neuroprofiles.create', ['fmptype_id' => $fmptype->id]) }}"
+                            <a href="{{ route('neuroprofiles.create', ['fmptype_id' => $fmptype->id, 'sid' => $sid]) }}"
                                class="btn btn-primary mb-3">Добавить нейропрофиль</a>
                             @if (count($profiles) > 0)
                                 <div class="table-responsive">
@@ -135,7 +135,7 @@
                 if(window.confirm('Удалить нейропрофиль № ' + id + ' ?')) {
                     $.ajax({
                         method: 'DELETE',
-                        url: "{{ route('neuroprofiles.destroy', ['neuroprofile' => 0]) }}",
+                        url: "{{ route('neuroprofiles.destroy', ['neuroprofile' => 0, 'sid' => $sid]) }}",
                         data: {
                             id: id,
                         },

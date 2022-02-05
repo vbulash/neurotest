@@ -7,7 +7,7 @@
 @endsection
 
 @section('back')
-    <form action="{{ route('blocks.back') }}" method="post">
+    <form action="{{ route('blocks.back', ['sid' => $sid]) }}" method="post">
         @csrf
         <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
             <i class="fas fa-chevron-left"></i> Назад
@@ -45,7 +45,7 @@
                     <!-- /.card-header -->
 
                         <form role="form" method="post" name="blocks-create" id="blocks-create"
-                              action="{{ route('blocks.update', ['block' => $block->id]) }}"
+                              action="{{ route('blocks.update', ['block' => $block->id, 'sid' => $sid]) }}"
                               enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
@@ -141,6 +141,9 @@
                     ]
                 },
                 language: 'ru',
+                link: {
+                    addTargetToExternalLinks: true,
+                },
                 image: {
                     toolbar: [
                         'imageTextAlternative',

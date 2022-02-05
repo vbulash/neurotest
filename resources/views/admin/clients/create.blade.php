@@ -1,7 +1,7 @@
 @extends('admin.layouts.layout')
 
 @section('back')
-    <form action="{{ route('clients.back') }}" method="post">
+    <form action="{{ route('clients.back', ['sid' => $sid]) }}" method="post">
         @csrf
         <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
             <i class="fas fa-chevron-left"></i> Назад
@@ -16,12 +16,6 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1>Новый клиент</h1>
-                </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Blank Page</li>
-                    </ol>
                 </div>
             </div>
         </div><!-- /.container-fluid -->
@@ -40,7 +34,7 @@
                         </div>
                         <!-- /.card-header -->
 
-                        <form role="form" method="post" action="{{ route('clients.store') }}" enctype="multipart/form-data">
+                        <form role="form" method="post" action="{{ route('clients.store', ['sid' => $sid]) }}" enctype="multipart/form-data">
                             @csrf
                             <div class="card-body">
                                 <div class="form-group">

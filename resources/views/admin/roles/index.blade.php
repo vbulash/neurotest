@@ -30,7 +30,7 @@
                         <!-- /.card-header -->
                         <div class="card-body">
                             @can('users.create')
-                                <a href="{{ route('roles.create') }}" class="btn btn-primary mb-3">Добавить роль</a>
+                                <a href="{{ route('roles.create', ['sid' => $sid]) }}" class="btn btn-primary mb-3">Добавить роль</a>
                             @endcan
                             @if (count($roles))
                                 <div class="table-responsive">

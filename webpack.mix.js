@@ -92,6 +92,7 @@ mix.styles([
     'resources/assets/front/plugins/select2-bootstrap4-theme/select2-bootstrap4.css',
     'resources/assets/front/plugins/bootstrap-datepicker/css/bootstrap-datepicker.css',
     'resources/assets/front/plugins/toastr/toastr.min.css',
+    'resources/assets/front/plugins/pusher/pusher.min.js',
     'resources/assets/front/css/main.css',
 ], 'public/assets/front/css/front.css');
 

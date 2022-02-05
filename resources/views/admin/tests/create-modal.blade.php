@@ -7,7 +7,7 @@
      data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form role="form" method="post" action="{{ route('tests.store') }}"
+            <form role="form" method="post" action="{{ route('tests.store', ['sid' => $sid]) }}"
                   enctype="multipart/form-data"
                   id="wizard"
                   data-parsley-excluded="input[type=button], input[type=submit], input[type=reset], input[type=hidden], [disabled], :hidden"
@@ -24,7 +24,8 @@
                         ['name' => 'Механика и набор вопросов', 'tab' => 'vp-mechanics', 'view' => 'admin.tests.wizard.step3'],
                         ['name' => 'Финал теста для респондента', 'tab' => 'vp-final-respondent', 'view' => 'admin.tests.wizard.step4'],
                         //['name' => 'Финал теста для клиента', 'tab' => 'vp-final-client', 'view' => 'admin.tests.wizard.step5'],
-                        ['name' => 'Настраиваемый брендинг', 'tab' => 'vp-branding', 'view' => 'admin.tests.wizard.step6', 'role' => 'finish'],
+                        ['name' => 'Настраиваемый брендинг', 'tab' => 'vp-branding', 'view' => 'admin.tests.wizard.step6'],
+                        ['name' => 'Настраиваемая оплата', 'tab' => 'vp-robokassa', 'view' => 'admin.tests.wizard.step7', 'role' => 'finish'],
                     ];
                 @endphp
                 <div class="modal-body">
@@ -216,6 +217,9 @@
                             case 'vp-branding':
                                 $('#branding').change();
                                 break;
+                            case 'vp-robokassa':
+                                $('$robokassa').change();
+                                break;
                             default:
                                 break;
                         }
@@ -244,7 +248,7 @@
                 {{--(document.getElementById('aux_mechanics2').checked ? {{ \App\Models\Test::MOUSE_TRACKING }} : 0) |--}}
                 {{--(document.getElementById('aux_mechanics3').checked ? {{ \App\Models\Test::EQUIPMENT_MONITOR }} : 0);--}}
                 $.post({
-                    url: "{{ route('sets.filterbytest') }}",
+                    url: "{{ route('sets.filterbytest', ['sid' => $sid]) }}",
                     data: {
                         options: options.toString(),
                     },
@@ -383,6 +387,16 @@
                     $('#font-color-input').val(fontColor);
                 } else {
                     branding_panel.style.display = "none";
+                }
+            });
+
+            $("input[name='robokassa']").on("change", () => {
+                let custom = document.getElementById('robokassa');
+                let branding_panel = document.getElementById('robokassa_panel');
+                if (custom.checked) {
+                    robokassa_panel.style.display = "block";
+                } else {
+                    robokassa_panel.style.display = "none";
                 }
             });
 

@@ -22,7 +22,7 @@
 		                    "</iframe>",
 		                    route('player.play', [
                                 'mkey' => $contract->mkey,
-                                'test' => $test->key
+                                'test' => $test->key,
                             ]));
                     @endphp
                     <div class="form-group">

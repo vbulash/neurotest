@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ToastEvent;
 use App\Http\Requests\PKeyRequest;
 use App\Mail\TestResult;
 use App\Models\Block;
@@ -88,7 +89,7 @@ class PlayerController extends Controller
     {
         if (!$this->check($request, $mkey, $test)) {
             Log::debug('player.play: ' . __METHOD__ . ':' . __LINE__);
-            return redirect()->route('player.index')->with('error', session('error'));
+            return redirect()->route('player.index', ['sid' => session()->getId()])->with('error', session('error'));
         } else {
             $test = session('test');
             return view('front.intro', compact('test'));
@@ -99,7 +100,7 @@ class PlayerController extends Controller
     {
         if (!$this->check($request)) {
             Log::debug('player.card: ' . __METHOD__ . ':' . __LINE__);
-            return redirect()->route('player.index')->with('error', session('error'));
+            return redirect()->route('player.index', ['sid' => session()->getId()])->with('error', session('error'));
         } else {
             session()->forget('pkey');
             $test = session('test');
@@ -136,7 +137,7 @@ class PlayerController extends Controller
     {
         if (!$this->check($request)) {
             //Log::debug('player.body2: ' . __METHOD__ . ':' . __LINE__);
-            return redirect()->route('player.index')->with('error', session('error'));
+            return redirect()->route('player.index', ['sid' => session()->getId()])->with('error', session('error'));
         }
 
         $test = session('test');
@@ -206,6 +207,8 @@ EOS
 
     public function body2_store(Request $request): RedirectResponse
     {
+        event(new ToastEvent('info', '', "Анализ результатов тестирования..."));
+
         $test = session('test');
         $data = $request->all();
 
@@ -217,11 +220,11 @@ EOS
         DB::transaction(function () use ($data, $license, $test) {
             $history = History::create([
                 'test_id' => $test->getKey(),
-                'license_id' => $license->id,
+                'license_id' => $license->getKey(),
                 'card' => (session()->has('card') ? json_encode(session('card')) : null),
             ]);
             $history->save();
-            session()->put('hid', $history->id);
+            session()->put('hid', $history->getKey());
 
             foreach ($data as $answer => $value) {
                 if (!Str::startsWith($answer, 'answer-')) continue;
@@ -245,7 +248,8 @@ EOS
         return redirect()->route('player.precalc',
             [
                 'test' => $test->getKey(),
-                'history_id' => $hid
+                'history_id' => $hid,
+                'sid' => session()->getId()
             ]
         );
     }
@@ -280,7 +284,7 @@ EOS
                 $key = $step->getAttributeValue('value' . $request->answer);
                 $hs = HistoryStep::create([
                     'history_id' => $history->getKey(),
-                    'question_id' => $step->id,
+                    'question_id' => $step->getKey(),
                     'key' => $key,
                     'done' => date("Y-m-d H:i:s")
                 ]);
@@ -297,7 +301,7 @@ EOS
 
                 return redirect()->route('player.precalc',
                     [
-                        'test' => $history->test->id,
+                        'test' => $history->test->getKey(),
                         'history_id' => $history->getKey()
                     ]
                 );
@@ -326,7 +330,7 @@ EOS
 
             $history = History::create([
                 'test_id' => $test->getKey(),
-                'license_id' => $license->id,
+                'license_id' => $license->getKey(),
                 'card' => (session()->has('card') ? json_encode(session('card')) : null),
             ]);
             $history->save();
@@ -364,28 +368,11 @@ EOS
             return false;
         }
 
-        $result = DB::select(<<<EOS
-SELECT
-    hs.`key` as hskey,
-    COUNT(hs.`key`) as `value`
-FROM
-     historysteps as hs,
-     questions as q
-WHERE
-     hs.question_id = q.id and
-     hs.history_id = :hid
-GROUP BY hs.`key`
-EOS
-            , ['hid' => $history_id]
-        );
+        // Не переименовывать переменную - может использоваться в коде набора вопросов в eval()
+        $result = HistoryStep::where('history_id', $history_id)->pluck('key')->toArray();
 
-        $data = [];
-        foreach ($result as $item)
-            if (isset($item->hskey))
-                $data[$item->hskey] = $item->value;
-        foreach (['A+', 'A-', 'B+', 'B-', 'C+', 'C-', 'D+', 'D-', 'E+', 'E-'] as $letter)
-            if (!isset($data[$letter]))
-                $data[$letter] = 0;
+        // Бельграно 1
+        // .Бельграно 1
 
         $code = htmlspecialchars_decode(strip_tags($history->test->qset->content));
         $profile_code = eval($code);
@@ -395,15 +382,17 @@ EOS
 
         $result = true;
         if ($fmptype_mail && ($test->options & Test::AUTH_FULL)) {
+            event(new ToastEvent('info', '', "Отправка письма с результатами тестирования..."));
             $profile = Neuroprofile::all()
                 ->where('fmptype_id', '=', $fmptype_mail)
                 ->where('code', '=', $profile_code)
                 ->first();
-            $profile_id = $profile->id;
+            $profile_id = $profile->getKey();
+            $profile_name = $profile->name;
             $blocks = Block::all()->where('neuroprofile_id', $profile_id);
 
             $recipient = (object)[
-                'name' => ($card->last_name ? $card->last_name . ' ' : '') . $card->first_name,
+                'name' => (property_exists($card, 'last_name') ? $card->last_name . ' ' : '') . (property_exists($card, 'first_name') ? $card->first_name . ' ' : ''),
                 'email' => $card->email
             ];
             $copy = (object)[
@@ -414,7 +403,7 @@ EOS
             try {
                 Mail::to($recipient)
                     ->cc($copy)
-                    ->send(new TestResult($test, $blocks, $profile_code, $card, $history));
+                    ->send(new TestResult($test, $blocks, $profile_code, $profile_name, $card, $history));
                 session()->put('success', 'Вам отправлено письмо с результатами тестирования');
             } catch (\Exception $exc) {
                 session()->put('error', "Ошибка отправки письма с результатами тестирования:<br/>" .
@@ -423,14 +412,16 @@ EOS
         }
 
         if ($fmptype_show) {
+            event(new ToastEvent('info', '', "Генерация экранных результатов тестирования..."));
             $profile = Neuroprofile::all()
                 ->where('fmptype_id', '=', $fmptype_show)
                 ->where('code', '=', $profile_code)
                 ->first();
-            $profile_id = $profile->id;
+            $profile_id = $profile->getKey();
+            $profile_name = $profile->name;
             $blocks = Block::all()->where('neuroprofile_id', $profile_id);
 
-            return view('front.show', compact('card', 'test', 'blocks', 'profile_code', 'history'));
+            return view('front.show', compact('card', 'test', 'blocks', 'profile_code', 'profile_name', 'history'));
         }
 
         return null;
@@ -483,11 +474,11 @@ EOS
                 ->where('fmptype_id', '=', $fmptype_mail)
                 ->where('code', '=', $profile_code)
                 ->first();
-            $profile_id = $profile->id;
+            $profile_id = $profile->getKey();
             $blocks = Block::all()->where('neuroprofile_id', $profile_id);
 
             $recipient = (object)[
-                'name' => ($card->last_name ? $card->last_name . ' ' : '') . $card->first_name,
+                'name' => (property_exists($card, 'last_name') ? $card->last_name . ' ' : '') . (property_exists($card, 'first_name') ? $card->first_name . ' ' : ''),
                 'email' => $card->email
             ];
             $copy = (object)[
@@ -498,7 +489,7 @@ EOS
             try {
                 Mail::to($recipient)
                     ->cc($copy)
-                    ->send(new TestResult($test, $blocks, $profile_code, $card, $history));
+                    ->send(new TestResult($test, $blocks, $profile_code, $profile_name, $card, $history));
                 $kind = 'success';
                 session()->put($kind,
                     $list ?
@@ -511,7 +502,7 @@ EOS
             }
 
             return ($list ?
-                redirect()->route('history.index')->with($kind, session($kind)) :
+                redirect()->route('history.index', ['sid' => session()->getId()])->with($kind, session($kind)) :
                 'OK' . $request->InvId);
         }
         return false;

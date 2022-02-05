@@ -31,7 +31,7 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <a href="{{ route('fmptypes.create') }}" class="btn btn-primary mb-3">Добавить тип</a>
+                            <a href="{{ route('fmptypes.create', ['sid' => $sid]) }}" class="btn btn-primary mb-3">Добавить тип</a>
                             @if (count($fmptypes) > 0)
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-hover text-nowrap" id="fmptypes_table" style="width: 100%;">
@@ -80,7 +80,7 @@
                 if(window.confirm('Удалить тип описания № ' + id + ' ?')) {
                     $.ajax({
                         method: 'DELETE',
-                        url: "{{ route('fmptypes.destroy', ['fmptype' => '0']) }}",
+                        url: "{{ route('fmptypes.destroy', ['fmptype' => '0', 'sid' => $sid]) }}",
                         data: {
                             id: id,
                         },

@@ -31,7 +31,7 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <a href="{{ route('sets.create') }}" class="btn btn-primary mb-3">Добавить набор
+                            <a href="{{ route('sets.create', ['sid' => $sid]) }}" class="btn btn-primary mb-3">Добавить набор
                                 вопросов</a>
                             @if ($count)
                                 <div class="table-responsive">
@@ -83,7 +83,7 @@
                 if(window.confirm('Удалить набор вопросов № ' + id + ' ?')) {
                     $.ajax({
                         method: 'DELETE',
-                        url: "{{ route('sets.destroy', ['set' => 0]) }}",
+                        url: "{{ route('sets.destroy', ['set' => 0, 'sid' => $sid]) }}",
                         data: {
                             id: id,
                         },

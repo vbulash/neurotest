@@ -3,7 +3,7 @@
 @push('title') - @if($show) Карточка @else Редактирование @endif блока описания ФМП № {{ $block->id }}@endpush
 
 @section('back')
-    <form action="{{ route('blocks.back') }}" method="post">
+    <form action="{{ route('blocks.back', ['sid' => $sid]) }}" method="post">
         @csrf
         <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
             <i class="fas fa-chevron-left"></i> Назад
@@ -41,7 +41,7 @@
                         <!-- /.card-header -->
 
                         <form role="form" method="post" name="blocks-edit" id="blocks-edit"
-                              action="{{ route('blocks.update', ['block' => $block->id]) }}"
+                              action="{{ route('blocks.update', ['block' => $block->id, 'sid' => $sid]) }}"
                               enctype="multipart/form-data">
                             @csrf
                             @method('PUT')

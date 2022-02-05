@@ -14,8 +14,13 @@
             ];
         }
 
-        public static function digitsLetter(int $count): string
+        public function getPhpInfo()
         {
-            //
+            phpinfo();
+        }
+
+        public static function digitsLetter(int $count): ?string
+        {
+            return null;
         }
     }

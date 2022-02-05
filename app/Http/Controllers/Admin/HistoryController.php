@@ -33,6 +33,7 @@ class HistoryController extends Controller
     public function getData(): JsonResponse
     {
         $histories = History::query()
+            ->whereNotNull('card')
             ->whereNotNull('done')
             ->orderBy('done', 'desc');
 
@@ -42,16 +43,16 @@ class HistoryController extends Controller
                 return $done->format('d.m.Y G:i:s');
             })
             ->editColumn('first_name', function ($history) {
-                $card = json_decode($history->card);
-                return $card->first_name;
+                $card = json_decode($history->card, true);
+                return $card['first_name'] ?? ' ';
             })
             ->editColumn('last_name', function ($history) {
-                $card = json_decode($history->card);
-                return $card->last_name;
+                $card = json_decode($history->card, true);
+                return $card['last_name'] ?? ' ';
             })
             ->editColumn('email', function ($history) {
-                $card = json_decode($history->card);
-                return $card->email;
+                $card = json_decode($history->card, true);
+                return $card['email'] ?? ' ';
             })
             ->editColumn('action', function ($history) {
                 $params = [

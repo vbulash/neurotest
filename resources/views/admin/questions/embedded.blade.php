@@ -6,7 +6,7 @@
     </div>
     <!-- /.card-header -->
     <div class="card-body">
-        <a href="{{ route('questions.create') }}" class="btn btn-primary mb-3">Добавить вопрос</a>
+        <a href="{{ route('questions.create', ['sid' => $sid]) }}" class="btn btn-primary mb-3">Добавить вопрос</a>
         @if ($questions_count)
             <div class="table-responsive">
                 <table class="table table-bordered table-hover text-nowrap" id="questions_table" style="width: 100%;">
@@ -48,7 +48,7 @@
                 if (window.confirm('Удалить вопрос № ' + id + ' ?')) {
                     $.ajax({
                         method: 'DELETE',
-                        url: "{{ route('questions.destroy', ['question' => '0']) }}",
+                        url: "{{ route('questions.destroy', ['question' => '0', 'sid' => $sid]) }}",
                         data: {
                             id: id,
                         },
@@ -62,7 +62,7 @@
 
             function clickUp(id) {
                 $.post({
-                    url: "{{ route('questions.up') }}",
+                    url: "{{ route('questions.up', ['sid' => $sid]) }}",
                     data: {
                         id: id,
                     },
@@ -75,7 +75,7 @@
 
             function clickDown(id) {
                 $.post({
-                    url: "{{ route('questions.down') }}",
+                    url: "{{ route('questions.down', ['sid' => $sid]) }}",
                     data: {
                         id: id,
                     },

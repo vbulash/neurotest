@@ -12,12 +12,6 @@
                             Редактирование
                         @endif роли &laquo;{{ $role->name }}&raquo;</h1>
                 </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Blank Page</li>
-                    </ol>
-                </div>
             </div>
         </div><!-- /.container-fluid -->
     </section>
@@ -38,7 +32,7 @@
                         </div>
                         <!-- /.card-header -->
 
-                        <form role="form" method="post" action="{{ route('roles.update', ['role' => $role->id]) }}"
+                        <form role="form" method="post" action="{{ route('roles.update', ['role' => $role->id, 'sid' => $sid]) }}"
                               enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
