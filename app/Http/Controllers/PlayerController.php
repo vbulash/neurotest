@@ -372,6 +372,7 @@ EOS
         $result = HistoryStep::where('history_id', $history_id)->pluck('key')->toArray();
 
         // Бельграно 1
+        //dd($result);
         // .Бельграно 1
 
         $code = htmlspecialchars_decode(strip_tags($history->test->qset->content));

@@ -11,6 +11,7 @@
 @section('content')
     <form method="post" action="{{ route('player.body2.store') }}"
           enctype="multipart/form-data"
+{{--          onsubmit="if(submitted) return false; submitted = true; return true"--}}
           name="play-form" id="play-form">
         @csrf
         <input type="hidden" name="sid" value="{{ $sid }}">
