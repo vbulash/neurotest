@@ -27,8 +27,8 @@ class PlayerController extends Controller
 {
     public function check(Request $request, string $mkey = null, string $test_key = null): bool
     {
-        Log::debug('mkey = ' . $mkey);
-        Log::debug('test_key = ' . $test_key);
+//        Log::debug('mkey = ' . $mkey);
+//        Log::debug('test_key = ' . $test_key);
         if (!$mkey) {
             if (!session()->has('mkey')) {
                 Log::debug('Внутренняя ошибка: потерян мастер-ключ');
@@ -74,7 +74,7 @@ class PlayerController extends Controller
             } else {
                 session()->put('test', $test);
                 session()->put('mkey', $mkey);
-                Log::debug('test and mkey saved');
+                //Log::debug('test and mkey saved');
                 return true;
             }
         }
@@ -88,7 +88,7 @@ class PlayerController extends Controller
     public function play(Request $request, string $mkey, string $test)
     {
         if (!$this->check($request, $mkey, $test)) {
-            Log::debug('player.play: ' . __METHOD__ . ':' . __LINE__);
+            //Log::debug('player.play: ' . __METHOD__ . ':' . __LINE__);
             return redirect()->route('player.index', ['sid' => session()->getId()])->with('error', session('error'));
         } else {
             $test = session('test');
@@ -302,7 +302,8 @@ EOS
                 return redirect()->route('player.precalc',
                     [
                         'test' => $history->test->getKey(),
-                        'history_id' => $history->getKey()
+                        'history_id' => $history->getKey(),
+                        'sid' => session()->getId()
                     ]
                 );
             }
@@ -323,7 +324,10 @@ EOS
                 } else {
                     session()->put('error', 'Свободные лицензии закончились, обратитесь в Persona');
                     //Log::debug(__METHOD__ . ':' . __LINE__);
-                    return redirect()->route('player.index');
+                    return redirect()->route('player.index',
+                        [
+                            'sid' => session()->getId()
+                        ]);
                 }
             }
             $license->lock();
@@ -456,16 +460,8 @@ EOS
             $card = ($history->card ? json_decode($history->card) : null);
             $fmptype_mail = $content->descriptions->mail;
 
-            // SELECT `key`, COUNT(`key`) as 'value' FROM `historysteps` WHERE history_id = 6 GROUP BY `key` ORDER BY `key`
-            $result = DB::table('historysteps')
-                ->select(DB::raw("`key`, COUNT(`key`) as 'value'"))
-                ->where('history_id', '=', $history_id)
-                ->groupBy('key')
-                ->get();
-            $data = $result->pluck('value', 'key')->toArray();
-            foreach (['A+', 'A-', 'B+', 'B-', 'C+', 'C-', 'D+', 'D-'] as $letter)
-                if (!isset($data[$letter]))
-                    $data[$letter] = 0;
+            // Не переименовывать переменную - может использоваться в коде набора вопросов в eval()
+            $result = HistoryStep::where('history_id', $history_id)->pluck('key')->toArray();
 
             $code = htmlspecialchars_decode(strip_tags($history->test->qset->content));
             $profile_code = eval($code);
@@ -476,6 +472,7 @@ EOS
                 ->where('code', '=', $profile_code)
                 ->first();
             $profile_id = $profile->getKey();
+            $profile_name = $profile->name;
             $blocks = Block::all()->where('neuroprofile_id', $profile_id);
 
             $recipient = (object)[

@@ -429,29 +429,29 @@
     });
 
     // Ошибки и сообщения
-    @if ($errors->any())
+    @if (isset($errors) && $errors->any())
         @foreach ($errors->all() as $error)
-        toastr['error']("{!! $error !!}");
-    @endforeach
-        @elseif(session()->has('error'))
+            toastr['error']("{!! $error !!}");
+        @endforeach
+    @elseif(session()->has('error'))
         toastr['error']("{!! session('error') !!}");
-    @php
-        session()->forget('error');
-    @endphp
-        @endif
+        @php
+            session()->forget('error');
+        @endphp
+    @endif
 
-        @if (session()->has('success'))
+    @if (session()->has('success'))
         toastr['success']("{!! session('success') !!}");
-    @php
-        session()->forget('success');
-    @endphp
-        @endif
+        @php
+            session()->forget('success');
+        @endphp
+    @endif
 
-        @if (session()->has('info'))
+    @if (session()->has('info'))
         toastr['success']("{!! session('info') !!}");
-    @php
-        session()->forget('info');
-    @endphp
+        @php
+            session()->forget('info');
+        @endphp
     @endif
 </script>
 <!-- Page file / URL scripts -->
