@@ -161,11 +161,15 @@
 
         function startTimers() {
             let element = questions.get();
-            // TODO Убрать после отладки
-            //element.timeout = 0;
             if(element.timeout === '0') return;
 
             let form = document.getElementById('play-form');
+            form.addEventListener('submit', event => {
+                if(window.submitted) {
+                    event.stopPropagation();
+                    event.stopImmediatePropagation();
+                } else window.submitted = true;
+            });
 
             let counter = document.getElementById('step-countdown');
             document.querySelectorAll('.step-countdown').forEach((counter) => {
@@ -240,6 +244,7 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             prepareQuestion();
+            window.submitted = false;
         }, false);
     </script>
 @endpush

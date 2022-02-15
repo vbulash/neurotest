@@ -26,6 +26,8 @@ class Kernel extends ConsoleKernel
     {
         // Каждую ночь актуализировать статус контрактов
         $schedule->call(new ProcessContracts)->hourly();
+
+        $schedule->command('telescope:prune')->daily();
     }
 
     /**
