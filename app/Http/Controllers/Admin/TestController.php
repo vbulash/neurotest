@@ -14,6 +14,7 @@
     use Illuminate\Http\RedirectResponse;
     use Illuminate\Http\Request;
     use Illuminate\Http\Response;
+    use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
     use Illuminate\View\View;
     use Yajra\DataTables\DataTables;
@@ -277,5 +278,16 @@
         public function back(?string $key = null, ?string $message = null)
         {
             return CallStack::back($key, $message);
+        }
+
+        public function list(Request $request)
+        {
+            return json_encode(DB::select(<<<EOS
+SELECT t.id as id, t.name as name, c.mkey as mkey, t.`key` as test
+FROM tests as t, contracts as c
+WHERE t.contract_id = c.id
+ORDER BY t.name
+EOS
+            ));
         }
     }

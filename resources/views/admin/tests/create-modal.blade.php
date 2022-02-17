@@ -10,7 +10,6 @@
             <form role="form" method="post" action="{{ route('tests.store', ['sid' => $sid]) }}"
                   enctype="multipart/form-data"
                   id="wizard"
-                  data-parsley-excluded="input[type=button], input[type=submit], input[type=reset], input[type=hidden], [disabled], :hidden"
             >
                 @csrf
                 <div class="modal-header">

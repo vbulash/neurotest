@@ -34,6 +34,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'App\Http\Controllers\Admin', 
     Route::resource('/tests', 'TestController');
     Route::get('/tests.data', 'TestController@getData')->name('tests.index.data');
     Route::post('/tests.back/{key?}/{message?}', 'TestController@back')->name('tests.back');
+    Route::get('/tests.list', 'TestController@list')->name('tests.list');
     // Наборы вопросов
     Route::resource('/sets', 'QuestionSetController');
     Route::get('/sets.data', 'QuestionSetController@getData')->name('sets.index.data');
@@ -93,7 +94,7 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => 'restore.se
     Route::get('/player.iframe', 'PlayerController@iframe')->name('player.iframe');
     //
     Route::get('/player.index', 'PlayerController@index')->name('player.index');
-    Route::get('/player.play/{mkey}/{test}', 'PlayerController@play')->name('player.play');
+    Route::get('/player.play', 'PlayerController@play')->name('player.play');
     Route::get('/player.card', 'PlayerController@card')->name('player.card');
     // Маршруты сохранения предварительной информации (из карточек)
     Route::get('/player.pkey', 'PlayerController@store_pkey')->name('player.pkey');

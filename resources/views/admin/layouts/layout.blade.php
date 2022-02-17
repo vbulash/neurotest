@@ -298,28 +298,17 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                {{-- TODO: сделать нормальный вызов после отладки --}}
-                                {{-- Бельграно-1 --}}
-                                {{-- <a href="{{ route('player.play', [
-                                    'mkey' => 'mkey_60501e2ae282a2.08095650*2427387986',
-                                    'test' => 'test_61f23b72273cd0.14631572'
-                                ]) }}"--}}
-                                {{-- Артигас-3 --}}
-                                <a href="{{ route('player.play', [
-                                    'mkey' => 'mkey_60c45f1aeaece2.64555759*1160066438',
-                                    'test' => 'test_610554455c4906.82439038'
-                                ]) }}"
-                                   class="nav-link">
+                                <a href="javascript:void(0)" class="nav-link" data-bs-toggle="modal" data-bs-target="#tests-play">
                                     <i class="nav-icon fas fa-play-circle"></i>
                                     <p>Проверочный плеер</p>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a href="{{ route('player.iframe', ['sid' => session()->getId()]) }}" class="nav-link">
-                                    <i class="nav-icon fas fa-window-maximize"></i>
-                                    <p>Тест IFrame</p>
-                                </a>
-                            </li>
+{{--                            <li class="nav-item">--}}
+{{--                                <a href="{{ route('player.iframe', ['sid' => session()->getId()]) }}" class="nav-link">--}}
+{{--                                    <i class="nav-icon fas fa-window-maximize"></i>--}}
+{{--                                    <p>Тест IFrame</p>--}}
+{{--                                </a>--}}
+{{--                            </li>--}}
                             <li class="nav-item">
                                 <a href="{{ route('history.index', ['sid' => session()->getId()]) }}" class="nav-link">
                                     <i class="nav-icon fas fa-file-video"></i>
@@ -380,6 +369,10 @@
     <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
+
+<!-- modals -->
+@include('admin.tests.player-modal')
+<!-- ./modals -->
 
 <script src="{{ asset('assets/admin/js/admin.js') }}"></script>
 <script>
