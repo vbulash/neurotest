@@ -275,10 +275,6 @@
             let X = Math.min(event.pageX / window.innerWidth, 1);
             let Y = Math.min(event.pageY / window.innerHeight, 1);
             console.log((new Date()).getTime().toString() + ' : ID вопроса = ' + window.slide.toString() + ' : X = ' + X.toString() + ' / Y = ' + Y.toString());
-            /*mousePos = {
-                x: X,
-                y: Y
-            };*/
         }
 
         document.addEventListener('mousemove', mouseListener, false);
