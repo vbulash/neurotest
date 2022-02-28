@@ -150,7 +150,7 @@ class ContractController extends Controller
         session()->put('success', sprintf("Контракт &laquo;%s&raquo; добавлен и " .
             "сгенерированы лицензии контракта: %d",
             session('contract.number'), session('contract.license_count')));
-        return redirect()->route('clients.index', ['sid' => ($request->has('sid') ? $request->$sid : session()->getId())]);
+        return redirect()->route('clients.index', ['sid' => ($request->has('sid') ? $request->sid : session()->getId())]);
     }
 
     /**

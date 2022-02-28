@@ -23,7 +23,7 @@
                     @csrf
                     <input type="hidden" name="mkey" id="mkey">
                     <input type="hidden" name="test" id="test">
-                    <button type="submit" id="submit_btn" class="btn btn-primary" data-role="submit">Проверить</button>
+                    <button type="submit" id="play_btn" class="btn btn-primary" data-role="submit">Проверить</button>
                 </form>
             </div>
         </div>
@@ -69,7 +69,7 @@
                 }
             });
 
-            $('#submit_btn').on('click', () => {
+            $('#play_btn').on('click', () => {
                 let mkey = $('#tests').find(':selected').data('mkey');
                 let test = $('#tests').find(':selected').data('test');
                 $('#mkey').val(mkey);

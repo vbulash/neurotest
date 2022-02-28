@@ -92,7 +92,7 @@ class ClientController extends Controller
     {
         $name = $request->name;
         Client::create($request->all());
-        return redirect()->route('clients.index', ['sid' => ($request->has('sid') ? $request->$sid : session()->getId())])->with('success', "Клиент \"{$name}\" добавлен");
+        return redirect()->route('clients.index', ['sid' => ($request->has('sid') ? $request->sid : session()->getId())])->with('success', "Клиент \"{$name}\" добавлен");
     }
 
     /**
@@ -136,7 +136,7 @@ class ClientController extends Controller
         $name = $request->name;
         $client = Client::find($id);
         $client->update($request->all());
-        return redirect()->route('clients.index', ['sid' => ($request->has('sid') ? $request->$sid : session()->getId())])->with('success', "Изменения клиента \"{$name}\" сохранены");
+        return redirect()->route('clients.index', ['sid' => ($request->has('sid') ? $request->sid : session()->getId())])->with('success', "Изменения клиента \"{$name}\" сохранены");
     }
 
     /**

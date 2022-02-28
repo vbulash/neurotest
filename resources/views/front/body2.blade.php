@@ -1,3 +1,8 @@
+@php
+    use App\Models\Test;
+    $mousetracking = intval($test->options) & Test::MOUSE_TRACKING
+@endphp
+
 @extends('front.layouts.layout')
 
 @push('title') - Тест &laquo;{{ $test->name }}&raquo;@endpush
@@ -11,7 +16,7 @@
 @section('content')
     <form method="post" action="{{ route('player.body2.store') }}"
           enctype="multipart/form-data"
-{{--          onsubmit="if(submitted) return false; submitted = true; return true"--}}
+          {{--          onsubmit="if(submitted) return false; submitted = true; return true"--}}
           name="play-form" id="play-form">
         @csrf
         <input type="hidden" name="sid" value="{{ $sid }}">
@@ -152,20 +157,27 @@
             window.pressed = false;
             //console.log('window.pressed = ' + window.pressed.toString());
             let element = questions.get();
-            // if(questions.pointer > 0) {
-            let firstTab = document.querySelector('#nav-tab-' + element.id);
+            window.slide = element.id;
+
+            @if($mousetracking)
+            document.dispatchEvent(new Event('mousemove'));
+            @endif
+
+            let firstTab = document.querySelector('#nav-tab-' + window.slide);
             let tab = new bootstrap.Tab(firstTab);
             tab.show();
-            // }
         }
 
         function startTimers() {
             let element = questions.get();
-            if(element.timeout === '0') return;
+            if (element.timeout === '0') return;
 
             let form = document.getElementById('play-form');
             form.addEventListener('submit', event => {
-                if(window.submitted) {
+                if (window.submitted) {
+                    @if($mousetracking)
+                    document.removeEventListener('mousemove', mouseListener, false);
+                    @endif
                     event.stopPropagation();
                     event.stopImmediatePropagation();
                 } else window.submitted = true;
@@ -187,10 +199,10 @@
                     clearInterval(window.timer);
                     document.getElementById('answer-' + element.id).value = 0;
 
-                    if(element.learning === '0') {
+                    if (element.learning === '0') {
                         questions.again();
                         prepareQuestion();
-                    } else if(questions.next()) {
+                    } else if (questions.next()) {
                         prepareQuestion();
                     } else {
                         document.getElementById('play-form').submit();
@@ -200,14 +212,14 @@
         }
 
         function stopTimers() {
-            if(window.timer) clearInterval(window.timer);
+            if (window.timer) clearInterval(window.timer);
         }
 
         // Нажатие на картинку вопроса
         document.querySelectorAll(".step-image").forEach((pic) => {
             pic.addEventListener('click', event => {
                 // Предотвращение повторных нажатий
-                if(window.pressed) {
+                if (window.pressed) {
                     event.stopPropagation();
                     event.stopImmediatePropagation();
                     return;
@@ -233,6 +245,44 @@
                 }
             }, false);
         });
+
+        @if($mousetracking)
+        // Трекинг мыши
+
+        let mousePos;
+        let mouseMoves = [];
+        let mouseListener = function (event) {
+            let dot, eventDoc, doc, body, pageX, pageY;
+
+            event = event || window.event; // IE-ism
+
+            // If pageX/Y aren't available and clientX/Y are,
+            // calculate pageX/Y - logic taken from jQuery.
+            // (This is to support old IE)
+            if (event.pageX == null && event.clientX != null) {
+                eventDoc = (event.target && event.target.ownerDocument) || document;
+                doc = eventDoc.documentElement;
+                body = eventDoc.body;
+
+                event.pageX = event.clientX +
+                    (doc && doc.scrollLeft || body && body.scrollLeft || 0) -
+                    (doc && doc.clientLeft || body && body.clientLeft || 0);
+                event.pageY = event.clientY +
+                    (doc && doc.scrollTop || body && body.scrollTop || 0) -
+                    (doc && doc.clientTop || body && body.clientTop || 0);
+            }
+
+            let X = Math.min(event.pageX / window.innerWidth, 1);
+            let Y = Math.min(event.pageY / window.innerHeight, 1);
+            console.log((new Date()).getTime().toString() + ' : ID вопроса = ' + window.slide.toString() + ' : X = ' + X.toString() + ' / Y = ' + Y.toString());
+            /*mousePos = {
+                x: X,
+                y: Y
+            };*/
+        }
+
+        document.addEventListener('mousemove', mouseListener, false);
+        @endif
 
         // Отображение вопроса
         document.querySelectorAll(".question-tab").forEach((tab) => {

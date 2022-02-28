@@ -58,8 +58,8 @@ mix.copy('resources/assets/admin/plugins/datatables/datatables.js', 'public/asse
 // http://psycho.bulash.ru/assets/admin/plugins/datatables/bootstrap.css.map
 
 // CKEditor5
-mix.copy('resources/assets/admin/plugins/ckeditor5-new/build/ckeditor.js', 'public/assets/admin/plugins/ckeditor5/ckeditor.js')
-mix.copy('resources/assets/admin/plugins/ckeditor5/sample/styles.css', 'public/assets/admin/plugins/ckeditor5/ckeditor.css')
+mix.copy('resources/assets/admin/plugins/ckeditor5-new/build/ckeditor.js', 'public/assets/admin/plugins/ckeditor5/ckeditor.js');
+mix.copy('resources/assets/admin/plugins/ckeditor5/sample/styles.css', 'public/assets/admin/plugins/ckeditor5/ckeditor.css');
 
 // Ekko Lightbox
 mix.copy('resources/assets/admin/plugins/lightbox/js/ekko-lightbox.min.js.map', 'public/assets/admin/plugins/lightbox/js/ekko-lightbox.min.js.map');
@@ -111,3 +111,6 @@ mix.copyDirectory('resources/assets/front/plugins/fontawesome-free/webfonts', 'p
 
 mix.copy('resources/assets/front/plugins/bootstrap/js/bootstrap.bundle.min.js.map', 'public/assets/front/plugins/bootstrap/js/bootstrap.bundle.min.js.map');
 mix.copy('resources/assets/front/plugins/bootstrap-datepicker/css/bootstrap-datepicker.css.map', 'public/assets/front/css/bootstrap-datepicker.css.map');
+
+// Toastr
+mix.copy('resources/assets/front/plugins/toastr/toastr.js.map', 'public/assets/front/js/toastr.js.map');

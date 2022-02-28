@@ -85,10 +85,10 @@ class PlayerController extends Controller
         return view('front.index');
     }
 
-    public function play(Request $request)
+    public function play(Request $request, string $mkey = null, string $test = null)
     {
-        $mkey = $request->mkey;
-        $test = $request->test;
+        $mkey = $mkey ?: $request->mkey;
+        $test = $test ?: $request->test;
         if (!$this->check($request, $mkey, $test)) {
             //Log::debug('player.play: ' . __METHOD__ . ':' . __LINE__);
             return redirect()->route('player.index', ['sid' => session()->getId()])->with('error', session('error'));

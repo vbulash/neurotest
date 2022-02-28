@@ -84,5 +84,6 @@
     "/assets/front/webfonts/fa-solid-900.woff": "/assets/front/webfonts/fa-solid-900.woff",
     "/assets/front/webfonts/fa-solid-900.woff2": "/assets/front/webfonts/fa-solid-900.woff2",
     "/assets/front/plugins/bootstrap/js/bootstrap.bundle.min.js.map": "/assets/front/plugins/bootstrap/js/bootstrap.bundle.min.js.map",
-    "/assets/front/css/bootstrap-datepicker.css.map": "/assets/front/css/bootstrap-datepicker.css.map"
+    "/assets/front/css/bootstrap-datepicker.css.map": "/assets/front/css/bootstrap-datepicker.css.map",
+    "/assets/front/js/toastr.js.map": "/assets/front/js/toastr.js.map"
 }
