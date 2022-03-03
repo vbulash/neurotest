@@ -84,7 +84,7 @@
                                               class="form-control @error('address') is-invalid @enderror"
                                               @if($show) disabled @endif>{{ $client->address }}</textarea>
                                 </div>
-                                @if($count)
+                                @if($count && $first)
                                     <div class="row">
                                         <div class="form-group col-6 col-xs-12">
                                             <label for="number">Номер контракта</label>
