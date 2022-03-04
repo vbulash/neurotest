@@ -106,7 +106,6 @@ mix.scripts([
     'resources/assets/front/js/main.js',
 ], 'public/assets/front/js/front.js');
 
-mix.copyDirectory('resources/assets/front/img', 'public/assets/front/img');
 mix.copyDirectory('resources/assets/front/plugins/fontawesome-free/webfonts', 'public/assets/front/webfonts');
 
 mix.copy('resources/assets/front/plugins/bootstrap/js/bootstrap.bundle.min.js.map', 'public/assets/front/plugins/bootstrap/js/bootstrap.bundle.min.js.map');
@@ -114,3 +113,8 @@ mix.copy('resources/assets/front/plugins/bootstrap-datepicker/css/bootstrap-date
 
 // Toastr
 mix.copy('resources/assets/front/plugins/toastr/toastr.js.map', 'public/assets/front/js/toastr.js.map');
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Common
+
+mix.copyDirectory('resources/assets/favicon', 'public/favicon');
