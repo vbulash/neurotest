@@ -78,6 +78,11 @@ class HistoryController extends Controller
                     "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Просмотр\">\n" .
                     "<i class=\"fas fa-eye\"></i>\n" .
                     "</a>\n";
+                $actions .=
+                    "<a href=\"javascript:void(0)\" class=\"btn btn-info btn-sm float-left mr-1\" " .
+                    "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Удаление\" onclick=\"clickDelete({$history->id})\">\n" .
+                    "<i class=\"fas fa-trash-alt\"></i>\n" .
+                    "</a>\n";
 
                 if ($history->paid)
                     $actions .=
@@ -171,17 +176,6 @@ class HistoryController extends Controller
             ['sid' => ($request->has('sid') ? $request->sid : session()->getId())]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
     private function getNameFromNumber($num)
     {
         $numeric = $num % 26;
@@ -265,6 +259,26 @@ EOS;
 
         $writer = new Xlsx($spreadsheet);
         $writer->save('php://output');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param Request $request
+     * @param int $neuroprofile
+     * @return bool
+     */
+    public function destroy(Request $request, int $history): bool
+    {
+        if ($history == 0) {
+            $id = $request->id;
+        } else $id = $history;
+
+        $h = History::findOrFail($id);
+        $h->delete();
+
+        event(new ToastEvent('success', '', "Запись истории № {$id} удалена"));
+        return true;
     }
 
     public function back(?string $key = null, ?string $message = null)

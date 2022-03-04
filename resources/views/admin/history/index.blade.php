@@ -80,6 +80,22 @@
 @if($count)
     @push('scripts.injection')
         <script>
+            function clickDelete(id) {
+                if(window.confirm('Удалить запись истории № ' + id + ' ?')) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: "{{ route('history.destroy', ['history' => 0, 'sid' => $sid]) }}",
+                        data: {
+                            id: id,
+                        },
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        success: () => {
+                            window.datatable.ajax.reload();
+                        }
+                    });
+                }
+            }
+
             function clickMail(id) {
                 if(window.confirm('Повторить письмо с полными результатами тестирования ?')) {
                     $.ajax({
