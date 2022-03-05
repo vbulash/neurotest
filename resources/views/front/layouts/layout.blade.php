@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{{ env('APP_NAME') }}@stack('title')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+{{--    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">--}}
     <link rel="stylesheet" href="{{ asset('assets/front/css/front.css') }}">
 {{--    https://realfavicongenerator.net/--}}
     <!-- favicon -->

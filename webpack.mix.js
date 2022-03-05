@@ -14,6 +14,7 @@ const mix = require('laravel-mix');
 // Admin
 mix.styles([
     'resources/assets/admin/plugins/fontawesome-free/css/all.min.css',
+    'resources/css/SourceSansPro.css',
     'resources/assets/admin/plugins/bootstrap/css/bootstrap.min.css',
     'resources/assets/admin/plugins/select2/css/select2.css',
     'resources/assets/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.css',
@@ -37,8 +38,8 @@ mix.scripts([
     'resources/assets/admin/js/demo.js'
 ], 'public/assets/admin/js/admin.js');
 
-mix.copyDirectory('resources/assets/admin/img', 'public/assets/admin/img');
 mix.copyDirectory('resources/assets/admin/plugins/fontawesome-free/webfonts', 'public/assets/admin/webfonts');
+mix.copyDirectory('resources/assets/googlefonts', 'public/assets/admin/fonts');
 
 mix.copy('resources/assets/admin/plugins/jquery/jquery.min.js.map', 'public/assets/admin/plugins/jquery/jquery.min.js.map');
 mix.copy('resources/assets/admin/css/adminlte.min.css.map', 'public/assets/admin/css/adminlte.min.css.map');
@@ -87,6 +88,7 @@ mix.copy('resources/assets/admin/plugins/pickr/nano.min.css', 'public/assets/adm
 // Front
 mix.styles([
     'resources/assets/front/plugins/fontawesome-free/css/all.min.css',
+    'resources/css/SourceSansPro.css',
     'resources/assets/front/plugins/bootstrap/css/bootstrap.css',
     'resources/assets/front/plugins/select2/css/select2.css',
     'resources/assets/front/plugins/select2-bootstrap4-theme/select2-bootstrap4.css',
@@ -107,6 +109,7 @@ mix.scripts([
 ], 'public/assets/front/js/front.js');
 
 mix.copyDirectory('resources/assets/front/plugins/fontawesome-free/webfonts', 'public/assets/front/webfonts');
+mix.copyDirectory('resources/assets/googlefonts', 'public/assets/front/fonts');
 
 mix.copy('resources/assets/front/plugins/bootstrap/js/bootstrap.bundle.min.js.map', 'public/assets/front/plugins/bootstrap/js/bootstrap.bundle.min.js.map');
 mix.copy('resources/assets/front/plugins/bootstrap-datepicker/css/bootstrap-datepicker.css.map', 'public/assets/front/css/bootstrap-datepicker.css.map');
