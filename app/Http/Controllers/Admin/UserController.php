@@ -5,6 +5,7 @@
     use App\Http\Controllers\Controller;
     use App\Http\Requests\StoreUserRequest;
     use App\Http\Requests\UpdateUserRequest;
+    use App\Mail\UsersChanged;
     use App\Models\Client;
     use App\Models\Role;
     use App\Models\User;
@@ -17,6 +18,7 @@
     use Illuminate\Http\Request;
     use Illuminate\Http\Response;
     use Illuminate\Support\Facades\Auth;
+    use Illuminate\Support\Facades\Mail;
     use Yajra\DataTables\DataTables;
 
     class UserController extends Controller
@@ -146,12 +148,15 @@
             $original =$user->name;
             $user->update($data);
 
-            $changed = $user->wasChanged();
-            $changed = $changed || (count(array_diff($user->getRoleNames()->toArray(), $data['roles'])) != 0);
+			session()->flash('success', "Изменения пользователя &laquo;{$original}&raquo; сохранены");
+
+            $userChanged = $user->wasChanged();
+            $rolesChanged = (count(array_diff($user->getRoleNames()->toArray(), $data['roles'])) != 0);
+            $clientsChanged = false;
 
             if(key_exists('clients', $data)) {
                 $user_clients = $user->clients()->get()->pluck('id')->toArray();
-                $changed = $changed || (count(array_diff_assoc($user_clients, $data['clients'])) != 0);
+                $clientsChanged = (count(array_diff_assoc($user_clients, $data['clients'])) != 0);
             }
 
             $user->syncRoles($data['roles']);
@@ -159,11 +164,26 @@
                 $user->clients()->sync($data['clients']);
             }
 
-            if($changed) {
-                // TODO: Отправить письмо
-                session()->flash('success',
-                    "Изменения пользователя &laquo;{$original}&raquo; сохранены<br/>" .
-                    "Письмо пользователю &laquo;{$original}&raquo; отправлено");
+            if($userChanged || $rolesChanged || $clientsChanged) {
+                $recipient = (object)[
+                    'name' => $user->name,
+                    'email' => $user->email
+                ];
+                $copy = (object)[
+                    'name' => env('MAIL_FROM_NAME'),
+                    'email' => env('MAIL_FROM_ADDRESS')
+                ];
+
+                try {
+                    Mail::to($recipient)
+                        ->cc($copy)
+                        ->send(new UsersChanged($user->listChanges(), $userChanged, $rolesChanged, $clientsChanged));
+                    session()->put('success', 'Вам отправлено письмо по итогам изменений данных пользователя');
+                } catch (\Exception $exc) {
+                    session()->put('error', "Ошибка отправки письма с итогами изменений данных пользователя:<br/>" .
+                        $exc->getMessage());
+                }
+                session()->put('success', "Письмо пользователю &laquo;{$original}&raquo; отправлено");
             }
 
             return redirect()->route('users.index',

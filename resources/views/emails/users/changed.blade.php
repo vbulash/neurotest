@@ -1,12 +1,24 @@
-@component('mail::message')
-# Introduction
+<h3>Вы изменили следующую информацию в записи вашего пользователя:</h3>
+<ul>
+    @if($userChanged)
+        <li>Поля в анкете пользователя:</li>
+        <ul>
+            @foreach($titles as $title)
+                <li>{!! $title !!}</li>
+            @endforeach
+        </ul>
+    @endif
 
-The body of your message.
+    @if($rolesChanged)
+        <li>Привязку ролей к пользователю.</li>
+    @endif
 
-@component('mail::button', ['url' => ''])
-Button Text
-@endcomponent
+    @if($clientsChanged)
+        <li>Доступность отдельных клиентов пользователю.</li>
+    @endif
+</ul>
 
-Thanks,<br>
-{{ config('app.name') }}
-@endcomponent
+<p style="margin-top: 40px;">
+    С уважением,<br/>
+    <a href="{{ env('BRAND_URL') }}" target="_blank">{{ env('BRAND_NAME') }}</a>
+</p>

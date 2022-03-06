@@ -50,6 +50,13 @@ class User extends Authenticatable
 
     protected static $logAttributes = ['*'];
 
+    public array $fields = [
+        'name' => 'ФИО',
+        'email' => 'Электронная почта',
+        'phone' => 'Телефон',
+        'password' => 'Пароль'
+    ];
+
     public function getDescriptionForEvent(string $eventName): string
     {
         return "Событие изменения пользователя: {$eventName}";
@@ -64,5 +71,19 @@ class User extends Authenticatable
     public function clients()
     {
         return $this->belongsToMany(Client::class, 'user_client');
+    }
+
+    /**
+     * Возвращает список заголовков измененных полей
+     * @return array|null
+     */
+    public function listChanges(): ?array
+    {
+        if(!$this->wasChanged()) return null;
+        $list = [];
+        foreach ($this->fields as $name => $title)
+            if($this->wasChanged($name)) $list[] = $title;
+
+        return $list;
     }
 }
