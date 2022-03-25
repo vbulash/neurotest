@@ -76,7 +76,20 @@
         public function index()
         {
             $count = Test::all()->count();
-            $contracts = Contract::all();
+			// Свободные контракты (без привязанных тестов)
+			$contracts = collect(DB::select(<<<EOS
+SELECT *
+FROM contracts
+WHERE id NOT IN (
+    SELECT contract_id FROM tests
+)
+EOS
+			));
+            /*$contracts = Contract::all()->whereNotIn('id', function($query) {
+				$query->from('tests')->select('contract_id');
+			});*/
+			if ($contracts->count() == 0)
+				event(new ToastEvent('info', '', "Нет свободного контракта для создания нового теста. Добавление нового теста невозможно"));
             return view('admin.tests.index', compact('count', 'contracts'));
         }
 

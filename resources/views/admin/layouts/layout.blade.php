@@ -429,6 +429,7 @@
 
     var channel = pusher.subscribe('neurotest-channel-{!! $sid !!}');
     channel.bind('toast-event', (data) => {
+		alert(JSON.stringify(data));
         toastr[data.type](data.message, data.title);
     });
 

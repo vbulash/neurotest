@@ -32,7 +32,7 @@
                         <!-- /.card-header -->
                         <div class="card-body">
                             <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
-                                    data-bs-target="#tests-create">
+                                    data-bs-target="#tests-create" @if ($contracts->count() == 0) disabled @endif>
                                 Добавить тест
                             </button>
                             @if ($count)
