@@ -85,9 +85,6 @@ WHERE id NOT IN (
 )
 EOS
 			));
-            /*$contracts = Contract::all()->whereNotIn('id', function($query) {
-				$query->from('tests')->select('contract_id');
-			});*/
 			if ($contracts->count() == 0)
 				event(new ToastEvent('info', '', "Нет свободного контракта для создания нового теста. Добавление нового теста невозможно"));
             return view('admin.tests.index', compact('count', 'contracts'));
@@ -193,7 +190,16 @@ EOS
         public function edit($id, bool $show = false)
         {
             $test = Test::findOrFail($id);
-            $contracts = Contract::all();
+            //$contracts = Contract::all();
+			$contracts = collect(DB::select(<<<EOS
+SELECT *
+FROM contracts
+WHERE id NOT IN (
+    SELECT contract_id FROM tests
+) OR id = :id
+EOS , ['id' => $test->contract->id]
+			));
+
             $content = json_decode($test->content, true);
 
 //            session()->put('test_id', $id);

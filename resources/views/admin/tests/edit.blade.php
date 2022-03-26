@@ -68,9 +68,13 @@
                                     <select name="contract" id="contract" class="select2 col-lg-6 col-xs-12"
                                             data-placeholder="Выбор контракта" @if($show) disabled @endif>
                                         @foreach($contracts as $contract)
+											@php
+												$client = \App\Models\Client::findOrFail($contract->client_id);
+											@endphp
                                             <option value="{{ $contract->id }}"
-                                                    @if($contract->id == $test->contract_id) selected @endif>
-                                                {{ $contract->number }} ({{ $contract->client->name }})
+                                                    @if($contract->id == $test->contract_id) selected @endif
+													@if($contracts->count() == 1) disabled @endif >
+                                                {{ $contract->number }} ({{ $client->name }})
                                             </option>
                                         @endforeach
                                     </select>
