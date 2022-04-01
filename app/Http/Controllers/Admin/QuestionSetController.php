@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Events\ToastEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSetRequest;
+use App\Http\Requests\UpdateSetRequest;
 use App\Http\Support\CallStack;
 use App\Models\Client;
 use App\Models\Question;
@@ -148,11 +149,11 @@ class QuestionSetController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param StoreSetRequest $request
+     * @param Request $request
      * @param int $id
      * @return RedirectResponse|Response
      */
-    public function update(StoreSetRequest $request, int $id)
+    public function update(Request $request, int $id)
     {
         $question = QuestionSet::findOrFail($id);
 
