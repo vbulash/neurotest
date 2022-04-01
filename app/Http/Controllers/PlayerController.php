@@ -383,53 +383,58 @@ EOS
 
         $code = htmlspecialchars_decode(strip_tags($history->test->qset->content));
         $profile_code = eval($code);
-        $history->code = $profile_code;
-        $history->update();
-        // Код нейропрофиля вычислен и сохранен
 
-        $result = true;
-        if ($fmptype_mail && ($test->options & Test::AUTH_FULL)) {
-            event(new ToastEvent('info', '', "Отправка письма с результатами тестирования..."));
-            $profile = Neuroprofile::all()
-                ->where('fmptype_id', '=', $fmptype_mail)
-                ->where('code', '=', $profile_code)
-                ->first();
-            $profile_id = $profile->getKey();
-            $profile_name = $profile->name;
-            $blocks = Block::all()->where('neuroprofile_id', $profile_id);
+		if($profile_code == null) // Ситуация фантастическая, но встречается очень часто
+			$history->delete();
+		else {
+			$history->code = $profile_code;
+			$history->update();
+			// Код нейропрофиля вычислен и сохранен
 
-            $recipient = (object)[
-                'name' => (property_exists($card, 'last_name') ? $card->last_name . ' ' : '') . (property_exists($card, 'first_name') ? $card->first_name . ' ' : ''),
-                'email' => $card->email
-            ];
-            $copy = (object)[
-                'name' => env('MAIL_FROM_NAME'),
-                'email' => env('MAIL_FROM_ADDRESS')
-            ];
+			$result = true;
+			if ($fmptype_mail && ($test->options & Test::AUTH_FULL)) {
+				event(new ToastEvent('info', '', "Отправка письма с результатами тестирования..."));
+				$profile = Neuroprofile::all()
+					->where('fmptype_id', '=', $fmptype_mail)
+					->where('code', '=', $profile_code)
+					->first();
+				$profile_id = $profile->getKey();
+				$profile_name = $profile->name;
+				$blocks = Block::all()->where('neuroprofile_id', $profile_id);
 
-            try {
-                Mail::to($recipient)
-                    ->cc($copy)
-                    ->send(new TestResult($test, $blocks, $profile_code, $profile_name, $card, $history));
-                session()->put('success', 'Вам отправлено письмо с результатами тестирования');
-            } catch (\Exception $exc) {
-                session()->put('error', "Ошибка отправки письма с результатами тестирования:<br/>" .
-                    $exc->getMessage());
-            }
-        }
+				$recipient = (object)[
+					'name' => (property_exists($card, 'last_name') ? $card->last_name . ' ' : '') . (property_exists($card, 'first_name') ? $card->first_name . ' ' : ''),
+					'email' => $card->email
+				];
+				$copy = (object)[
+					'name' => env('MAIL_FROM_NAME'),
+					'email' => env('MAIL_FROM_ADDRESS')
+				];
 
-        if ($fmptype_show) {
-            event(new ToastEvent('info', '', "Генерация экранных результатов тестирования..."));
-            $profile = Neuroprofile::all()
-                ->where('fmptype_id', '=', $fmptype_show)
-                ->where('code', '=', $profile_code)
-                ->first();
-            $profile_id = $profile->getKey();
-            $profile_name = $profile->name;
-            $blocks = Block::all()->where('neuroprofile_id', $profile_id);
+				try {
+					Mail::to($recipient)
+						->cc($copy)
+						->send(new TestResult($test, $blocks, $profile_code, $profile_name, $card, $history));
+					session()->put('success', 'Вам отправлено письмо с результатами тестирования');
+				} catch (\Exception $exc) {
+					session()->put('error', "Ошибка отправки письма с результатами тестирования:<br/>" .
+						$exc->getMessage());
+				}
+			}
 
-            return view('front.show', compact('card', 'test', 'blocks', 'profile_code', 'profile_name', 'history'));
-        }
+			if ($fmptype_show) {
+				event(new ToastEvent('info', '', "Генерация экранных результатов тестирования..."));
+				$profile = Neuroprofile::all()
+					->where('fmptype_id', '=', $fmptype_show)
+					->where('code', '=', $profile_code)
+					->first();
+				$profile_id = $profile->getKey();
+				$profile_name = $profile->name;
+				$blocks = Block::all()->where('neuroprofile_id', $profile_id);
+
+				return view('front.show', compact('card', 'test', 'blocks', 'profile_code', 'profile_name', 'history'));
+			}
+		}
 
         return null;
     }

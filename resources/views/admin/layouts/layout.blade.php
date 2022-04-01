@@ -354,6 +354,15 @@
                                 </a>
                             </li>
                         </ul>
+{{--						<ul class="nav nav-treeview">--}}
+{{--							<li class="nav-item">--}}
+{{--								<a href="{{ route('telescope', ['sid' => session()->getId()]) }}"--}}
+{{--								   class="nav-link">--}}
+{{--									<i class="nav-icon fas fa-gears"></i>--}}
+{{--									<p>Laravel Telescope</p>--}}
+{{--								</a>--}}
+{{--							</li>--}}
+{{--						</ul>--}}
                     </li>
                     <!-- .Настройки -->
 
@@ -381,30 +390,41 @@
 </div>
 <!-- ./wrapper -->
 
-<!-- modals -->
+<!-- modals / supplemental -->
 @include('admin.tests.player-modal')
+@include('admin.layouts.toast')
+
 <!-- ./modals -->
 
 <script src="{{ asset('assets/admin/js/admin.js') }}"></script>
 <script>
-    // Инициализация pusher'а
-    toastr.options = {
-        "closeButton": true,
-        "debug": false,
-        "newestOnTop": true,
-        "progressBar": false,
-        "positionClass": "toast-top-right",
-        "preventDuplicates": false,
-        "onclick": null,
-        "showDuration": "300",
-        "hideDuration": "1000",
-        "timeOut": "0",
-        "extendedTimeOut": "1000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-    }
+	function showToast(type, message, autohide) {
+		let classList = "toast border-0 ";
+		switch (type) {
+			case 'error':
+				classList = classList + 'bg-danger text-white';
+				break;
+			case 'success':
+				classList = classList + 'bg-success text-white';
+				break;
+			case 'info':
+			default:
+				classList = classList + 'bg-primary text-white';
+				break;
+		}
+		let elToast = document.getElementById('livetoast');
+		let toast = new bootstrap.Toast(elToast);
+
+		toast.hide();
+
+		elToast.className = classList;
+		elToast.setAttribute('data-bs-autohide', autohide);
+
+		let elToastBody = document.getElementById('lt-body');
+		elToastBody.innerHTML = message;
+
+		toast.show();
+	}
 
     String.prototype.trimRight = function (charlist) {
         if (charlist === undefined)
@@ -429,31 +449,30 @@
 
     var channel = pusher.subscribe('neurotest-channel-{!! $sid !!}');
     channel.bind('toast-event', (data) => {
-		alert(JSON.stringify(data));
-        toastr[data.type](data.message, data.title);
+		showToast(data.type, data.message, false);
     });
 
     // Ошибки и сообщения
     @if (isset($errors) && $errors->any())
         @foreach ($errors->all() as $error)
-            toastr['error']("{!! $error !!}");
+	showToast('error', '{!! session('error') !!}', false);
         @endforeach
     @elseif(session()->has('error'))
-        toastr['error']("{!! session('error') !!}");
+		showToast('error', '{!! session('error') !!}', false);
         @php
             session()->forget('error');
         @endphp
     @endif
 
     @if (session()->has('success'))
-        toastr['success']("{!! session('success') !!}");
+		showToast('success', '{!! session('success') !!}', false);
         @php
             session()->forget('success');
         @endphp
     @endif
 
     @if (session()->has('info'))
-        toastr['success']("{!! session('info') !!}");
+		showToast('info', '{!! session('info') !!}', false);
         @php
             session()->forget('info');
         @endphp

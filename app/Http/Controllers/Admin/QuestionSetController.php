@@ -159,9 +159,9 @@ class QuestionSetController extends Controller
         $set = QuestionSet::findOrFail($id);
         $set->update($data);
 
+		session()->put('success', "Изменения набора вопросов &laquo;{$question->name}&raquo; сохранены");
         return redirect()->route('sets.index',
-            ['sid' => ($request->has('sid') ? $request->sid : session()->getId())])
-            ->with('success', "Изменения набора вопросов &laquo;{$question->name}&raquo; сохранены");
+            ['sid' => ($request->has('sid') ? $request->sid : session()->getId())]);
     }
 
     /**

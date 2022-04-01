@@ -39,7 +39,7 @@
                         </div>
                         <!-- /.card-header -->
 
-                        <form role="form" method="post" name="set-edit" id="set-edit"
+                        <form role="form" name="set-edit" id="set-edit"
                               action="{{ route('sets.update', ['set' => $set->id, 'sid' => $sid]) }}"
                               enctype="multipart/form-data">
                             @csrf

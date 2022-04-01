@@ -15,7 +15,7 @@
             array_pop($stack);
             $context = end($stack);
 
-            if($key) session()->flash($key, $message);
+            if($key) session()->put($key, $message);
 
             $route = $context['route'];
             $params = $context['params'];
