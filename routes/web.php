@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route as Route;
 Route::redirect('/', '/admin')->name('home');
 
 // Маршруты объектов платформы
-Route::group(['prefix' => 'admin', 'namespace' => 'App\Http\Controllers\Admin', 'middleware' => ['admin', 'stack']], function () {
+Route::group(['prefix' => 'admin', 'namespace' => 'App\Http\Controllers\Admin', 'middleware' => ['admin']], function () {
     Route::get('/', 'MainController@index')->name('admin.index');
     // Клиенты
     Route::resource('/clients', 'ClientController');

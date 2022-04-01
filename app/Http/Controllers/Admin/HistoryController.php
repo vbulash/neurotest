@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Events\ToastEvent;
 use App\Http\Controllers\Controller;
-use App\Http\Support\CallStack;
 use App\Models\History;
 use DateTime;
 use Exception;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\Factory;
 use Illuminate\View\View;
 use Illuminate\Http\JsonResponse;
@@ -283,6 +283,7 @@ EOS;
 
     public function back(?string $key = null, ?string $message = null)
     {
-        return CallStack::back($key, $message);
+		session()->put($key, $message);
+        return Redirect::back();
     }
 }

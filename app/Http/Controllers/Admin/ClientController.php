@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
-use App\Http\Support\CallStack;
 use App\Models\Client;
 use App\Models\Role;
 use Exception;
@@ -17,6 +16,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Yajra\DataTables\DataTables;
 
 class ClientController extends Controller
@@ -154,6 +154,7 @@ class ClientController extends Controller
 
     public function back(?string $key = null, ?string $message = null)
     {
-        return CallStack::back($key, $message);
+		session()->put($key, $message);
+        return Redirect::back();
     }
 }

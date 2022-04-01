@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Events\ToastEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BlockRequest;
-use App\Http\Support\CallStack;
 use App\Models\Block;
 use App\Models\FileLink;
 use App\Models\FMPType;
@@ -18,6 +17,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
 use Exception;
@@ -142,7 +142,8 @@ class BlockController extends Controller
         $block = Block::create($data);
         $block->save();
 
-        return CallStack::back('success', "Блок описания ФМП № {$block->id} создан");
+		session()->put('success', "Блок описания ФМП № {$block->id} создан");
+        return Redirect::back();
     }
 
     /**
@@ -211,7 +212,8 @@ class BlockController extends Controller
 
         $block->update($data);
 
-        return CallStack::back('success', "Изменения блока описания ФМП № {$block->id} сохранены");
+		session()->put('success', "Изменения блока описания ФМП № {$block->id} сохранены");
+        return Redirect::back();
     }
 
     /**
@@ -245,6 +247,7 @@ class BlockController extends Controller
 
     public function back(?string $key = null, ?string $message = null)
     {
-        return CallStack::back($key, $message);
+		session()->put($key, $message);
+        return Redirect::back();
     }
 }

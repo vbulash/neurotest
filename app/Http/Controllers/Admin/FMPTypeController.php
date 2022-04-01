@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Events\ToastEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FMPTypeRequest;
-use App\Http\Support\CallStack;
-use App\Http\Support\Stack;
 use App\Models\FMPType;
 use App\Models\Neuroprofile;
 use Exception;
@@ -16,11 +14,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
-use phpDocumentor\Reflection\DocBlock\Tags\Source;
+use Illuminate\Support\Facades\Redirect;
 use Yajra\DataTables\DataTables;
 
 class FMPTypeController extends Controller
@@ -163,7 +157,8 @@ class FMPTypeController extends Controller
             'cluster' => $request->profiletype
         ]);
 
-        return CallStack::back('success', "Изменения типа описания ФМП &laquo;{$name}&raquo; сохранены");
+		session()->put('success', "Изменения типа описания ФМП &laquo;{$name}&raquo; сохранены");
+        return Redirect::back();
     }
 
     /**
@@ -218,6 +213,7 @@ class FMPTypeController extends Controller
 
     public function back(?string $key = null, ?string $message = null)
     {
-        return CallStack::back($key, $message);
+		session()->put($key, $message);
+        return Redirect::back();
     }
 }

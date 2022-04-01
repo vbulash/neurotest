@@ -5,7 +5,6 @@
     use App\Events\ToastEvent;
     use App\Http\Controllers\Controller;
     use App\Http\Requests\NeuroprofileRequest;
-    use App\Http\Support\CallStack;
     use App\Models\Block;
     use App\Models\FMPType;
     use App\Models\Neuroprofile;
@@ -16,7 +15,8 @@
     use Illuminate\Http\RedirectResponse;
     use Illuminate\Http\Request;
     use Illuminate\Http\Response;
-    use Yajra\DataTables\DataTables;
+	use Illuminate\Support\Facades\Redirect;
+	use Yajra\DataTables\DataTables;
     use Exception;
 
     class NeuroprofileController extends Controller
@@ -178,7 +178,9 @@
                 'name' => $request->name,
                 'fmptype_id' => $request->fmptype
             ]);
-            return CallStack::back('success', "Изменения нейропрофиля &laquo;{$request->name}&raquo; сохранены");
+
+			session()->put('success', "Изменения нейропрофиля &laquo;{$request->name}&raquo; сохранены");
+            return Redirect::back();
         }
 
         /**
@@ -204,7 +206,8 @@
 
         public function back(?string $key = null, ?string $message = null): ?RedirectResponse
         {
-            return CallStack::back($key, $message);
+			session()->put($key, $message);
+            return Redirect::back();
         }
 
         public function filterNew(int $fmptype_id): bool|string|null

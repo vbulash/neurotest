@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Events\ToastEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreQuestionRequest;
-use App\Http\Support\CallStack;
 use App\Models\FileLink;
 use App\Models\Question;
 use App\Models\QuestionSet;
@@ -18,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
 use Exception;
@@ -343,6 +343,7 @@ class QuestionsController extends Controller
 
     public function back(?string $key = null, ?string $message = null)
     {
-        return CallStack::back($key, $message);
+		session()->put($key, $message);
+        return Redirect::back();
     }
 }

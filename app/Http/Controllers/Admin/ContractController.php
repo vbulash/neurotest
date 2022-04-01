@@ -6,7 +6,6 @@ use App\Events\ToastEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreContractRequest;
 use App\Http\Requests\UpdateContractRequest;
-use App\Http\Support\CallStack;
 use App\Models\Client;
 use App\Models\Contract;
 use App\Models\License;
@@ -295,6 +294,7 @@ class ContractController extends Controller
 
     public function back(?string $key = null, ?string $message = null)
     {
-        return CallStack::back($key, $message);
+		session()->put($key, $message);
+        return Redirect::back();
     }
 }

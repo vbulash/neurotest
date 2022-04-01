@@ -4,7 +4,6 @@
 
     use App\Events\ToastEvent;
     use App\Http\Requests\UpdateTestRequest;
-    use App\Http\Support\CallStack;
     use App\Models\Contract;
     use Exception;
     use App\Models\Test;
@@ -16,7 +15,8 @@
     use Illuminate\Http\Response;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
-    use Illuminate\View\View;
+	use Illuminate\Support\Facades\Redirect;
+	use Illuminate\View\View;
     use Yajra\DataTables\DataTables;
 
     class TestController extends Controller
@@ -296,7 +296,8 @@ EOS , ['id' => $test->contract->id]
 
         public function back(?string $key = null, ?string $message = null)
         {
-            return CallStack::back($key, $message);
+			session()->put($key, $message);
+            return Redirect::back();
         }
 
         public function list(Request $request)

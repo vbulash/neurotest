@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Events\ToastEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSetRequest;
-use App\Http\Support\CallStack;
 use App\Models\Client;
 use App\Models\Question;
 use App\Models\QuestionSet;
@@ -212,7 +211,8 @@ class QuestionSetController extends Controller
 
     public function back(?string $key = null, ?string $message = null)
     {
-        return CallStack::back($key, $message);
+		session()->put($key, $message);
+        return redirect()->back();
     }
 
     /**
