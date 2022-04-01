@@ -9,8 +9,12 @@
           </advancedOptions>
         </fileTransfer>
       </webServer>
-      <webServer id="26e3ee4a-a837-4816-9caa-b9b7721f0098" name="Local Neurotest" url="http://localhost/Neurotest">
-        <fileTransfer mountedRoot="/Applications/mampstack-7.4.8-0/apache2/htdocs/Neurotest" accessType="MOUNT" port="0" />
+      <webServer id="99c9640b-4b95-40b0-a88c-615e0f65731b" name="Neurotest Production" url="http://nt.personahuman.ru">
+        <fileTransfer host="ftp.u0776725.cp.regruhosting.ru" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" showHiddenFiles="true" />
+          </advancedOptions>
+        </fileTransfer>
       </webServer>
     </option>
   </component>

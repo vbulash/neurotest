@@ -39,7 +39,7 @@
                         </div>
                         <!-- /.card-header -->
 
-                        <form role="form" name="set-edit" id="set-edit"
+                        <form role="form" name="set-edit" id="set-edit" method="post"
                               action="{{ route('sets.update', ['set' => $set->id, 'sid' => $sid]) }}"
                               enctype="multipart/form-data">
                             @csrf
@@ -220,8 +220,8 @@
                 console.error(error);
             });
 
-        document.getElementById('set-edit').addEventListener('submit', () => {
-            document.getElementById('content').value = editor.getData();
-        }, false);
+        // document.getElementById('set-edit').addEventListener('submit', () => {
+        //     document.getElementById('content').value = editor.getData();
+        // }, false);
     </script>
 @endpush
