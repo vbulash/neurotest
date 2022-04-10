@@ -453,30 +453,32 @@
     });
 
     // Ошибки и сообщения
-    @if (isset($errors) && $errors->any())
-        @foreach ($errors->all() as $error)
+	@if (isset($errors) && $errors->any())
+	@php
+		session()->put('error', implode('<br/>', $errors->all()));
+	@endphp
+	@endif
+
+	@if(session()->has('error'))
 	showToast('error', '{!! session('error') !!}', false);
-        @endforeach
-    @elseif(session()->has('error'))
-		showToast('error', '{!! session('error') !!}', false);
-        @php
-            session()->forget('error');
-        @endphp
-    @endif
+	@php
+		session()->forget('error');
+	@endphp
+	@endif
 
-    @if (session()->has('success'))
-		showToast('success', '{!! session('success') !!}', false);
-        @php
-            session()->forget('success');
-        @endphp
-    @endif
+	@if (session()->has('success'))
+	showToast('success', '{!! session('success') !!}', true);
+	@php
+		session()->forget('success');
+	@endphp
+	@endif
 
-    @if (session()->has('info'))
-		showToast('info', '{!! session('info') !!}', false);
-        @php
-            session()->forget('info');
-        @endphp
-    @endif
+	@if (session()->has('info'))
+	showToast('info', '{!! session('info') !!}', true);
+	@php
+		session()->forget('info');
+	@endphp
+	@endif
 </script>
 <!-- Page file / URL scripts -->
 @stack('scripts')
