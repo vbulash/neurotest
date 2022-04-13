@@ -85,11 +85,15 @@ class ClientController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param StoreClientRequest $request
+     * @param Request $request
      * @return RedirectResponse|Response
      */
-    public function store(StoreClientRequest $request)
+    public function store(Request $request)
     {
+		$request->validate(
+			rules: [
+				'name' => 'required'
+			]);
         $name = $request->name;
         Client::create($request->all());
         return redirect()->route('clients.index', ['sid' => ($request->has('sid') ? $request->sid : session()->getId())])->with('success', "Клиент \"{$name}\" добавлен");

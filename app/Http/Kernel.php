@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\RestoreSessionMiddleware;
+use App\Http\Middleware\StackMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -64,6 +65,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
+		//'stack' => StackMiddleware::class,
         'restore.session' => RestoreSessionMiddleware::class,
     ];
 }
