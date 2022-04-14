@@ -38,7 +38,11 @@ class UpdateClientRequest extends FormRequest
                 new OGRNRule($this),
                 new OGRNControlSumRule($this)
             ],
-            'address' => 'required'
+            'address' => 'required',
+			'email' => [
+				'required',
+				'email'
+			]
         ];
     }
 
@@ -48,7 +52,8 @@ class UpdateClientRequest extends FormRequest
             'name' => 'Наименование',
             'inn' => 'ИНН',
             'ogrn' => 'ОГРН',
-            'address' => 'Адрес'
+            'address' => 'Адрес',
+			'email' => 'Электронная почта'
         ];
     }
 }

@@ -22,7 +22,7 @@
                         ['name' => 'Конструктор анкеты', 'tab' => 'vp-respondent', 'view' => 'admin.tests.wizard.step2'],
                         ['name' => 'Механика и набор вопросов', 'tab' => 'vp-mechanics', 'view' => 'admin.tests.wizard.step3'],
                         ['name' => 'Финал теста для респондента', 'tab' => 'vp-final-respondent', 'view' => 'admin.tests.wizard.step4'],
-                        //['name' => 'Финал теста для клиента', 'tab' => 'vp-final-client', 'view' => 'admin.tests.wizard.step5'],
+                        ['name' => 'Финал теста для клиента', 'tab' => 'vp-final-client', 'view' => 'admin.tests.wizard.step5'],
                         ['name' => 'Настраиваемый брендинг', 'tab' => 'vp-branding', 'view' => 'admin.tests.wizard.step6'],
                         ['name' => 'Настраиваемая оплата', 'tab' => 'vp-robokassa', 'view' => 'admin.tests.wizard.step7', 'role' => 'finish'],
                     ];

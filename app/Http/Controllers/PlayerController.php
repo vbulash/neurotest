@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\ToastEvent;
 use App\Http\Requests\PKeyRequest;
+use App\Mail\ClientResult;
 use App\Mail\TestResult;
 use App\Models\Block;
 use App\Models\Contract;
@@ -373,6 +374,7 @@ EOS
             session()->put('error', 'Не определен тип описания для результатов тестирования. Обратитесь к администратору');
             return false;
         }
+		$client_mail = $test->options & Test::MAIL_CLIENT;
 
         // Не переименовывать переменную - может использоваться в коде набора вопросов в eval()
         $result = HistoryStep::where('history_id', $history_id)->pluck('key')->toArray();
@@ -416,6 +418,36 @@ EOS
 						->cc($copy)
 						->send(new TestResult($test, $blocks, $profile_code, $profile_name, $card, $history));
 					session()->put('success', 'Вам отправлено письмо с результатами тестирования');
+				} catch (\Exception $exc) {
+					session()->put('error', "Ошибка отправки письма с результатами тестирования:<br/>" .
+						$exc->getMessage());
+				}
+			}
+
+			if($client_mail) {
+				event(new ToastEvent('info', '', "Отправка письма клиенту с результатами тестирования..."));
+				$profile = Neuroprofile::all()
+					->where('fmptype_id', '=', $fmptype_mail)
+					->where('code', '=', $profile_code)
+					->first();
+				$profile_id = $profile->getKey();
+				$profile_name = $profile->name;
+				$blocks = Block::all()->where('neuroprofile_id', $profile_id);
+
+				$recipient = (object)[
+					'name' => $test->contract->client->name,
+					'email' => $test->contract->client->email
+				];
+				$copy = (object)[
+					'name' => env('MAIL_FROM_NAME'),
+					'email' => env('MAIL_FROM_ADDRESS')
+				];
+
+				try {
+					Mail::to($recipient)
+						->cc($copy)
+						->send(new ClientResult($test, $blocks, $profile_code, $profile_name, $card, $history));
+					session()->put('success', 'Клиенту отправлено письмо с результатами тестирования');
 				} catch (\Exception $exc) {
 					session()->put('error', "Ошибка отправки письма с результатами тестирования:<br/>" .
 						$exc->getMessage());

@@ -84,6 +84,18 @@
 											  class="form-control @error('address') is-invalid @enderror"
 											  @if($show) disabled @endif>{{ $client->address }}</textarea>
 								</div>
+								<div class="form-group">
+									<label for="phone">Телефон</label>
+									<input type="text" name="phone"
+										   class="form-control @error('phone') is-invalid @enderror" id="phone"
+										   value="{{ $client->phone }}" @if($show) disabled @endif>
+								</div>
+								<div class="form-group">
+									<label for="email">Электронная почта</label>
+									<input type="email" name="email"
+										   class="form-control @error('email') is-invalid @enderror" id="email"
+										   value="{{ $client->email }}" @if($show) disabled @endif>
+								</div>
 								@if($count && $first)
 									<div class="row">
 										<div class="form-group col-6 col-xs-12">

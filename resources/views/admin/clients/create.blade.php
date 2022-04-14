@@ -59,6 +59,19 @@
                                     <label for="address">Адрес</label>
                                     <textarea name="address" id="address" rows="3" class="form-control @error('address') is-invalid @enderror" placeholder="Юридический адрес клиента"></textarea>
                                 </div>
+								<div class="form-group">
+									<label for="phone">Телефон</label>
+									<input type="text" name="phone"
+										   class="form-control @error('phone') is-invalid @enderror" id="phone"
+										   placeholder="Телефон клиента">
+								</div>
+								<div class="form-group">
+									<label for="email">Электронная почта</label>
+									<input type="email" name="email"
+										   class="form-control @error('email') is-invalid @enderror" id="email"
+										   placeholder="Электронная почта клиента">
+								</div>
+
 
                                 <div class="form-group">
                                     <label for="manager">Клиентский менеджер (Persona)</label>

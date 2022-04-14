@@ -118,7 +118,7 @@
                                         ['name' => 'Конструктор анкеты', 'pane' => 'ac-respondent', 'view' => 'admin.tests.accordion.panel1'],
                                         ['name' => 'Механика и набор вопросов', 'pane' => 'ac-mechanics', 'view' => 'admin.tests.accordion.panel2'],
                                         ['name' => 'Финал теста для респондента', 'pane' => 'ac-final-respondent', 'view' => 'admin.tests.accordion.panel3'],
-                                        //['name' => 'Финал теста для клиента', 'pane' => 'ac-final-client', 'view' => 'admin.tests.accordion.panel4'],
+                                        ['name' => 'Финал теста для клиента', 'pane' => 'ac-final-client', 'view' => 'admin.tests.accordion.panel4'],
                                         ['name' => 'Настраиваемый брендинг', 'pane' => 'ac-branding', 'view' => 'admin.tests.accordion.panel5'],
                                          ['name' => 'Настраиваемая оплата', 'pane' => 'ac-robokassa', 'view' => 'admin.tests.accordion.panel6'],
                                     ];

@@ -11,7 +11,7 @@
     {
         use HasFactory, LogsActivity;
 
-        protected $fillable = ['name', 'inn', 'ogrn', 'address'];
+        protected $fillable = ['name', 'inn', 'ogrn', 'address', 'phone', 'email'];
         protected static $logAttributes = ['*'];
 
         public function getDescriptionForEvent(string $eventName): string

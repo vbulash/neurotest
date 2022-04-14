@@ -30,8 +30,9 @@
         public const MOUSE_TRACKING = 128;
         public const EQUIPMENT_MONITOR = 256;
         // Опции показа результата тестирования
-        public const SHOW_RESULTS = 1024;   // Показать результат на экране респондента
-        public const MAIL_RESULTS = 16384;   // Отправить результат на почту респонеденту
+        public const SHOW_RESULTS = 1024;	// Показать результат на экране респондента
+        public const MAIL_RESULTS = 16384;	// Отправить результат на почту респонеденту
+		public const MAIL_CLIENT = 32768;	// Отправить результат на почту клиенту
 
         protected $fillable = ['name', 'options', 'questionset_id', 'content', 'contract_id', 'key', 'paid'];
 
