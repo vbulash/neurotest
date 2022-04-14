@@ -425,7 +425,7 @@ EOS
 			}
 
 			if($client_mail) {
-				event(new ToastEvent('info', '', "Отправка письма клиенту с результатами тестирования..."));
+				//sevent(new ToastEvent('info', '', "Отправка письма клиенту с результатами тестирования..."));
 				$profile = Neuroprofile::all()
 					->where('fmptype_id', '=', $fmptype_mail)
 					->where('code', '=', $profile_code)
@@ -447,7 +447,7 @@ EOS
 					Mail::to($recipient)
 						->cc($copy)
 						->send(new ClientResult($test, $blocks, $profile_code, $profile_name, $card, $history));
-					session()->put('success', 'Клиенту отправлено письмо с результатами тестирования');
+					//session()->put('success', 'Клиенту отправлено письмо с результатами тестирования');
 				} catch (\Exception $exc) {
 					session()->put('error', "Ошибка отправки письма с результатами тестирования:<br/>" .
 						$exc->getMessage());
