@@ -18,10 +18,10 @@
         use HasFactory, LogsActivity;
 
         // Опции
-        // Опции аутентификации пользователя теста
-        public const AUTH_GUEST = 1;
-        public const AUTH_FULL = 2;
-        public const AUTH_PKEY = 4;
+        // Опции сбора информации от респондента
+        public const AUTH_GUEST = 1;	// Гостевой режим - нет анкеты
+        public const AUTH_FULL = 2;		// Полная анкета (регулируемый состав)
+        public const AUTH_PKEY = 4;		// Только программный ключ
         // Опции механики
         public const IMAGES2 = 16;
         public const IMAGES4 = 32;
