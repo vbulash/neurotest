@@ -71,7 +71,7 @@
             <nav class="navbar navbar-dark bg-primary d-none d-lg-flex align-content-center custom-background mb-2"
                  id="preview_nav">
                 <div class="navbar-brand custom-color">
-					<span id="preview_logo"></span>
+					<span id="preview_logo" style="height: 20px;"></span>
                     <span id="company-name-demo"></span>
                 </div>
                 <div class="navbar-text custom-color">
@@ -96,7 +96,7 @@
 					document.getElementById('preview_logo-file').style.display = 'block';
 					document.getElementById('clear_logo-file').style.display = 'block';
 					document.getElementById('preview_logo').innerHTML =
-						"<img src=\"" + event.target.result + "\" class=\"preview_logo\">";
+						"<img src=\"" + event.target.result + "\" class=\"preview_logo\" style=\"height: 20px;\">";
 				};
 				reader.readAsDataURL(input.files[0]);
 			}
@@ -117,7 +117,8 @@
 				document.getElementById('preview_logo-file').setAttribute('src', "{{ '/uploads/' . $logo }}");
 				document.getElementById('preview_logo-file').style.display = 'block'
 				document.getElementById('clear_logo-file').style.display = 'block';
-				document.getElementById('preview_logo').innerHTML = "<img src=\"{{ '/uploads/' . $logo }}\" class=\"preview_logo\">";
+				document.getElementById('preview_logo').innerHTML =
+					"<img src=\"{{ '/uploads/' . $logo }}\" class=\"preview_logo\" style=\"height: 20px;\">";
 			@else
 				document.getElementById('preview_logo-file').style.display = 'none';
 				document.getElementById('clear_logo-file').style.display = 'none';

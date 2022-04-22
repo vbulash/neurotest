@@ -5,7 +5,7 @@
 <!-- Modal -->
 <div class="modal fade" id="tests-create" tabindex="-1" aria-labelledby="tests-create-label" aria-hidden="true"
      data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <form role="form" method="post" action="{{ route('tests.store', ['sid' => $sid]) }}"
                   enctype="multipart/form-data"

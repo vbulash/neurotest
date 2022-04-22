@@ -7,9 +7,6 @@
 
 <div id="branding_panel" style="display: none">
 	<div class="row">
-		@php
-			$placeholder = "https://via.placeholder.com/300x300.png?text=Пусто";
-		@endphp
 		<div class="col-md-6">
 			<div class="form-group">
 				<label
@@ -17,20 +14,18 @@
 				<input type="file" id="logo-file"
 					   name="logo-file"
 					   class="image-file mb-4 form-control"
-					   onchange="readImage(this)">
-				<div class="mb-4">
-					<a href="javascript:void(0)" class="preview_anchor"
-					   data-toggle="lightbox"
-					   data-title="Логотип">
-						<img id="preview_logo-file"
-							 src="{{ $placeholder }}" alt=""
-							 class="logo-preview">
-					</a>
-					<a href="javascript:void(0)"
-					   id="clear_logo-file"
-					   data-preview="preview_logo-file"
-					   class="btn btn-primary mb-3 image-clear">Очистить</a>
-				</div>
+					   onchange="readLogoImage(this)">
+				<a href="javascript:void(0)" class="preview_anchor"
+				   data-toggle="lightbox"
+				   data-title="Логотип">
+					<img id="preview_logo-file"
+						 src="" alt=""
+						 class="col-sm-6 mb-2">
+				</a>
+				<a href="javascript:void(0)"
+				   id="clear_logo-file"
+				   data-preview="preview_logo-file"
+				   class="btn btn-primary mb-4 col-sm-6">Очистить</a>
 			</div>
 		</div>
 		<div class="col-md-6">
@@ -68,7 +63,7 @@
 			<nav class="navbar navbar-dark bg-primary d-none d-lg-flex align-content-center custom-background mb-2"
 				 id="preview_nav">
 				<div class="navbar-brand custom-color">
-					<i class="fas fa-home"></i>
+					<span id="preview_logo" style="height: 20px;"></span>
 					<span id="company-name-demo"></span>
 				</div>
 				<div class="navbar-text custom-color">
@@ -78,19 +73,21 @@
 		</div>
 
 		<label for="preview_button">Предпросмотр кнопки:</label><br/>
-		<button class="btn btn-primary ml-0 custom-background custom-color" id="preview_button">Начать тестирование
-		</button>
+		<a href="javascript:void(0)" class="btn btn-primary ml-0 custom-background custom-color" id="preview_button">Начать тестирование</a>
 	</div>
 </div>
 
 @push('scripts.injection')
 	<script>
-		function readImage(input) {
+		function readLogoImage(input) {
 			if (input.files && input.files[0]) {
 				let reader = new FileReader();
 				reader.onload = function (event) {
 					document.getElementById('preview_logo-file').setAttribute('src', event.target.result);
+					document.getElementById('preview_logo-file').style.display = 'block';
 					document.getElementById('clear_logo-file').style.display = 'block';
+					document.getElementById('preview_logo').innerHTML =
+						"<img src=\"" + event.target.result + "\" class=\"preview_logo\" style=\"height: 20px;\">";
 				};
 				reader.readAsDataURL(input.files[0]);
 			}
@@ -101,12 +98,13 @@
 			file.setAttribute('type', 'text');
 			file.setAttribute('type', 'file');
 
-			document.getElementById('logo-file').setAttribute('src', "{{ $placeholder }}");
+			document.getElementById('preview_logo-file').style.display = 'none';
 			document.getElementById('clear_logo-file').style.display = 'none';
+			document.getElementById('preview_logo').innerHTML = "<i class=\"fas fa-home\"></i>";
 		});
 
 		document.addEventListener("DOMContentLoaded", () => {
-			document.getElementById('clear_logo-file').style.display = 'none';
+			document.getElementById('clear_logo-file').click();
 		}, false);
 	</script>
 @endpush

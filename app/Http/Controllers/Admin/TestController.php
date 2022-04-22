@@ -142,6 +142,12 @@ EOS
             //$content['descriptions']['client'] = $data['client_description'];
 
             if(isset($data['branding'])) {
+				$content['branding']['logo'] = null;
+				if (isset($data['logo-file'])) {
+					$mediaPath = Test::uploadImage($request, 'logo-file');
+					if ($mediaPath) FileLink::link($mediaPath);
+					$content['branding']['logo'] = $mediaPath;
+				}
                 $content['branding']['background'] = $data['background-input'];
                 $content['branding']['fontcolor'] = $data['font-color-input'];
                 $content['branding']['company-name'] = $data['company-name-changer'];
