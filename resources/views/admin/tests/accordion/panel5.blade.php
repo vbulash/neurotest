@@ -1,38 +1,38 @@
-@php
-    $branding = isset($content['branding']);
-    $placeholder = "https://via.placeholder.com/300x300.png?text=Пусто";
-    $logo = isset($content['branding']['company-logo']);
-@endphp
-
 <div class="checkbox mb-2">
     <label>
+		@php
+			$branding = $content['branding'];
+		@endphp
         <input type="checkbox" id="branding" name="branding" @if($branding) checked @endif @if($show) disabled @endif>
         Тест имеет самостоятельный брендинг, отличный от встроенного
     </label>
 </div>
 
 <div class="form-group" id="branding_panel" style="display: none">
+	@php
+		$placeholder = "https://via.placeholder.com/300x300.png?text=Пусто";
+		$logo = ($branding ? (isset($branding['logo']) ? $branding['logo'] : null) : null);
+	@endphp
     <div class="form-group">
         <div class="col-lg-3 col-xs-12">
             <label
                 for="image">Логотип</label>
             @if(!$show)
-                <input type="file" id="logo-image" name="logo-image"
+                <input type="file" id="logo-file" name="logo-file"
                        accept="image/*"
                        class="image-file mb-4 form-control"
-                       onchange="readImage(this)">
+                       onchange="readLogoImage(this)">
             @endif
-            <div>
-                <img id="preview_image"
-                     src="{{ ($branding && $logo) ? '/uploads/' . $content['branding']['company-logo'] : $placeholder }}" alt=""
-                     class="image-preview">
+            <div class="mb-4">
+                <img id="preview_logo-file"
+                     src="{{ '/uploads/' . $logo }}" alt=""
+                     class="col-sm-6 mb-2 image-preview">
                 @if(!$show)
                     <a href="javascript:void(0)"
-                       id="clear_image"
+                       id="clear_logo-file"
                        data-preview="preview_image"
-                       class="btn btn-primary mb-3 image-clear"
-                       style="display:none;"
-                    >Очистить</a>
+                       class="btn btn-primary mb-3 image-clear col-sm-6"
+                       style="display:none;">Очистить</a>
                 @endif
             </div>
         </div>
@@ -71,7 +71,7 @@
             <nav class="navbar navbar-dark bg-primary d-none d-lg-flex align-content-center custom-background mb-2"
                  id="preview_nav">
                 <div class="navbar-brand custom-color">
-                    <i class="fas fa-home"></i>
+					<span id="preview_logo"></span>
                     <span id="company-name-demo"></span>
                 </div>
                 <div class="navbar-text custom-color">
@@ -87,27 +87,42 @@
 </div>
 
 @push('scripts.injection')
-    <script>
-        function readImage(input) {
-            if (input.files && input.files[0]) {
-                let reader = new FileReader();
-                reader.onload = function (event) {
-                    $('#preview_image').attr('src', event.target.result);
-                    $('#preview_image').show();
-                    // $('#clear_image').show();
-                    //$('#content').val(event.target.result);
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
+	<script>
+		function readLogoImage(input) {
+			if (input.files && input.files[0]) {
+				let reader = new FileReader();
+				reader.onload = function (event) {
+					document.getElementById('preview_logo-file').setAttribute('src', event.target.result);
+					document.getElementById('preview_logo-file').style.display = 'block';
+					document.getElementById('clear_logo-file').style.display = 'block';
+					document.getElementById('preview_logo').innerHTML =
+						"<img src=\"" + event.target.result + "\" class=\"preview_logo\">";
+				};
+				reader.readAsDataURL(input.files[0]);
+			}
+		}
 
-        $(function () {
-            $('#clear_image').on("click", (event) => {
-                $('#image').attr('src', '');
-                $('#preview_image').attr('src', '');
-                $('#preview_image').hide();
-                // $('#clear_image').hide();
-            });
-        });
-    </script>
+		document.getElementById('clear_logo-file').addEventListener('click', () => {
+			let file = document.getElementById('logo-file');
+			file.setAttribute('type', 'text');
+			file.setAttribute('type', 'file');
+
+			document.getElementById('preview_logo-file').style.display = 'none';
+			document.getElementById('clear_logo-file').style.display = 'none';
+			document.getElementById('preview_logo').innerHTML = "<i class=\"fas fa-home\"></i>";
+		});
+
+		document.addEventListener("DOMContentLoaded", () => {
+			@if($logo)
+				document.getElementById('preview_logo-file').setAttribute('src', "{{ '/uploads/' . $logo }}");
+				document.getElementById('preview_logo-file').style.display = 'block'
+				document.getElementById('clear_logo-file').style.display = 'block';
+				document.getElementById('preview_logo').innerHTML = "<img src=\"{{ '/uploads/' . $logo }}\" class=\"preview_logo\">";
+			@else
+				document.getElementById('preview_logo-file').style.display = 'none';
+				document.getElementById('clear_logo-file').style.display = 'none';
+				document.getElementById('preview_logo').innerHTML = "<i class=\"fas fa-home\"></i>";
+			@endif
+		}, false);
+	</script>
 @endpush

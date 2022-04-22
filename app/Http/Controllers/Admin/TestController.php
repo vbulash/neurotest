@@ -5,7 +5,9 @@
     use App\Events\ToastEvent;
     use App\Http\Requests\UpdateTestRequest;
     use App\Models\Contract;
-    use Exception;
+	use App\Models\FileLink;
+	use App\Models\Question;
+	use Exception;
     use App\Models\Test;
     use App\Http\Controllers\Controller;
     use Illuminate\Contracts\View\Factory;
@@ -115,7 +117,7 @@ EOS
             // Step 1
             $auth = intval($data['auth']);
             // Step 2
-            if($auth == Test::AUTH_FULL) {
+            if($auth == Test::AUTH_FULL || $auth == Test::AUTH_MIX) {
                 foreach ($request->keys() as $key)
                     if(strpos($key, 'ident_') !== false) {
                         $name = str_replace('ident_', '', $key);
@@ -216,11 +218,14 @@ EOS , ['id' => $test->contract->id]
          */
         public function update(UpdateTestRequest $request, int $id)
         {
+			$test = Test::findOrFail($id);
+			$origin = json_decode($test->content, true);
+
             $data = $request->all();
 
             $content = ['card' => []];
             $auth = intval($data['auth']);
-            if($auth == Test::AUTH_FULL) {
+            if($auth == Test::AUTH_FULL || $auth == Test::AUTH_MIX) {
                 foreach ($request->keys() as $key)
                     if(strpos($key, 'ident_') !== false) {
                         $name = str_replace('ident_', '', $key);
@@ -243,6 +248,14 @@ EOS , ['id' => $test->contract->id]
             //$content['descriptions']['client'] = $data['client_description'];
 
             if(isset($data['branding'])) {
+				if (isset($data['logo-file'])) {
+					$oldLogoFile = (isset($origin['branding']) ? (isset($origin['branding']['logo']) ? $origin['branding']['logo']: null ): null);
+					$mediaPath = Test::uploadImage($request, 'logo-file', $oldLogoFile);
+					if ($mediaPath) FileLink::link($mediaPath);
+					$content['branding']['logo'] = $mediaPath;
+				} elseif (isset($origin['branding']) && isset($origin['branding']['logo'])) {
+					$content['branding']['logo'] = $origin['branding']['logo'];
+				}
                 $content['branding']['background'] = $data['background-input'];
                 $content['branding']['fontcolor'] = $data['font-color-input'];
                 $content['branding']['company-name'] = $data['company-name-changer'];
@@ -254,7 +267,6 @@ EOS , ['id' => $test->contract->id]
                 $content['robokassa']['sum'] = $data['robokassa-sum'];
             }
 
-            $test = Test::findOrFail($id);
             $update = [
                 'name' => $data['title'],
                 'options' => $options,

@@ -30,6 +30,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'App\Http\Controllers\Admin', 
     Route::get('/contracts.data/{client?}', 'ContractController@getData')->name('contracts.index.data');
     Route::post('/contracts.regenerate', 'ContractController@regenerateKey')->name('contracts.regenerate');
     Route::post('/contracts.back/{key?}/{message?}', 'ContractController@back')->name('contracts.back');
+	Route::get('/contracts.licenses.export/{contract}', 'ContractController@licensesExport')->name('contracts.licenses.export');
     // Тесты
     Route::resource('/tests', 'TestController');
     Route::get('/tests.data', 'TestController@getData')->name('tests.index.data');

@@ -90,7 +90,8 @@
                                         $auth_config = [
                                             \App\Models\Test::AUTH_GUEST => 'Нет анкеты, только запрос разрешений',
                                             \App\Models\Test::AUTH_FULL => 'Полная анкета, максимум информации о респонденте',
-                                            \App\Models\Test::AUTH_PKEY => 'Анкета не применима, запрашивается персональный ключ лицензии'
+                                            \App\Models\Test::AUTH_PKEY => 'Анкета не применима, запрашивается персональный ключ лицензии',
+                                            \App\Models\Test::AUTH_MIX => 'Комбинированный режим: запрашивается анкета респондента и персональный ключ лицензии'
                                         ];
                                     @endphp
                                     <select name="auth" id="auth" class="select2 form-control"
@@ -187,16 +188,16 @@
 
 @push('scripts.injection')
     <script>
-        function readImage(input) {
-            if (input.files && input.files[0]) {
-                let reader = new FileReader();
-                reader.onload = function (event) {
-                    $('#preview_' + input.id).attr('src', event.target.result);
-                    $('#clear_' + input.id).show()
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
+        // function readImage(input) {
+        //     if (input.files && input.files[0]) {
+        //         let reader = new FileReader();
+        //         reader.onload = function (event) {
+        //             $('#preview_' + input.id).attr('src', event.target.result);
+        //             $('#clear_' + input.id).show()
+        //         };
+        //         reader.readAsDataURL(input.files[0]);
+        //     }
+        // }
 
         let accordion = document.getElementById('accordionTest')
         accordion.addEventListener('shown.bs.collapse', (event) => {
@@ -206,6 +207,7 @@
                     let auth_mode = document.getElementById('auth').value;
                     switch (parseInt(auth_mode)) {
                         case {{ \App\Models\Test::AUTH_FULL }}:
+						case {{ \App\Models\Test::AUTH_MIX }}:
                             $('#auth-guest').hide();
                             $('#auth-pkey').hide();
                             $('#auth-full').show();

@@ -106,7 +106,7 @@
                                         <div class="col-6">
                                             <div class="form-group ml-4">
                                                 <label>Статистика по лицензиям:</label>
-                                                <table class="licenses_statistics">
+                                                <table class="licenses_statistics mb-4">
                                                     <tr>
                                                         <td class="key">Свободные лицензии:</td>
                                                         <td class="value">{{ $statistics['free'] }}</td>
@@ -124,6 +124,7 @@
                                                         <td class="value">{{ $statistics['broken'] }}</td>
                                                     </tr>
                                                 </table>
+												<a href="{{ route('contracts.licenses.export', ['contract' => $contract->getKey(), 'sid' => session()->getId()]) }}" type="submit" class="btn btn-primary">Экспорт лицензий</a>
                                             </div>
                                         </div>
                                     </div>

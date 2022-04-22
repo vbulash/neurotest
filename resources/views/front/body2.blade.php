@@ -200,6 +200,7 @@
                     document.getElementById('answer-' + element.id).value = 0;
 
                     if (element.learning === '0') {
+						// TODO Комментируем только на время отладки устранения дублей
                         questions.again();
                         prepareQuestion();
                     } else if (questions.next()) {

@@ -5,5 +5,5 @@
 @push('testname') Тест &laquo;{{ $test->name }}&raquo;@endpush
 
 @section('content')
-    <p>Обнаружены ошибки проверки, обратитесь к администратору теста</p>
+    <p>Обнаружены ошибки предварительной проверки</p>
 @endsection

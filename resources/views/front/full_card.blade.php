@@ -5,7 +5,7 @@
 @push('testname'){{ $test->name }}@endpush
 
 @section('content')
-    <form method="get" action="{{ route('player.full') }}">
+    <form method="get" action="{{ route('player.full', ['sid' => $sid]) }}">
         @csrf
         <input type="hidden" name="sid" value="{{ $sid }}">
         <h5 class="mb-4">Информация для анкеты тестируемого</h5>
@@ -74,6 +74,16 @@
             </div>
         @endforeach
 
+		@if($mix)
+			<div class="form-group">
+				<label for="pkey">Введите свой персональный ключ</label>
+				<input type="text" name="pkey" id="pkey"
+					   class="form-control col-lg-4 col-md-4 @error('pkey') is-invalid @enderror mt-2"
+					   required
+				>
+			</div>
+		@endif
+
         <div class="form-group mt-4 mb-2">
             <p>Для начала тестирования вам необходимо установить отметки по 2 политикам ниже:</p>
         </div>
@@ -91,7 +101,10 @@
             </label>
         </div>
 
-        <button type="submit" id="start_test" @if(session('branding')) class="btn btn-lg mt-2" style="{{ session('buttonstyle') }}" @else class="btn btn-primary btn-lg mt-2" @endif disabled>Начать тестирование</button>
+		@php
+			$branding = session('branding');
+		@endphp
+		<button type="submit" id="start_test" @if(isset($branding)) class="btn btn-lg mt-2" style="{{ $branding['buttonstyle'] }}" @else class="btn btn-primary btn-lg mt-2" @endif disabled>Начать тестирование</button>
     </form>
 
 @endsection

@@ -22,7 +22,6 @@ mix.styles([
     'resources/assets/admin/plugins/lightbox/css/ekko-lightbox.css',
     'resources/assets/admin/css/adminlte.min.css',
     'resources/assets/admin/css/main.css',
-    //'resources/assets/admin/plugins/toastr/toastr.min.css',
     'resources/css/app.css'
 ], 'public/assets/admin/css/admin.css');
 
@@ -33,7 +32,6 @@ mix.scripts([
     'resources/assets/admin/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
     'resources/assets/admin/plugins/lightbox/js/ekko-lightbox.min.js',
     'resources/assets/admin/js/adminlte.min.js',
-    //'resources/assets/admin/plugins/toastr/toastr.min.js',
     'resources/assets/admin/plugins/pusher/pusher.min.js',
     'resources/assets/admin/js/demo.js'
 ], 'public/assets/admin/js/admin.js');

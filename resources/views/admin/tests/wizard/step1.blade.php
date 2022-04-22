@@ -27,9 +27,8 @@
 	<select name="auth" id="auth" class="select2 form-control">
 		<option value="{{ \App\Models\Test::AUTH_GUEST }}" selected>Нет анкеты, только запрос разрешений</option>
 		<option value="{{ \App\Models\Test::AUTH_FULL }}">Полная анкета, максимум информации о респонденте</option>
-		<option value="{{ \App\Models\Test::AUTH_PKEY }}">Анкета не применима, запрашивается персональный ключ
-			лицензии
-		</option>
+		<option value="{{ \App\Models\Test::AUTH_PKEY }}">Анкета не применима, запрашивается персональный ключ лицензии</option>
+		<option value="{{ \App\Models\Test::AUTH_MIX }}">Комбинированный режим: запрашивается анкета респондента и персональный ключ лицензии</option>
 	</select>
 </div>
 

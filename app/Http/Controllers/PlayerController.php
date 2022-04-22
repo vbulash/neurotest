@@ -8,6 +8,7 @@ use App\Mail\ClientResult;
 use App\Mail\TestResult;
 use App\Models\Block;
 use App\Models\Contract;
+use App\Models\FMPType;
 use App\Models\History;
 use App\Models\HistoryStep;
 use App\Models\License;
@@ -81,28 +82,43 @@ class PlayerController extends Controller
         }
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return view('front.index');
+		$test = $request->test ?: session('test');
+        return view('front.index',compact('test'));
     }
 
     public function play(Request $request, string $mkey = null, string $test = null)
     {
-        $mkey = $mkey ?: $request->mkey;
+        $mkey = $mkey ?: $request->{'mkey-modal'};
         $test = $test ?: $request->test;
         if (!$this->check($request, $mkey, $test)) {
             //Log::debug('player.play: ' . __METHOD__ . ':' . __LINE__);
             return redirect()->route('player.index', ['sid' => session()->getId()])->with('error', session('error'));
         } else {
             $test = session('test');
-            return view('front.intro', compact('test'));
+			$content = json_decode($test->content, true);
+			$branding = null;
+			if(isset($content['branding'])) {
+				$branding = [
+					'company' => $content['branding']['company-name'],
+					'logo' => $content['branding']['logo'] ?: null,
+					'navstyle' => sprintf("background-color: %s!important; color: %s !important",
+						$content['branding']['background'],  $content['branding']['fontcolor']),
+					'textstyle' => sprintf("color: %s !important", $content['branding']['fontcolor']),
+					'buttonstyle' => sprintf("background-color: %s!important; color: %s !important; border-color: %s !important",
+						$content['branding']['background'],  $content['branding']['fontcolor'], $content['branding']['background'])
+				];
+			}
+			session()->put('branding', $branding);
+			return view('front.intro', compact('test'));
         }
     }
 
     public function card(Request $request)
     {
         if (!$this->check($request)) {
-            Log::debug('player.card: ' . __METHOD__ . ':' . __LINE__);
+            //Log::debug('player.card: ' . __METHOD__ . ':' . __LINE__);
             return redirect()->route('player.index', ['sid' => session()->getId()])->with('error', session('error'));
         } else {
             session()->forget('pkey');
@@ -111,10 +127,11 @@ class PlayerController extends Controller
             if ($test->options & Test::AUTH_GUEST) {
                 //return redirect()->route('player.body', ['question' => 0, 'sid' => session()->getId()]);
                 return redirect()->route('player.body2', ['sid' => session()->getId()]);
-            } elseif ($test->options & Test::AUTH_FULL) {
+            } elseif ($test->options & (Test::AUTH_FULL | Test::AUTH_MIX)) {
                 $content = json_decode($test->content, true);
                 $card = $content['card'];
-                return view('front.full_card', compact('test', 'card'));
+				$mix = $test->options & Test::AUTH_MIX;
+                return view('front.full_card', compact('test', 'card', 'mix'));
             } elseif ($test->options & Test::AUTH_PKEY) {
                 return view('front.pkey_card', compact('test'));
             }
@@ -123,6 +140,7 @@ class PlayerController extends Controller
 
     public function store_pkey(PKeyRequest $request)
     {
+		session()->forget('pkey');
         session()->put('pkey', $request->pkey);
         return redirect()->route('player.body2', ['question' => 0, 'sid' => session()->getId()]);
     }
@@ -130,6 +148,10 @@ class PlayerController extends Controller
     public function store_full_card(Request $request)
     {
         $data = $request->except('_token');
+
+		session()->forget('pkey');
+		if($request->has('pkey'))
+			session()->put('pkey', $request->pkey);;
         session()->put('card', $data);
 
         //return redirect()->route('player.body', ['question' => 0, 'sid' => session()->getId()]);
@@ -139,6 +161,7 @@ class PlayerController extends Controller
     public function body2(Request $request)
     {
         if (!$this->check($request)) {
+			$test = session('test');
             //Log::debug('player.body2: ' . __METHOD__ . ':' . __LINE__);
             return redirect()->route('player.index', ['sid' => session()->getId()])->with('error', session('error'));
         }
@@ -195,14 +218,27 @@ EOS
         }
 
         // Блокировка лицензии для прохождения теста
-        $license = $test->contract->licenses->where('status', License::FREE)->first();
-        if ($license) {
-            session()->put('pkey', $license->pkey);
-        } else {
-            session()->put('error', 'Свободные лицензии закончились, обратитесь в Persona');
-            //Log::debug(__METHOD__ . ':' . __LINE__);
-            return redirect()->route('admin.index');
-        }
+		$license = null;
+		if(session()->has('pkey')) { // Режим авторизации по персональному ключу или микс
+			// Найти и проверить лицензию по введенному персональному ключу
+			$license = License::where('pkey', session('pkey'))->first();
+			if(!$license) {
+				session()->put('error', 'Не найдена лицензия, соответствующая персональному ключу ' . session('pkey'));
+				return redirect()->route('player.index', ['sid' => session()->getId()]);
+			} elseif ($license->status != License::FREE) {
+				session()->put('error', 'Лицензия, соответствующая персональному ключу ' . session('pkey') . ', уже использована. Запросите новый персональный ключ');
+				return redirect()->route('player.index', ['sid' => session()->getId()]);
+			}
+		} else {	// Найти любую свободную лицензию
+			$license = $test->contract->licenses->where('status', License::FREE)->first();
+			if ($license) {
+				session()->put('pkey', $license->pkey);
+			} else {
+				session()->put('error', 'Свободные лицензии закончились, обратитесь в Persona');
+				//Log::debug(__METHOD__ . ':' . __LINE__);
+				return redirect()->route('player.index', ['sid' => session()->getId()]);
+			}
+		}
         $license->lock();
 
         return view('front.body2', compact('test', 'steps', 'stack'));
@@ -261,8 +297,9 @@ EOS
     {
 //        Log::debug('session in body = ' . print_r(array_keys(session()->all()), true));
         if (!$this->check($request)) {
+			$test = session('test');
             //Log::debug('player.body: ' . __METHOD__ . ':' . __LINE__);
-            return redirect()->route('player.index')->with('error', session('error'));
+            return redirect()->route('player.index', ['sid' => session()->getId()])->with('error', session('error'));
         }
 
         if ($request->has('answer')) {
@@ -327,10 +364,7 @@ EOS
                 } else {
                     session()->put('error', 'Свободные лицензии закончились, обратитесь в Persona');
                     //Log::debug(__METHOD__ . ':' . __LINE__);
-                    return redirect()->route('player.index',
-                        [
-                            'sid' => session()->getId()
-                        ]);
+                    return redirect()->route('player.index', ['sid' => session()->getId()]);
                 }
             }
             $license->lock();
@@ -362,7 +396,7 @@ EOS
         return view('front.precalc', compact('test', 'history_id'));
     }
 
-    public function calculate(int $history_id): View|Factory|bool|Application|null
+    public function calculate(int $history_id): View|Factory|bool|Application|RedirectResponse|null
     {
         $history = History::findOrFail($history_id);
         $test = $history->test;
@@ -394,12 +428,16 @@ EOS
 			// Код нейропрофиля вычислен и сохранен
 
 			$result = true;
-			if ($fmptype_mail && ($test->options & Test::AUTH_FULL)) {
+			if ($fmptype_mail && (
+				($test->options & Test::AUTH_FULL) |
+				($test->options & Test::AUTH_MIX)
+				)
+			) {
 				event(new ToastEvent('info', '', "Отправка письма с результатами тестирования..."));
-				$profile = Neuroprofile::all()
-					->where('fmptype_id', '=', $fmptype_mail)
-					->where('code', '=', $profile_code)
-					->first();
+				$profile = $this->getProfile($fmptype_mail, $profile_code);
+				if(!$profile)
+					return redirect()->route('player.index', ['sid' => session()->getId()])
+						->with('error', session('error'));
 				$profile_id = $profile->getKey();
 				$profile_name = $profile->name;
 				$blocks = Block::all()->where('neuroprofile_id', $profile_id);
@@ -426,10 +464,10 @@ EOS
 
 			if($client_mail) {
 				//sevent(new ToastEvent('info', '', "Отправка письма клиенту с результатами тестирования..."));
-				$profile = Neuroprofile::all()
-					->where('fmptype_id', '=', $fmptype_mail)
-					->where('code', '=', $profile_code)
-					->first();
+				$profile = $this->getProfile($fmptype_mail, $profile_code);
+				if(!$profile)
+					return redirect()->route('player.index', ['sid' => session()->getId()])
+						->with('error', session('error'));
 				$profile_id = $profile->getKey();
 				$profile_name = $profile->name;
 				$blocks = Block::all()->where('neuroprofile_id', $profile_id);
@@ -456,10 +494,10 @@ EOS
 
 			if ($fmptype_show) {
 				event(new ToastEvent('info', '', "Генерация экранных результатов тестирования..."));
-				$profile = Neuroprofile::all()
-					->where('fmptype_id', '=', $fmptype_show)
-					->where('code', '=', $profile_code)
-					->first();
+				$profile = $this->getProfile($fmptype_show, $profile_code);
+				if(!$profile)
+					return redirect()->route('player.index', ['sid' => session()->getId()])
+						->with('error', session('error'));
 				$profile_id = $profile->getKey();
 				$profile_name = $profile->name;
 				$blocks = Block::all()->where('neuroprofile_id', $profile_id);
@@ -470,6 +508,21 @@ EOS
 
         return null;
     }
+
+	private function getProfile(int $fmptype_id, string $code): ?Neuroprofile
+	{
+		$fmtype = FMPType::find($fmptype_id);
+		$profile = Neuroprofile::all()
+			->where('fmptype_id', $fmptype_id)
+			->where('code', $code)
+			->first();
+		if($profile) {
+			return $profile;
+		} else {
+			session()->put('error', "Не найден нейропрофиль \"{$code}\" из типа описания ФМП \"{$fmtype->name}\". Добавьте нейропрофиль");
+			return null;
+		}
+	}
 
     public function iframe()
     {
@@ -506,10 +559,10 @@ EOS
             $profile_code = eval($code);
             // Код нейропрофиля вычислен
 
-            $profile = Neuroprofile::all()
-                ->where('fmptype_id', '=', $fmptype_mail)
-                ->where('code', '=', $profile_code)
-                ->first();
+            $profile = $this->getProfile($fmptype_mail, $profile_code);
+			if(!$profile)
+				return redirect()->route('player.index', ['sid' => session()->getId()])
+					->with('error', session('error'));
             $profile_id = $profile->getKey();
             $profile_name = $profile->name;
             $blocks = Block::all()->where('neuroprofile_id', $profile_id);

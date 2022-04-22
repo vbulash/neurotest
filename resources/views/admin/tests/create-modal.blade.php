@@ -193,6 +193,7 @@
                                 let auth_mode = document.getElementById('auth').value;
                                 switch (parseInt(auth_mode)) {
                                     case {{ \App\Models\Test::AUTH_FULL }}:
+									case {{ \App\Models\Test::AUTH_MIX }}:
                                         $('#auth-guest').hide();
                                         $('#auth-pkey').hide();
                                         $('#auth-full').show();

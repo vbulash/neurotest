@@ -6,7 +6,9 @@
     use Illuminate\Database\Eloquent\Model;
     use Illuminate\Database\Eloquent\Relations\BelongsTo;
     use Illuminate\Database\Eloquent\Relations\HasMany;
-    use Spatie\Activitylog\Traits\LogsActivity;
+	use Illuminate\Http\Request;
+	use Illuminate\Support\Facades\Storage;
+	use Spatie\Activitylog\Traits\LogsActivity;
 
     /**
      * Тест
@@ -22,6 +24,7 @@
         public const AUTH_GUEST = 1;	// Гостевой режим - нет анкеты
         public const AUTH_FULL = 2;		// Полная анкета (регулируемый состав)
         public const AUTH_PKEY = 4;		// Только программный ключ
+		public const AUTH_MIX = 8;		// Комбинированный режим: анкета + программный ключ
         // Опции механики
         public const IMAGES2 = 16;
         public const IMAGES4 = 32;
@@ -227,5 +230,17 @@
         {
             return uniqid('test_', true);
         }
+
+		public static function uploadImage(Request $request, string $imageField, string $image = null)
+		{
+			if($request->hasFile($imageField)) {
+				if($image)
+					if(FileLink::unlink($image))
+						Storage::delete($image);
+				$folder = date('Y-m-d');
+				return $request->file($imageField)->store("images/{$folder}");
+			}
+			return null;
+		}
     }
 

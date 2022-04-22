@@ -71,8 +71,8 @@ sup.required-mark {
 }
 
 .image-preview {
-    width: 200px;
-    height: 200px;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .logo-preview {
@@ -116,4 +116,8 @@ sup.required-mark {
     body:not(.sidebar-mini-md) .content-wrapper, body:not(.sidebar-mini-md) .main-footer, body:not(.sidebar-mini-md) .main-header {
         margin-left: 300px;
     }
+}
+
+.preview_logo {
+	height: 20px !important;
 }

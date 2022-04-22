@@ -121,9 +121,15 @@ class Robokassa
             md5(sprintf("%s:%s:%s:%s:Shp_Mail=%d",
                 $merchant, $this->getSum(), $this->getInvoice(), $this->getPassword(), $this->isMail() ? 1 : 0))
         );
+		if(session('branding')) {
+			$buttonstyle = session('branding')['buttonstyle'];
+			$class = "class='btn mt-2 mb-5' style='{$buttonstyle}'";
+		} else {
+			$class = "class='btn btn-primary mt-2 mb-5'";
+		}
 
         return $out . "\n" .
-            "<input type='submit' class='btn btn-primary mt-2 mb-5' value='Оплатить через Робокассу' onclick=\"{$onclick}\">";
+            "<input type='submit'{$class} value='Оплатить через Робокассу' onclick=\"{$onclick}\">";
     }
 
     public function getPassword(): string
