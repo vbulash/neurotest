@@ -101,8 +101,8 @@ class PlayerController extends Controller
 			$branding = null;
 			if(isset($content['branding'])) {
 				$branding = [
-					'company' => $content['branding']['company-name'],
-					'logo' => $content['branding']['logo'] ?: null,
+					'company' => isset($content['branding']['company-name']) ? $content['branding']['company-name'] : '',
+					'logo' => isset($content['branding']['logo']) ? $content['branding']['logo'] : null,
 					'navstyle' => sprintf("background-color: %s!important; color: %s !important",
 						$content['branding']['background'],  $content['branding']['fontcolor']),
 					'textstyle' => sprintf("color: %s !important", $content['branding']['fontcolor']),
@@ -404,6 +404,7 @@ EOS
         $card = ($history->card ? json_decode($history->card) : null);
         $fmptype_show = $content->descriptions->show;
         $fmptype_mail = $content->descriptions->mail;
+		$fmptype_client = $content->descriptions->client;
         if (!$fmptype_show && !$fmptype_mail) {
             session()->put('error', 'Не определен тип описания для результатов тестирования. Обратитесь к администратору');
             return false;
@@ -464,7 +465,7 @@ EOS
 
 			if($client_mail) {
 				//sevent(new ToastEvent('info', '', "Отправка письма клиенту с результатами тестирования..."));
-				$profile = $this->getProfile($fmptype_mail, $profile_code);
+				$profile = $this->getProfile($fmptype_client, $profile_code);
 				if(!$profile)
 					return redirect()->route('player.index', ['sid' => session()->getId()])
 						->with('error', session('error'));

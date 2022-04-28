@@ -1,7 +1,7 @@
 <div class="checkbox mb-2">
     <label>
 		@php
-			$branding = $content['branding'];
+			$branding = (isset($content['branding']) ? $content['branding'] : null);
 		@endphp
         <input type="checkbox" id="branding" name="branding" @if($branding) checked @endif @if($show) disabled @endif>
         Тест имеет самостоятельный брендинг, отличный от встроенного

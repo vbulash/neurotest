@@ -62,7 +62,7 @@
                                                 $title = $element['label'];
                                                 $type = $element['type'];
                                                 $required = ($show ? false : $element['required']);
-                                                $actual = ($required | key_exists($name, $card));
+                                                $actual = key_exists($name, $card);
 
                                                 if($actual) {
                                                     $value = $card[$name];

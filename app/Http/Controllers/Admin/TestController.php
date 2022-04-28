@@ -139,7 +139,7 @@ EOS
                 };
             $content['descriptions']['show'] = $data['show_description'];
             $content['descriptions']['mail'] = $data['mail_description'];
-            //$content['descriptions']['client'] = $data['client_description'];
+            $content['descriptions']['client'] = $data['client_description'];
 
             if(isset($data['branding'])) {
 				$content['branding']['logo'] = null;
@@ -227,7 +227,7 @@ EOS , ['id' => $test->contract->id]
 			$test = Test::findOrFail($id);
 			$origin = json_decode($test->content, true);
 
-            $data = $request->all();
+            $data = $request->all();;
 
             $content = ['card' => []];
             $auth = intval($data['auth']);
@@ -251,7 +251,7 @@ EOS , ['id' => $test->contract->id]
                 };
             $content['descriptions']['show'] = $data['show_description'];
             $content['descriptions']['mail'] = $data['mail_description'];
-            //$content['descriptions']['client'] = $data['client_description'];
+            $content['descriptions']['client'] = $data['client_description'];
 
             if(isset($data['branding'])) {
 				if (isset($data['logo-file'])) {
@@ -277,7 +277,7 @@ EOS , ['id' => $test->contract->id]
                 'name' => $data['title'],
                 'options' => $options,
                 'questionset_id' => $data['sets'],
-                'contract_id' => $data['contract'],
+                'contract_id' => isset($data['contract']) ? $data['contract'] : $test->contract->getKey(),
                 'content' => json_encode($content),
                 'paid' => isset($data['paid'])
             ];
