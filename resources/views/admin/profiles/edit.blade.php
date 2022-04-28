@@ -130,7 +130,7 @@
                                     <table class="table table-bordered table-hover text-nowrap" id="blocks_table" style="width: 100%;">
                                         <thead>
                                         <tr>
-                                            <th style="width: 30px">#</th>
+                                            <th>Номер по порядку</th>
                                             <th>Наименование</th>
                                             <th>Тип</th>
                                             <th>Нейропрофиль / тип описания</th>
@@ -171,6 +171,32 @@
 @if(count($blocks) > 0)
     @push('scripts.injection')
         <script>
+			function clickUp(id) {
+				$.post({
+					url: "{{ route('blocks.up', ['sid' => $sid]) }}",
+					data: {
+						id: id,
+					},
+					headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+					success: () => {
+						window.datatable.ajax.reload();
+					}
+				});
+			}
+
+			function clickDown(id) {
+				$.post({
+					url: "{{ route('blocks.down', ['sid' => $sid]) }}",
+					data: {
+						id: id,
+					},
+					headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+					success: () => {
+						window.datatable.ajax.reload();
+					}
+				});
+			}
+
             function clickDelete(id) {
                 if(window.confirm('Удалить блок № ' + id + ' ?')) {
                     $.ajax({
@@ -196,8 +222,10 @@
                     serverSide: true,
                     ajax: '{!! route('blocks.index.data', ['profile_id' => $profile->id, 'sid' => $sid]) !!}',
                     responsive: true,
+					ordering: false,
+					order: [[1, 'asc']],
                     columns: [
-                        {data: 'id', name: 'id', responsivePriority: 1},
+                        {data: 'sort_no', name: 'sort_no', responsivePriority: 1},
                         {data: 'description', name: 'description', responsivePriority: 1},
                         {
                             data: 'type', name: 'type', responsivePriority: 3, render: (data) => {

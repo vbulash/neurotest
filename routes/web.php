@@ -52,6 +52,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'App\Http\Controllers\Admin', 
     Route::resource('/blocks', 'BlockController');
     Route::get('/blocks.data/{profile_id?}', 'BlockController@getData')->name('blocks.index.data');
     Route::post('/blocks.back/{key?}/{message?}', 'BlockController@back')->name('blocks.back');
+	Route::post('/blocks.up', 'BlockController@up')->name('blocks.up');
+	Route::post('/blocks.down', 'BlockController@down')->name('blocks.down');
     // Типы описаний ФМП
     Route::resource('/fmptypes', "FMPTypeController");
     Route::get('/fmptypes.data', 'FMPTypeController@getData')->name('fmptypes.index.data');

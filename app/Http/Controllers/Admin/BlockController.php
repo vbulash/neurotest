@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BlockRequest;
 use App\Models\Block;
 use App\Models\FileLink;
-use App\Models\FMPType;
 use App\Models\Neuroprofile;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -16,7 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
@@ -36,8 +35,11 @@ class BlockController extends Controller
         if ($profile_id == 0) {
             $blocks = Block::all();
         } else {
-            $blocks = Block::all()->where('neuroprofile_id', $profile_id);
+            $blocks = Block::all()->where('neuroprofile_id', $profile_id)->sortBy('sort_no');
         }
+		$count = count($blocks);
+		$first = $blocks->first()->getKey();
+		$last = $blocks->last()->getKey();
 
         return Datatables::of($blocks)
             ->editColumn('profile', function ($block) {
@@ -47,8 +49,8 @@ class BlockController extends Controller
                     return sprintf("(%s) %s, тип: %s", $block->profile->code, $block->profile->name, $block->profile->fmptype->name);
                 }
             })
-            ->addColumn('action', function ($block) use($profile_id) {
-                $params = ['block' => $block->id, 'sid' => session()->getId()];
+            ->addColumn('action', function ($block) use($profile_id, $first, $last, $count) {
+                $params = ['block' => $block->getKey(), 'sid' => session()->getId()];
                 if($profile_id != 0) $params['profile_id'] = $profile_id;
 
                 $editRoute = route('blocks.edit', $params);
@@ -64,10 +66,25 @@ class BlockController extends Controller
                     "<i class=\"fas fa-eye\"></i>\n" .
                     "</a>\n";
                 $actions .=
-                    "<a href=\"javascript:void(0)\" class=\"btn btn-info btn-sm float-left mr-1\" " .
-                    "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Удаление\" onclick=\"clickDelete({$block->id})\">\n" .
+                    "<a href=\"javascript:void(0)\" class=\"btn btn-info btn-sm float-left me-5\" " .
+                    "data-toggle=\"tooltip\" data-placement=\"top\" title=\"Удаление\" onclick=\"clickDelete({$block->getKey()})\">\n" .
                     "<i class=\"fas fa-trash-alt\"></i>\n" .
                     "</a>\n";
+
+				if($count > 1 && $profile_id != 0) {
+					if ($block->getKey() != $first)
+						$actions .=
+							"<a href=\"javascript:void(0)\" class=\"btn btn-info btn-sm float-left mr-1\" " .
+							"data-toggle=\"tooltip\" data-placement=\"top\" title=\"Выше\" onclick=\"clickUp({$block->getKey()})\">\n" .
+							"<i class=\"fas fa-arrow-up\"></i>\n" .
+							"</a>\n";
+					if ($block->getKey() != $last)
+						$actions .=
+							"<a href=\"javascript:void(0)\" class=\"btn btn-info btn-sm float-left mr-1\" " .
+							"data-toggle=\"tooltip\" data-placement=\"top\" title=\"Ниже\" onclick=\"clickDown({$block->getKey()})\">\n" .
+							"<i class=\"fas fa-arrow-down\"></i>\n" .
+							"</a>\n";
+				}
 
                 return $actions;
             })
@@ -241,6 +258,13 @@ class BlockController extends Controller
         $block_id = $block->id;
         $block->delete();
 
+		// Перенумеровать по порядку после удаления
+		$blocks = $block->profile->blocks
+			->sortBy('sort_no')
+			->pluck('id')
+			->toArray();
+		$this->reorder($blocks);
+
         event(new ToastEvent('success', '', "Блок № {$block_id} удалён"));
         return true;
     }
@@ -250,4 +274,60 @@ class BlockController extends Controller
 		session()->put($key, $message);
         return Redirect::back();
     }
+
+	private function reorder(array $ids): void
+	{
+		DB::transaction(function () use ($ids) {
+			$counter = 0;
+			foreach ($ids as $id) {
+				$counter++;
+				$block = Block::findOrFail($id);
+				if($block->sort_no != $counter)
+					$block->update(['sort_no' => $counter]);
+			}
+		});
+	}
+
+	private function move(int $id, bool $up)
+	{
+		$block = Block::findOrFail($id);
+		$blocks = $block->profile->blocks
+			->sortBy('sort_no')
+			->pluck('id')
+			->toArray();
+
+		$currentPos = array_search($block->getKey(), $blocks);
+		$targetPos = ($up ? $currentPos - 1 : $currentPos + 1);
+		$buffer = $blocks[$targetPos];
+		$blocks[$targetPos] = $blocks[$currentPos];
+		$blocks[$currentPos] = $buffer;
+
+		$this->reorder($blocks);
+	}
+
+	/**
+	 * Move question up on sort order
+	 *
+	 * @param Request $request
+	 * @param int $id
+	 * @return bool
+	 */
+	public function up(Request $request)
+	{
+		$this->move($request->id, true);
+		return true;
+	}
+
+	/**
+	 * Move question down on sort order
+	 *
+	 * @param Request $request
+	 * @param int $id
+	 * @return bool
+	 */
+	public function down(Request $request)
+	{
+		$this->move($request->id, false);
+		return true;
+	}
 }

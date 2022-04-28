@@ -441,7 +441,7 @@ EOS
 						->with('error', session('error'));
 				$profile_id = $profile->getKey();
 				$profile_name = $profile->name;
-				$blocks = Block::all()->where('neuroprofile_id', $profile_id);
+				$blocks = Block::all()->where('neuroprofile_id', $profile_id)->sortBy(['sort_no', 'id']);
 
 				$recipient = (object)[
 					'name' => (property_exists($card, 'last_name') ? $card->last_name . ' ' : '') . (property_exists($card, 'first_name') ? $card->first_name . ' ' : ''),
@@ -471,7 +471,7 @@ EOS
 						->with('error', session('error'));
 				$profile_id = $profile->getKey();
 				$profile_name = $profile->name;
-				$blocks = Block::all()->where('neuroprofile_id', $profile_id);
+				$blocks = Block::all()->where('neuroprofile_id', $profile_id)->sortBy(['sort_no', 'id']);
 
 				$recipient = (object)[
 					'name' => $test->contract->client->name,
@@ -501,7 +501,7 @@ EOS
 						->with('error', session('error'));
 				$profile_id = $profile->getKey();
 				$profile_name = $profile->name;
-				$blocks = Block::all()->where('neuroprofile_id', $profile_id);
+				$blocks = Block::all()->where('neuroprofile_id', $profile_id)->sortBy(['sort_no', 'id']);
 
 				return view('front.show', compact('card', 'test', 'blocks', 'profile_code', 'profile_name', 'history'));
 			}
@@ -566,7 +566,7 @@ EOS
 					->with('error', session('error'));
             $profile_id = $profile->getKey();
             $profile_name = $profile->name;
-            $blocks = Block::all()->where('neuroprofile_id', $profile_id);
+            $blocks = Block::all()->where('neuroprofile_id', $profile_id)->sortBy(['sort_no', 'id']);
 
             $recipient = (object)[
                 'name' => (property_exists($card, 'last_name') ? $card->last_name . ' ' : '') . (property_exists($card, 'first_name') ? $card->first_name . ' ' : ''),
