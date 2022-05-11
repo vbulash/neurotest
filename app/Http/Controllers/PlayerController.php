@@ -404,7 +404,7 @@ EOS
         $card = ($history->card ? json_decode($history->card) : null);
         $fmptype_show = $content->descriptions->show;
         $fmptype_mail = $content->descriptions->mail;
-		$fmptype_client = $content->descriptions->client;
+		$fmptype_client = isset($content->descriptions->client) ? $content->descriptions->client : false;
         if (!$fmptype_show && !$fmptype_mail) {
             session()->put('error', 'Не определен тип описания для результатов тестирования. Обратитесь к администратору');
             return false;

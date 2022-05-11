@@ -8,7 +8,7 @@
 <div class="form-group mt-2">
     <label for="show_description">Для показа результата тестирования на экране будет использован тип описания</label>
     @php
-        $show_description = \App\Models\FMPType::all()->pluck('name', 'id');
+        $show_description = \App\Models\FMPType::where('active', true)->pluck('name', 'id');
     @endphp
     <select name="show_description" id="show_description" class="select2 form-control col-lg-6 col-xs-12">
         @foreach($show_description as $key => $option)

@@ -40,6 +40,9 @@
                                             <th style="width: 30px">#</th>
                                             <th>Наименование</th>
                                             <th>Тип</th>
+											<th>Статус</th>
+											<th>Необходимо нейропрофилей</th>
+											<th>Фактически нейропрофилей</th>
                                             <th>Действия</th>
                                         </tr>
                                         </thead>
@@ -104,15 +107,10 @@
                     columns: [
                         {data: 'id', name: 'id', responsivePriority: 1},
                         {data: 'name', name: 'name', responsivePriority: 1},
-                        {
-                            data: 'cluster', name: 'cluster', responsivePriority: 2, render: (data) => {
-                                if (data) {
-                                    return 'Нейрокластер';
-                                } else {
-                                    return 'ФМП';
-                                }
-                            }
-                        },
+                        {data: 'cluster', name: 'cluster', responsivePriority: 2},
+						{data: 'active', name: 'active', responsivePriority: 2},
+						{data: 'limit', name: 'limit', responsivePriority: 3, orderable: false},
+						{data: 'fact', name: 'fact', responsivePriority: 3},
                         {data: 'action', name: 'action', sortable: false, responsivePriority: 1, className: 'no-wrap dt-actions'}
                     ]
                 });

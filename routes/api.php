@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
         Route::get('/down', function() {
             Artisan::call('down');
             echo('Сервер остановлен и переведен в режим обслуживания');
-        })->name('api.dowm');
+        })->name('api.down');
 //        Route::get('/up', function() {
 //            $exitcode = Artisan::call('up');
 //            echo("Сервер выведен из режима обслуживания и может работать как обычно ($exitcode)");

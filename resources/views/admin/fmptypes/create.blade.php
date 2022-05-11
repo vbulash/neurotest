@@ -3,12 +3,9 @@
 @push('title') - Новый тип описания@endpush
 
 @section('back')
-    <form action="{{ route('fmptypes.back', ['sid' => $sid]) }}" method="post">
-        @csrf
-        <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
-            <i class="fas fa-chevron-left"></i> Назад
-        </button>
-    </form>
+	<a href="{{ url()->previous() }}" class="btn btn-primary">
+		<i class="fas fa-chevron-left"></i> Назад
+	</a>
 @endsection
 
 @section('content')
@@ -55,6 +52,18 @@
                                            autocomplete="off" value="0">
                                     <label class="btn btn-outline-primary" for="profiletype2">ФМП</label>
                                 </div>
+								<div class="form-group">
+									<label for="active">Статус</label>
+									<input type="text" class="form-control col-sm-3" id="active" name="active"
+										   value="Неактивный" disabled
+									>
+								</div>
+								<div class="form-group">
+									<label for="limit">Необходимо нейропрофилей</label>
+									<input type="number" class="form-control col-sm-3" id="limit" name="limit"
+										   value="16"
+									>
+								</div>
                             </div>
                             <!-- /.card-body -->
 

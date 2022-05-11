@@ -294,12 +294,6 @@ class ContractController extends Controller
         return $parts[0] . '*' . $last;
     }
 
-    public function back(?string $key = null, ?string $message = null)
-    {
-		session()->put($key, $message);
-        return Redirect::back();
-    }
-
 	public function licensesExport(int $id)
 	{
 		event(new ToastEvent('info', '', "Формирование списка лицензий..."));

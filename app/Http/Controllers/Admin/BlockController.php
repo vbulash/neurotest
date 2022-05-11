@@ -269,12 +269,6 @@ class BlockController extends Controller
         return true;
     }
 
-    public function back(?string $key = null, ?string $message = null)
-    {
-		session()->put($key, $message);
-        return Redirect::back();
-    }
-
 	private function reorder(array $ids): void
 	{
 		DB::transaction(function () use ($ids) {

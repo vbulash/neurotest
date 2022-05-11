@@ -11,7 +11,7 @@ class FMPType extends Model
     use HasFactory, LogsActivity;
 
     protected $table = 'fmptypes';
-    protected $fillable = ['name', 'cluster'];
+    protected $fillable = ['name', 'cluster', 'active', 'limit'];
     protected static $logAttributes = ['*'];
 
     public function getDescriptionForEvent(string $eventName): string

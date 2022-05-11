@@ -119,6 +119,12 @@
             $neuroprofile = $profile->id;
             $sid = ($request->has('sid') ? $request->sid : session()->getId());
 
+			$fmptype = $profile->fmptype;
+			$profiles = $fmptype->profiles;
+			if ($fmptype->limit == $profiles->count()) {
+				$profile->fmptype->update(['active' => true]);
+			}
+
             return redirect()->route('neuroprofiles.edit', compact('neuroprofile', 'show', 'sid'))
                 ->with('success', "Нейропрофиль &laquo;{$profile->name}&raquo; создан");
         }
@@ -198,16 +204,17 @@
 
             $profile = Neuroprofile::findOrFail($id);
             $name = $profile->name;
+			$fmptype = $profile->fmtype;
             $profile->delete();
+
+			$fmptype = $profile->fmptype;
+			$profiles = $fmptype->profiles;
+			if ($fmptype->limit == $profiles->count()) {
+				$fmptype->update(['active' => true]);
+			}
 
             event(new ToastEvent('success', '', "Нейропрофиль &laquo;{$name}&raquo; удален"));
             return true;
-        }
-
-        public function back(?string $key = null, ?string $message = null): ?RedirectResponse
-        {
-			session()->put($key, $message);
-            return Redirect::back();
         }
 
         public function filterNew(int $fmptype_id): bool|string|null

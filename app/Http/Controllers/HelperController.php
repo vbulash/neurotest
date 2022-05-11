@@ -2,7 +2,8 @@
 
     namespace App\Http\Controllers;
 
-    use Illuminate\Http\Request;
+    use Illuminate\Http\RedirectResponse;
+	use Illuminate\Http\Request;
     use Illuminate\Support\Str;
 
     class HelperController extends Controller
@@ -23,4 +24,11 @@
         {
             return null;
         }
+
+		/**
+		 * @return RedirectResponse
+		 */
+		public function back(): RedirectResponse {
+			return redirect()->back();
+		}
     }

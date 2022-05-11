@@ -3,12 +3,9 @@
 @push('title') - @if($show) Анкета @else Редактирование @endif истории {{ $history->id }}@endpush
 
 @section('back')
-    <form action="{{ route('history.back', ['sid' => $sid]) }}" method="post">
-        @csrf
-        <button type="submit" id="back_btn" name="back_btn" class="btn btn-primary">
-            <i class="fas fa-chevron-left"></i> Назад
-        </button>
-    </form>
+	<a href="{{ url()->previous() }}" class="btn btn-primary">
+		<i class="fas fa-chevron-left"></i> Назад
+	</a>
 @endsection
 
 @section('content')

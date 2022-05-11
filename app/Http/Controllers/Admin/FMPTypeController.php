@@ -30,6 +30,10 @@ class FMPTypeController extends Controller
         $fmptypes = FMPType::all();
 
         return Datatables::of($fmptypes)
+			->editColumn('cluster', fn ($fmptype) => $fmptype->cluster ? 'Нейрокластер' : 'ФМП')
+			->editColumn('active', fn ($fmptype) => $fmptype->active ? 'Активный' : 'Неактивный')
+			->editColumn('limit', fn ($fmptype) => $fmptype->limit)
+			->addColumn('fact', fn ($fmptype) => $fmptype->profiles->count())
             ->addColumn('action', function ($fmptype) {
                 $params = [
                     'fmptype' => $fmptype->id,
@@ -98,7 +102,9 @@ class FMPTypeController extends Controller
     {
         $fmptype = FMPType::create([
             'name' => $request->name,
-            'cluster' => $request->profiletype
+            'cluster' => $request->profiletype,
+			'active' => false,
+			'limit' => $request->limit,
         ]);
         $name = $request->name;
         $fmptype->save();
@@ -154,7 +160,9 @@ class FMPTypeController extends Controller
         $name = $fmptype->name;
         $fmptype->update([
             'name' => $request->name,
-            'cluster' => $request->profiletype
+            'cluster' => $request->profiletype,
+			'active' => $request->limit == $fmptype->profiles->count(),
+			'limit' => $request->limit,
         ]);
 
 		session()->put('success', "Изменения типа описания ФМП &laquo;{$name}&raquo; сохранены");
@@ -211,9 +219,4 @@ class FMPTypeController extends Controller
             ->with('success', "Тип описания &laquo;{$source->name}&raquo; скопирован");
     }
 
-    public function back(?string $key = null, ?string $message = null)
-    {
-		session()->put($key, $message);
-        return Redirect::back();
-    }
 }

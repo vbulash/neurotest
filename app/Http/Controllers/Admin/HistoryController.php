@@ -280,10 +280,4 @@ EOS;
         event(new ToastEvent('success', '', "Запись истории № {$id} удалена"));
         return true;
     }
-
-    public function back(?string $key = null, ?string $message = null)
-    {
-		session()->put($key, $message);
-        return Redirect::back();
-    }
 }
