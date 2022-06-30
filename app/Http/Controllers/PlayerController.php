@@ -205,7 +205,7 @@ EOS
                 'id' => $item->qid,
                 'sort_no' => $item->qsort_no,
                 'learning' => $item->qlearning,
-                'timeout' => $item->qtimeout,
+                'timeout' => env('QUESTION_TIMEOUT') ?  $item->qtimeout : '0',
                 'quantity' => $item->qsquantity
             ];
 

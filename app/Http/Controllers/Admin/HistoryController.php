@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Events\ToastEvent;
 use App\Http\Controllers\Controller;
 use App\Models\History;
+use App\Models\License;
 use DateTime;
 use Exception;
 use Illuminate\Foundation\Application;
@@ -38,6 +39,7 @@ class HistoryController extends Controller
             ->orderBy('done', 'desc');
 
         return Datatables::of($histories)
+			->addColumn('license', fn ($history) => $history->license->pkey)
             ->editColumn('done', function ($history) {
                 $done = DateTime::createFromFormat('Y-m-d G:i:s', $history->done);
                 return $done->format('d.m.Y G:i:s');
@@ -275,9 +277,13 @@ EOS;
         } else $id = $history;
 
         $h = History::findOrFail($id);
+		$license = $h->license;
+		$license->status = License::FREE;
+		$license->update();
         $h->delete();
 
-        event(new ToastEvent('success', '', "Запись истории № {$id} удалена"));
+        event(new ToastEvent('success', '',
+			"Запись истории № {$id} удалена<br/>Лицензию можно использовать повторно"));
         return true;
     }
 }

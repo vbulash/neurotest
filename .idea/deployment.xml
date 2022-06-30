@@ -16,6 +16,13 @@
           </excludedPaths>
         </serverdata>
       </paths>
+      <paths name="Neurotest2 Sandbox">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="Reg.ru Sandbox">
         <serverdata>
           <mappings>

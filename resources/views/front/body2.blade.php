@@ -170,7 +170,13 @@
 
         function startTimers() {
             let element = questions.get();
-            if (element.timeout === '0') return;
+			let counter = document.getElementById('step-countdown');
+            if (element.timeout === '0') {
+				document.querySelectorAll('.step-countdown').forEach((counter) => {
+					counter.innerText = 'таймаут выключен';
+				});
+				return;
+			}
 
             let form = document.getElementById('play-form');
             form.addEventListener('submit', event => {
@@ -183,7 +189,6 @@
                 } else window.submitted = true;
             });
 
-            let counter = document.getElementById('step-countdown');
             document.querySelectorAll('.step-countdown').forEach((counter) => {
                 counter.innerText = element.timeout;
             });

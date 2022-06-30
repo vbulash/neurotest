@@ -38,6 +38,7 @@
                                         <thead>
                                         <tr>
                                             <th style="width: 30px">#</th>
+											<th>Лицензия</th>
                                             <th>Тест пройден</th>
                                             <th>Имя</th>
                                             <th>Фамилия</th>
@@ -134,6 +135,7 @@
                     // ],
                     "columns": [
                         {"data": 'id', "name": 'id', "responsivePriority": 1},
+						{"data": 'license', "name": 'license', "responsivePriority": 1},
                         {"data": 'done', "name": 'done', "responsivePriority": 1},
                         {"data": 'first_name', "name": 'first_name', "responsivePriority": 1},
                         {"data": 'last_name', "name": 'last_name', "responsivePriority": 1},
@@ -141,7 +143,7 @@
                         {"data": 'code', "name": 'code', "responsivePriority": 3, "className": 'dt-center'},
                         {
                             "data": 'paid', "name": 'paid', "responsivePriority": 2, "render": (data) => {
-                                return (data === '1' ? 'Оплачен' : 'Не оплачен');
+                                return (data === 1 ? 'Оплачен' : 'Не оплачен');
                             }
                         },
                         {"data": 'action', "name": 'action', "sortable": false, "responsivePriority": 1, "className": 'no-wrap dt-actions'}
