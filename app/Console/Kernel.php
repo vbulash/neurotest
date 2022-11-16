@@ -19,15 +19,16 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param Schedule $schedule
      * @return void
      */
-    protected function schedule(Schedule $schedule)
-    {
+    protected function schedule(Schedule $schedule): void
+	{
         // Каждую ночь актуализировать статус контрактов
-        $schedule->call(new ProcessContracts)->hourly();
-
-        $schedule->command('telescope:prune')->daily();
+        $schedule->call(new ProcessContracts)->daily();
+		// Каждый час удалять зависшие записи истории
+		$schedule->call(new ProcessHistory)->everyFiveMinutes()
+			->appendOutputTo(storage_path('logs/history.log'));
     }
 
     /**

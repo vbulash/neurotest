@@ -203,9 +203,10 @@ class HistoryController extends Controller
         $sheet->setCellValue('B1', 'Тестирование завершено');
         $sheet->setCellValue('C1', 'Имя');
         $sheet->setCellValue('D1', 'Фамилия');
-        $sheet->setCellValue('E1', 'Наименование теста');
-        $sheet->setCellValue('F1', 'Наименование набора вопросов');
-        $sheet->setCellValue('G1', 'Вычисленный код');
+		$sheet->setCellValue('E1', 'Электронная почта');
+        $sheet->setCellValue('F1', 'Наименование теста');
+        $sheet->setCellValue('G1', 'Наименование набора вопросов');
+        $sheet->setCellValue('H1', 'Вычисленный код');
         $sheet->freezePane('A2');
 
         $sql = <<< EOS
@@ -214,6 +215,7 @@ select
     h.done as done,
     h.card->>'$.first_name' as first_name,
     h.card->>'$.last_name' as last_name,
+    h.card->>'$.email' as email,
     t.name as tname,
     qs.name as qsname,
     h.code as code,
@@ -229,27 +231,28 @@ EOS;
 
         $row = 1;
         $prevHid = 0;
-        $column = 7;
-        $maxColumn = 7;
+        $column = 8;
+        $maxColumn = 8;
         foreach ($view as $history) {
             if($history->hid != $prevHid) { // Новая строка
                 $sheet->setCellValue('A' . ++$row, $history->hid);
                 $sheet->setCellValue('B' . $row, $history->done);   // TODO форматирование даты
                 $sheet->setCellValue('C' . $row, $history->first_name);
                 $sheet->setCellValue('D' . $row, $history->last_name);
-                $sheet->setCellValue('E' . $row, $history->tname);
-                $sheet->setCellValue('F' . $row, $history->qsname);
-                $sheet->setCellValue('G' . $row, $history->code);
-                $column = 7;
+				$sheet->setCellValue('E' . $row, $history->email);
+                $sheet->setCellValue('F' . $row, $history->tname);
+                $sheet->setCellValue('G' . $row, $history->qsname);
+                $sheet->setCellValue('H' . $row, $history->code);
+                $column = 8;
                 $prevHid = $history->hid;
             }
             if($column > $maxColumn) $maxColumn = $column;
             $sheet->setCellValue($this->getNameFromNumber($column++) . $row, $history->pressed . ' / ' . $history->hskey);
         }
 
-        $column = 7;
+        $column = 8;
         while($column <= $maxColumn) {
-            $sheet->setCellValue($this->getNameFromNumber($column++) . '1', $column - 7);
+            $sheet->setCellValue($this->getNameFromNumber($column++) . '1', $column - 8);
         }
 
         header('Content-Type: application/vnd.ms-excel; charset=utf-8');

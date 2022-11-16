@@ -19,6 +19,7 @@
 		                    "width=\"1000px\"\n" .
 		                    "height=\"700px\"\n" .
 		                    "allow=\"fullscreen\">\n" .
+		                    "frameborder=\"0\">\n" .
 		                    "</iframe>",
 		                    route('player.play', [
                                 'mkey' => $contract->mkey,

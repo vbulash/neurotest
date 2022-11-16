@@ -2,7 +2,7 @@
 
 @push('title') - Тест &laquo;{{ $test->name }}&raquo;@endpush
 
-@push('testname') Тест &laquo;{{ $test->name }}&raquo;@endpush
+@push('testname') {{ $test->name }}@endpush
 
 @section('content')
     <form role="form" method="get"

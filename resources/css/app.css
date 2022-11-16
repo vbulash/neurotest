@@ -119,5 +119,6 @@ sup.required-mark {
 }
 
 .preview_logo {
-	height: 20px !important;
+	height: 56px !important;
+	margin-right: 1.25rem !important;
 }

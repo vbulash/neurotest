@@ -2,7 +2,7 @@
 
 @push('title') - Предварительные проверки вход в тестирование@endpush
 
-@push('testname') Тест &laquo;{{ $test->name }}&raquo;@endpush
+@push('testname') {{ $test->name }}@endpush
 
 @section('content')
     <p>Обнаружены ошибки предварительной проверки</p>

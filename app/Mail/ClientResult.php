@@ -18,7 +18,7 @@ class ClientResult extends Mailable
     public Collection $blocks;
     public string $profile_code;
     public string $profile_name;
-    private object $history_card;
+    private ?object $history_card;
     public array $card;
     public History $history;
 
@@ -27,7 +27,7 @@ class ClientResult extends Mailable
      *
      * @return void
      */
-    public function __construct(Test $test, Collection $blocks, string $profile_code, string $profile_name, object $history_card, History $history)
+    public function __construct(Test $test, Collection $blocks, string $profile_code, string $profile_name, ?object $history_card, History $history)
     {
         $this->test = $test;
         $this->blocks = $blocks;

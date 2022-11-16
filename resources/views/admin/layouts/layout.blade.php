@@ -354,15 +354,6 @@
                                 </a>
                             </li>
                         </ul>
-{{--						<ul class="nav nav-treeview">--}}
-{{--							<li class="nav-item">--}}
-{{--								<a href="{{ route('telescope', ['sid' => session()->getId()]) }}"--}}
-{{--								   class="nav-link">--}}
-{{--									<i class="nav-icon fas fa-gears"></i>--}}
-{{--									<p>Laravel Telescope</p>--}}
-{{--								</a>--}}
-{{--							</li>--}}
-{{--						</ul>--}}
                     </li>
                     <!-- .Настройки -->
 
