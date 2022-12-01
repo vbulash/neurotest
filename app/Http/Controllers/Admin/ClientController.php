@@ -88,7 +88,7 @@ class ClientController extends Controller
      * @param Request $request
      * @return RedirectResponse|Response
      */
-    public function store(Request $request)
+    public function store(StoreClientRequest $request)
     {
 		$request->validate(
 			rules: [
