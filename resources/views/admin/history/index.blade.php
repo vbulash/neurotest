@@ -100,8 +100,8 @@
             function clickMail(id) {
                 if(window.confirm('Повторить письмо с полными результатами тестирования ?')) {
                     $.ajax({
-                        method: 'GET',
-                        url: "{{ route('payment.success', ['sid' => $sid]) }}",
+                        method: 'POST',
+                        url: "{{ route('history.mail.repeat', ['sid' => $sid]) }}",
                         data: {
                             InvId: id,
                             Shp_Mail: '0',

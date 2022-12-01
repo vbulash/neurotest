@@ -608,7 +608,7 @@ EOS
 
         session()->put('success', 'Вам отправлено письмо с полными результатами тестирования');
 
-        return view('front.info', compact('test'));
+        return redirect()->route('payment.result', $request->all());
     }
 
     public function paymentFail(Request $request)
@@ -635,4 +635,9 @@ EOS
 
         return view($docviews[$document], compact('mail', 'test'));
     }
+
+	public function repeatMail(Request $request)
+	{
+		return $this->paymentSuccess($request);
+	}
 }
